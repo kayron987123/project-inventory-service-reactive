@@ -1,0 +1,17 @@
+services:
+  mongodb-inventory:
+    image: mongo:8.0
+    container_name: mongodb-inventory
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: gad-dev
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+      MONGO_INITDB_DATABASE: inventory
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_inventory:/data/db
+
+volumes:
+  mongodb_data_inventory:
+    driver: local

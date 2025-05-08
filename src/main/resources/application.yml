@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: inventory-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: inventory
+      username: gad-dev
+      password: 12345
