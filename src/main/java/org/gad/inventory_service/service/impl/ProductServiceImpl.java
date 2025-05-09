@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -45,9 +44,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Flux<ProductDTO> findProductsPaginated(Pageable pageable) {
-        return productRepository.findAllProductsPaginated(pageable)
-                .map(Mappers::toDTO);
+    public Flux<ProductDTO> findProducts(String name,
+                                         String categoryName,
+                                         String brandName,
+                                         String providerName) {
+        return productRepository.findByCriteria(name, categoryName, brandName, providerName)
+                .switchIfEmpty(Flux.error(new ProductNotFoundException("No products found with the given criteria")))
+                .map(Mappers::toDTO)
+                .doOnError(error -> log.error("Error when searching for products: {}", error.getMessage()));
     }
 
     @Override
@@ -75,8 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<ProductDTO> updateProduct(String uuid, UpdateProductRequest updateProductRequest) {
-        Mono<Product> existingProductMono = productRepository.findById(UUID.fromString(uuid))
-                .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with uuid: " + uuid)));
+        Mono<Product> existingProductMono = findByUuid(uuid);
         Mono<Category> categoryMono = findCategoryByName(updateProductRequest.categoryName());
         Mono<Brand> brandMono = findBrandByName(updateProductRequest.brandName());
         Mono<Provider> providerMono = findProviderByName(updateProductRequest.providerName());
@@ -99,7 +102,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<Void> deleteProduct(String uuid) {
-        return null;
+        Mono<Product> existingProductMono = findByUuid(uuid);
+        return productRepository.deleteById(existingProductMono.map(Product::getIdProduct))
+                .doOnError(error -> log.error("Error when deleting the product: {}", error.getMessage()));
+    }
+
+    private Mono<Product> findByUuid(String uuid) {
+        return productRepository.findById(UUID.fromString(uuid))
+                .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with uuid: " + uuid)));
     }
 
     private Mono<Category> findCategoryByName(String name) {

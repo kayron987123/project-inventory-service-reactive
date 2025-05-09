@@ -16,6 +16,6 @@ import java.util.UUID;
 @Setter
 public class Brand {
     @Id
-    private UUID idCategory;
+    private UUID idBrand;
     private String name;
 }
