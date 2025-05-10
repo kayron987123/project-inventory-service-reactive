@@ -1,7 +1,8 @@
 package org.gad.inventory_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Builder;
 
+@Builder
 public record DataResponse(
         int status,
         String message,

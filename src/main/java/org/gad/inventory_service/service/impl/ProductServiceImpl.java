@@ -19,12 +19,12 @@ import org.gad.inventory_service.repository.ProductRepository;
 import org.gad.inventory_service.repository.ProviderRepository;
 import org.gad.inventory_service.service.ProductService;
 import org.gad.inventory_service.utils.Mappers;
+import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,14 +37,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<ProductDTO> findProductByUuid(String uuid) {
-        return productRepository.findById(UUID.fromString(uuid))
+        return productRepository.findById(UtilsMethods.convertStringToUUID(uuid))
                 .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with uuid: " + uuid)))
                 .map(Mappers::toDTO)
                 .doOnError(error -> log.error("Error when searching for product: {}", error.getMessage()));
     }
 
     @Override
-    public Flux<ProductDTO> findProducts(String name,
+    public Flux<ProductDTO> findProductsByCriteria(String name,
                                          String categoryName,
                                          String brandName,
                                          String providerName) {
@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
                     Provider provider = tuple.getT3();
 
                     Product product = new Product();
-                    product.setIdProduct(UUID.randomUUID());
+                    product.setIdProduct(UtilsMethods.generateUUID());
 
                     return productRepository.save(buildProductFromRequest(product, createProductRequest.name(),
                                     createProductRequest.description(), createProductRequest.price(),
@@ -79,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<ProductDTO> updateProduct(String uuid, UpdateProductRequest updateProductRequest) {
-        Mono<Product> existingProductMono = findByUuid(uuid);
+        Mono<Product> existingProductMono = findProductByUuidString(uuid);
         Mono<Category> categoryMono = findCategoryByName(updateProductRequest.categoryName());
         Mono<Brand> brandMono = findBrandByName(updateProductRequest.brandName());
         Mono<Provider> providerMono = findProviderByName(updateProductRequest.providerName());
@@ -102,13 +102,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<Void> deleteProduct(String uuid) {
-        Mono<Product> existingProductMono = findByUuid(uuid);
+        Mono<Product> existingProductMono = findProductByUuidString(uuid);
         return productRepository.deleteById(existingProductMono.map(Product::getIdProduct))
                 .doOnError(error -> log.error("Error when deleting the product: {}", error.getMessage()));
     }
 
-    private Mono<Product> findByUuid(String uuid) {
-        return productRepository.findById(UUID.fromString(uuid))
+    private Mono<Product> findProductByUuidString(String uuid) {
+        return productRepository.findById(UtilsMethods.convertStringToUUID(uuid))
                 .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with uuid: " + uuid)));
     }
 

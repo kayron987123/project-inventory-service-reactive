@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface ProductService {
     Mono<ProductDTO> findProductByUuid(String uuid);
-    Flux<ProductDTO> findProducts(String name,
+    Flux<ProductDTO> findProductsByCriteria(String name,
                                   String categoryName,
                                   String brandName,
                                   String providerName);

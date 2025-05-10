@@ -1,6 +1,8 @@
 package org.gad.inventory_service.utils;
 
+import org.gad.inventory_service.dto.BrandDTO;
 import org.gad.inventory_service.dto.ProductDTO;
+import org.gad.inventory_service.model.Brand;
 import org.gad.inventory_service.model.Product;
 
 public class Mappers {
@@ -16,5 +18,10 @@ public class Mappers {
                 product.getCategory().getName(),
                 product.getBrand().getName(),
                 product.getProvider().getName());
+    }
+
+    public static BrandDTO toDTO(Brand brand) {
+        if (brand == null) return null;
+        return new BrandDTO(brand.getIdBrand().toString(), brand.getName());
     }
 }
