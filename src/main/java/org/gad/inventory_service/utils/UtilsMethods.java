@@ -1,11 +1,16 @@
 package org.gad.inventory_service.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import static org.gad.inventory_service.utils.Constants.PATTERN;
+
+
 public class UtilsMethods {
-    private static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
     private UtilsMethods() {
     }
 
@@ -20,5 +25,17 @@ public class UtilsMethods {
 
     public static UUID convertStringToUUID(String uuid) {
         return UUID.fromString(uuid);
+    }
+
+    public static String convertUUIDToString(UUID uuid) {
+        return uuid.toString();
+    }
+
+    public static BigDecimal formatPrice(BigDecimal price) {
+        return price.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static URI createUri(String path, String uuid) {
+        return URI.create(String.format(path, uuid));
     }
 }

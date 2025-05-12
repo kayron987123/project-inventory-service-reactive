@@ -51,9 +51,10 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public Mono<BrandDTO> saveBrand(CreateBrandRequest createBrandRequest) {
-        Brand brandToSave = new Brand();
-        brandToSave.setIdBrand(UtilsMethods.generateUUID());
-        brandToSave.setName(createBrandRequest.brandName());
+        Brand brandToSave = Brand.builder()
+                .idBrand(UtilsMethods.generateUUID())
+                .name(createBrandRequest.brandName())
+                .build();
 
         return brandRepository.save(brandToSave)
                 .map(Mappers::toDTO)
@@ -78,13 +79,13 @@ public class BrandServiceImpl implements BrandService {
         Mono<Brand> brandMono = findBrandByUuidString(uuid);
 
         return brandMono
-                .flatMap(brandRepository::delete)
+                .flatMap(brand -> brandRepository.deleteById(brand.getIdBrand()))
                 .doOnError(error -> log.error(ERROR_DELETING_BRAND, error.getMessage()));
     }
 
-    private Mono<Brand> findBrandByUuidString(String uuid){
+    private Mono<Brand> findBrandByUuidString(String uuid) {
         return brandRepository.findById(UtilsMethods.convertStringToUUID(uuid))
                 .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_UUID + uuid)))
-                .doOnError(error -> log.error(Constants.ERROR_SEARCHING_BRAND, error.getMessage()));
+                .doOnError(error -> log.error(ERROR_SEARCHING_BRAND, error.getMessage()));
     }
 }

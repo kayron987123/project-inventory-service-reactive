@@ -1,7 +1,10 @@
 package org.gad.inventory_service.dto;
 
+import lombok.Builder;
+
 import java.math.BigDecimal;
 
+@Builder
 public record ProductDTO(
         String idProduct,
         String name,

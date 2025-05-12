@@ -14,8 +14,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import static org.gad.inventory_service.utils.Constants.*;
+import java.net.URI;
 
+import static org.gad.inventory_service.utils.Constants.*;
 
 @Validated
 @RestController
@@ -31,50 +32,58 @@ public class ProductController {
                                                              @RequestParam(required = false) @Pattern(regexp = REGEX_PRODUCTS, message = MESSAGE_PARAMETER_PROVIDER) String provider) {
         return productService.findProductsByCriteria(name, category, brand, provider)
                 .collectList()
-                .map(products -> DataResponse.builder()
-                        .status(HttpStatus.OK.value())
-                        .message(MESSAGE_PRODUCTS_OK)
-                        .data(products)
-                        .timestamp(UtilsMethods.datetimeNowFormatted())
-                        .build())
-                .map(ResponseEntity::ok);
+                .map(products -> ResponseEntity.ok(
+                        DataResponse.builder()
+                                .status(HttpStatus.OK.value())
+                                .message(MESSAGE_PRODUCTS_OK)
+                                .data(products)
+                                .timestamp(UtilsMethods.datetimeNowFormatted())
+                                .build())
+                );
     }
 
     @GetMapping("/{uuid}")
     public Mono<ResponseEntity<DataResponse>> getProductByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
         return productService.findProductByUuid(uuid)
-                .map(product -> DataResponse.builder()
-                        .status(HttpStatus.OK.value())
-                        .message(MESSAGE_PRODUCT_OK)
-                        .data(product)
-                        .timestamp(UtilsMethods.datetimeNowFormatted())
-                        .build())
-                .map(ResponseEntity::ok);
+                .map(product -> ResponseEntity.ok(
+                        DataResponse.builder()
+                                .status(HttpStatus.OK.value())
+                                .message(MESSAGE_PRODUCT_OK)
+                                .data(product)
+                                .timestamp(UtilsMethods.datetimeNowFormatted())
+                                .build())
+                );
     }
 
     @PostMapping
-    public Mono<ResponseEntity<DataResponse>> createProduct(@RequestBody @Valid CreateProductRequest createProductRequest) {
+    public Mono<ResponseEntity<DataResponse>> createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
         return productService.createProduct(createProductRequest)
-                .map(product -> DataResponse.builder()
-                        .status(HttpStatus.CREATED.value())
-                        .message(MESSAGE_PRODUCT_CREATED)
-                        .data(product)
-                        .timestamp(UtilsMethods.datetimeNowFormatted())
-                        .build())
-                .map(dataResponse -> ResponseEntity.status(HttpStatus.CREATED).body(dataResponse));
+                .map(product -> {
+                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
+                    DataResponse dataResponse = DataResponse.builder()
+                            .status(HttpStatus.CREATED.value())
+                            .message(MESSAGE_PRODUCT_CREATED)
+                            .data(product)
+                            .timestamp(UtilsMethods.datetimeNowFormatted())
+                            .build();
+                    return ResponseEntity.created(location).body(dataResponse);
+                });
     }
 
     @PutMapping("/{uuid}")
     public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
-                                                            @RequestBody @Valid UpdateProductRequest updateProductRequest) {
+                                                            @Valid @RequestBody UpdateProductRequest updateProductRequest) {
         return productService.updateProduct(uuid, updateProductRequest)
-                .map(product -> DataResponse.builder()
-                        .status(HttpStatus.CREATED.value())
-                        .message(MESSAGE_PRODUCT_UPDATED)
-                        .data(product)
-                        .timestamp(UtilsMethods.datetimeNowFormatted())
-                        .build())
-                .map(dataResponse -> ResponseEntity.status(HttpStatus.CREATED).body(dataResponse));
+                .map(product -> {
+                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
+                    DataResponse dataResponse = DataResponse.builder()
+                            .status(HttpStatus.OK.value())
+                            .message(MESSAGE_PRODUCT_UPDATED)
+                            .data(product)
+                            .timestamp(UtilsMethods.datetimeNowFormatted())
+                            .build();
+                    return ResponseEntity.created(location).body(dataResponse);
+                });
     }
 
     @DeleteMapping("/{uuid}")

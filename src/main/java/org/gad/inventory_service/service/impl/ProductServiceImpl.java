@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
                     product.setIdProduct(UtilsMethods.generateUUID());
 
                     return productRepository.save(buildProductFromRequest(product, createProductRequest.name(),
-                                    createProductRequest.description(), createProductRequest.price(),
+                                    createProductRequest.description(), UtilsMethods.formatPrice(createProductRequest.price()),
                                     category, brand, provider))
                             .map(Mappers::toDTO);
                 })
@@ -93,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
                     Provider provider = tuple.getT2().getT3();
 
                     return productRepository.save(buildProductFromRequest(existingProduct, updateProductRequest.name(),
-                                    updateProductRequest.description(), updateProductRequest.price(),
+                                    updateProductRequest.description(), UtilsMethods.formatPrice(updateProductRequest.price()),
                                     category, brand, provider))
                             .map(Mappers::toDTO);
                 })
