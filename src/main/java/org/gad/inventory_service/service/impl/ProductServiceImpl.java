@@ -18,6 +18,7 @@ import org.gad.inventory_service.repository.CategoryRepository;
 import org.gad.inventory_service.repository.ProductRepository;
 import org.gad.inventory_service.repository.ProviderRepository;
 import org.gad.inventory_service.service.ProductService;
+import org.gad.inventory_service.utils.Constants;
 import org.gad.inventory_service.utils.Mappers;
 import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+
+import static org.gad.inventory_service.utils.Constants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,20 +41,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Mono<ProductDTO> findProductByUuid(String uuid) {
         return productRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with uuid: " + uuid)))
-                .map(Mappers::toDTO)
-                .doOnError(error -> log.error("Error when searching for product: {}", error.getMessage()));
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + uuid)))
+                .map(Mappers::productToDTO)
+                .doOnError(error -> log.error(Constants.ERROR_SEARCHING_PRODUCT, error.getMessage()));
     }
 
     @Override
     public Flux<ProductDTO> findProductsByCriteria(String name,
-                                         String categoryName,
-                                         String brandName,
-                                         String providerName) {
+                                                   String categoryName,
+                                                   String brandName,
+                                                   String providerName) {
         return productRepository.findByCriteria(name, categoryName, brandName, providerName)
-                .switchIfEmpty(Flux.error(new ProductNotFoundException("No products found with the given criteria")))
-                .map(Mappers::toDTO)
-                .doOnError(error -> log.error("Error when searching for products: {}", error.getMessage()));
+                .switchIfEmpty(Flux.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX_CRITERIA)))
+                .map(Mappers::productToDTO)
+                .doOnError(error -> log.error(ERROR_SEARCHING_PRODUCT, error.getMessage()));
     }
 
     @Override
@@ -72,9 +75,9 @@ public class ProductServiceImpl implements ProductService {
                     return productRepository.save(buildProductFromRequest(product, createProductRequest.name(),
                                     createProductRequest.description(), UtilsMethods.formatPrice(createProductRequest.price()),
                                     category, brand, provider))
-                            .map(Mappers::toDTO);
+                            .map(Mappers::productToDTO);
                 })
-                .doOnError(error -> log.error("Error when creating product: {}", error.getMessage()));
+                .doOnError(error -> log.error(ERROR_CREATING_PRODUCTS, error.getMessage()));
     }
 
     @Override
@@ -95,36 +98,36 @@ public class ProductServiceImpl implements ProductService {
                     return productRepository.save(buildProductFromRequest(existingProduct, updateProductRequest.name(),
                                     updateProductRequest.description(), UtilsMethods.formatPrice(updateProductRequest.price()),
                                     category, brand, provider))
-                            .map(Mappers::toDTO);
+                            .map(Mappers::productToDTO);
                 })
-                .doOnError(error -> log.error("Error when updating the product: {}", error.getMessage()));
+                .doOnError(error -> log.error(ERROR_UPDATING_PRODUCT, error.getMessage()));
     }
 
     @Override
     public Mono<Void> deleteProduct(String uuid) {
         Mono<Product> existingProductMono = findProductByUuidString(uuid);
         return productRepository.deleteById(existingProductMono.map(Product::getIdProduct))
-                .doOnError(error -> log.error("Error when deleting the product: {}", error.getMessage()));
+                .doOnError(error -> log.error(ERROR_DELETING_PRODUCT, error.getMessage()));
     }
 
     private Mono<Product> findProductByUuidString(String uuid) {
         return productRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new ProductNotFoundException("Product not found with uuid: " + uuid)));
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + uuid)));
     }
 
     private Mono<Category> findCategoryByName(String name) {
-        return categoryRepository.findCategoryByNameIgnoreCase(name)
-                .switchIfEmpty(Mono.error(new CategoryNotFoundException("Category not found with name: " + name)));
+        return categoryRepository.findCategoryByNameContainingIgnoreCase(name)
+                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_NAME + name)));
     }
 
     private Mono<Brand> findBrandByName(String name) {
-        return brandRepository.findBrandByNameIgnoreCase(name)
-                .switchIfEmpty(Mono.error(new BrandNotFoundException("Brand not found with name: " + name)));
+        return brandRepository.findBrandByNameContainingIgnoreCase(name)
+                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_NAME + name)));
     }
 
     private Mono<Provider> findProviderByName(String name) {
-        return providerRepository.findProviderByNameIgnoreCase(name)
-                .switchIfEmpty(Mono.error(new ProviderNotFoundException("Provider not found with name: " + name)));
+        return providerRepository.findProviderByNameContainingIgnoreCase(name)
+                .switchIfEmpty(Mono.error(new ProviderNotFoundException(PROVIDER_NOT_FOUND_NAME + name)));
     }
 
     private Product buildProductFromRequest(Product product, String name, String description, BigDecimal price, Category category, Brand brand, Provider provider) {

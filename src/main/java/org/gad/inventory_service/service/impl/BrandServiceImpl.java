@@ -27,25 +27,21 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public Mono<BrandDTO> findByUuid(String uuid) {
-        return brandRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_UUID + uuid)))
-                .map(Mappers::toDTO)
-                .doOnError(error -> log.error(Constants.ERROR_SEARCHING_BRAND, error.getMessage()));
+        return findBrand(findBrandByUuidString(uuid),
+                BRAND_NOT_FOUND_UUID + uuid);
     }
 
     @Override
     public Mono<BrandDTO> findBrandByName(String name) {
-        return brandRepository.findBrandByNameContainingIgnoreCase(name)
-                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_NAME + name)))
-                .map(Mappers::toDTO)
-                .doOnError(error -> log.error(Constants.ERROR_SEARCHING_BRAND, error.getMessage()));
+        return findBrand(brandRepository.findBrandByNameContainingIgnoreCase(name),
+                BRAND_NOT_FOUND_NAME + name);
     }
 
     @Override
     public Flux<BrandDTO> findAllBrands() {
         return brandRepository.findAll()
                 .switchIfEmpty(Flux.error(new BrandNotFoundException(BRAND_NOT_FOUND_FLUX)))
-                .map(Mappers::toDTO)
+                .map(Mappers::brandToDTO)
                 .doOnError(error -> log.error(ERROR_SEARCHING_BRANDS, error.getMessage()));
     }
 
@@ -57,7 +53,7 @@ public class BrandServiceImpl implements BrandService {
                 .build();
 
         return brandRepository.save(brandToSave)
-                .map(Mappers::toDTO)
+                .map(Mappers::brandToDTO)
                 .doOnError(error -> log.error(ERROR_SAVING_BRAND, error.getMessage()));
     }
 
@@ -70,7 +66,7 @@ public class BrandServiceImpl implements BrandService {
                     brand.setName(updateBrandRequest.brandName());
                     return brandRepository.save(brand);
                 })
-                .map(Mappers::toDTO)
+                .map(Mappers::brandToDTO)
                 .doOnError(error -> log.error(ERROR_UPDATING_BRAND, error.getMessage()));
     }
 
@@ -87,5 +83,12 @@ public class BrandServiceImpl implements BrandService {
         return brandRepository.findById(UtilsMethods.convertStringToUUID(uuid))
                 .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_UUID + uuid)))
                 .doOnError(error -> log.error(ERROR_SEARCHING_BRAND, error.getMessage()));
+    }
+
+    private Mono<BrandDTO> findBrand(Mono<Brand> brandMono, String errorMessage) {
+        return brandMono
+                .switchIfEmpty(Mono.error(new BrandNotFoundException(errorMessage)))
+                .map(Mappers::brandToDTO)
+                .doOnError(error -> log.error(Constants.ERROR_SEARCHING_BRAND, error.getMessage()));
     }
 }

@@ -7,6 +7,5 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface CategoryRepository extends ReactiveMongoRepository<Category, UUID> {
-    Mono<Category> findCategoryByNameIgnoreCase(String name);
     Mono<Category> findCategoryByNameContainingIgnoreCase(String name);
 }

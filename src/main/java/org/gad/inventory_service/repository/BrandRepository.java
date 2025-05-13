@@ -7,6 +7,5 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface BrandRepository extends ReactiveMongoRepository<Brand, UUID> {
-    Mono<Brand> findBrandByNameIgnoreCase(String name);
     Mono<Brand> findBrandByNameContainingIgnoreCase(String name);
 }

@@ -10,7 +10,6 @@ import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -69,7 +68,7 @@ public class CategoryController {
     public Mono<ResponseEntity<DataResponse>> createCategory(@RequestBody @Valid CreateCategoryRequest createCategoryRequest) {
         return categoryService.saveCategory(createCategoryRequest)
                 .map(category -> {
-                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.uuid());
+                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.uuidCategory());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_CATEGORY_CREATED)
@@ -85,7 +84,7 @@ public class CategoryController {
                                                              @RequestBody @Valid UpdateCategoryRequest updateCategoryRequest) {
         return categoryService.updateCategory(uuid, updateCategoryRequest)
                 .map(category -> {
-                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.uuid());
+                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.uuidCategory());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
                             .message(MESSAGE_CATEGORY_UPDATED)

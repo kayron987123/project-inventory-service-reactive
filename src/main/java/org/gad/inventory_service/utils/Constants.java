@@ -6,6 +6,13 @@ public class Constants {
 
     public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
+    public static final String PRODUCT_NOT_FOUND_UUID = "Product not found with uuid: ";
+    public static final String ERROR_SEARCHING_PRODUCT = "Error when searching for product: {}";
+    public static final String ERROR_CREATING_PRODUCTS = "Error when creating product: {}";
+    public static final String ERROR_UPDATING_PRODUCT = "Error when updating product: {}";
+    public static final String ERROR_DELETING_PRODUCT = "Error when deleting product: {}";
+
     public static final String BRAND_NOT_FOUND_FLUX = "No brands found";
     public static final String BRAND_NOT_FOUND_UUID = "Brand not found with uuid: ";
     public static final String BRAND_NOT_FOUND_NAME = "Brand not found with name: ";
@@ -23,6 +30,17 @@ public class Constants {
     public static final String CATEGORY_SAVING_BRAND = "Error when saving category: {}";
     public static final String CATEGORY_UPDATING_BRAND = "Error when updating category: {}";
     public static final String CATEGORY_DELETING_BRAND = "Error when deleting category: {}";
+
+    public static final String PROVIDER_NOT_FOUND_FLUX = "No providers found";
+    public static final String PROVIDER_NOT_FOUND_UUID = "Provider not found with uuid: ";
+    public static final String PROVIDER_NOT_FOUND_NAME = "Provider not found with name: ";
+    public static final String PROVIDER_NOT_FOUND_RUC = "Provider not found with ruc: ";
+    public static final String PROVIDER_NOT_FOUND_EMAIL = "Provider not found with email: ";
+    public static final String PROVIDER_NOT_FOUND_DNI = "Provider not found with dni: ";
+    public static final String ERROR_SEARCHING_PROVIDER = "Error when searching for provider: {}";
+    public static final String ERROR_SAVING_PROVIDER = "Error when saving provider: {}";
+    public static final String ERROR_UPDATING_PROVIDER = "Error when updating provider: {}";
+    public static final String ERROR_DELETING_PROVIDER = "Error when deleting provider: {}";
 
     public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";

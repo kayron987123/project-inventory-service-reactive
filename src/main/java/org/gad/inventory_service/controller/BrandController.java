@@ -71,7 +71,7 @@ public class BrandController {
     public Mono<ResponseEntity<DataResponse>> createBrand(@RequestBody @Valid CreateBrandRequest createBrandRequest) {
         return brandService.saveBrand(createBrandRequest)
                 .map(brand -> {
-                    URI location = UtilsMethods.createUri(BRAND_URI, brand.uuid());
+                    URI location = UtilsMethods.createUri(BRAND_URI, brand.uuidBrand());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_BRAND_CREATED)
@@ -87,7 +87,7 @@ public class BrandController {
                                                           @RequestBody @Valid UpdateBrandRequest updateBrandRequest) {
         return brandService.updateBrand(uuid, updateBrandRequest)
                 .map(brand ->{
-                    URI location = UtilsMethods.createUri(BRAND_URI, brand.uuid());
+                    URI location = UtilsMethods.createUri(BRAND_URI, brand.uuidBrand());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_BRAND_UPDATED)

@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record BrandDTO(
-        String uuid,
+        String uuidBrand,
         String name
 ) {
 }

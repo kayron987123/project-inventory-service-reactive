@@ -26,25 +26,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Mono<CategoryDTO> findByUuid(String uuid) {
-        return categoryRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_UUID + uuid)))
-                .map(Mappers::toDTO)
-                .doOnError(error -> log.error(Constants.CATEGORY_SEARCHING_BRAND, error.getMessage()));
+        return findCategory(categoryRepository.findById(UtilsMethods.convertStringToUUID(uuid)),
+                CATEGORY_NOT_FOUND_UUID + uuid);
     }
 
     @Override
     public Mono<CategoryDTO> findCategoryByName(String name) {
-        return categoryRepository.findCategoryByNameContainingIgnoreCase(name)
-                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_NAME + name)))
-                .map(Mappers::toDTO)
-                .doOnError(error -> log.error(Constants.CATEGORY_SEARCHING_BRAND, error.getMessage()));
+        return findCategory(categoryRepository.findCategoryByNameContainingIgnoreCase(name),
+                CATEGORY_NOT_FOUND_NAME + name);
     }
 
     @Override
     public Flux<CategoryDTO> findAllCategories() {
         return categoryRepository.findAll()
                 .switchIfEmpty(Flux.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_FLUX)))
-                .map(Mappers::toDTO)
+                .map(Mappers::categoryToDTO)
                 .doOnError(error -> log.error(CATEGORY_SEARCHING_BRANDS, error.getMessage()));
     }
 
@@ -56,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
 
         return categoryRepository.save(category)
-                .map(Mappers::toDTO)
+                .map(Mappers::categoryToDTO)
                 .doOnError(error -> log.error(CATEGORY_SAVING_BRAND, error.getMessage()));
     }
 
@@ -69,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
                     category.setName(updateCategoryRequest.name());
                     return categoryRepository.save(category);
                 })
-                .map(Mappers::toDTO)
+                .map(Mappers::categoryToDTO)
                 .doOnError(error -> log.error(CATEGORY_UPDATING_BRAND, error.getMessage()));
     }
 
@@ -85,5 +81,12 @@ public class CategoryServiceImpl implements CategoryService {
     private Mono<Category> findCategoryByUuidString(String uuid) {
         return categoryRepository.findById(UtilsMethods.convertStringToUUID(uuid))
                 .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_UUID + uuid)));
+    }
+
+    private Mono<CategoryDTO> findCategory(Mono<Category> categoryMono, String errorMessage) {
+        return categoryMono
+                .switchIfEmpty(Mono.error(new CategoryNotFoundException(errorMessage)))
+                .map(Mappers::categoryToDTO)
+                .doOnError(error -> log.error(Constants.CATEGORY_SEARCHING_BRAND, error.getMessage()));
     }
 }

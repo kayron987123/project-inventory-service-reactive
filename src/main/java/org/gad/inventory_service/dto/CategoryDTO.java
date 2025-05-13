@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CategoryDTO(
-        String uuid,
+        String uuidCategory,
         String name
 ) {
 }

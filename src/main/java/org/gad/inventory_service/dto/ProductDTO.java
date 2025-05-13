@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Builder
 public record ProductDTO(
-        String idProduct,
+        String uuidProduct,
         String name,
         String description,
         BigDecimal price,

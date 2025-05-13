@@ -7,5 +7,8 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface ProviderRepository extends ReactiveMongoRepository<Provider, UUID> {
-    Mono<Provider> findProviderByNameIgnoreCase(String name);
+    Mono<Provider> findProviderByNameContainingIgnoreCase(String name);
+    Mono<Provider> findProviderByEmail(String email);
+    Mono<Provider> findProviderByRuc(String ruc);
+    Mono<Provider> findProviderByDni(String dni);
 }
