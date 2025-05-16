@@ -47,6 +47,15 @@ public class Constants {
     public static final String TEXT_EMAIL_ALREADY_EXISTS = "email, ";
     public static final String TEXT_DNI_ALREADY_EXISTS = "DNI, ";
 
+    public static final String STOCKTAKING_NOT_FOUND = "No stocktaking found";
+    public static final String STOCKTAKING_NOT_FOUND_UUID = "Stocktaking not found with uuid: ";
+    public static final String STOCKTAKING_NOT_FOUND_BETWEEEN_DATES = "No stocktaking found between the given dates: ";
+    public static final String STOCKTAKING_NOT_FOUND_NAME = "Stocktaking not found with name: ";
+    public static final String ERROR_SEARCHING_STOCKTAKING = "Error when searching for stocktaking: {}";
+    public static final String ERROR_CREATING_STOCKTAKING = "Error when creating stocktaking: {}";
+    public static final String ERROR_UPDATING_STOCKTAKING = "Error when updating stocktaking: {}";
+    public static final String ERROR_DELETING_STOCKTAKING = "Error when deleting stocktaking: {}";
+
     public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     public static final String REGEX_RUC = "^\\d{11}$";
@@ -89,4 +98,8 @@ public class Constants {
     public static final String MESSAGE_PROVIDER_OK = "Provider retrieved successfully";
     public static final String MESSAGE_PROVIDER_CREATED = "Provider created successfully";
     public static final String MESSAGE_PROVIDER_UPDATED = "Provider updated successfully";
+
+    public static final String MESSAGE_STOCKTAKING_OK = "Stocktaking retrieved successfully";
+    public static final String MESSAGE_STOCKTAKING_CREATED = "Stocktaking created successfully";
+    public static final String MESSAGE_STOCKTAKING_UPDATED = "Stocktaking updated successfully";
 }

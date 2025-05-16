@@ -1,13 +1,7 @@
 package org.gad.inventory_service.utils;
 
-import org.gad.inventory_service.dto.BrandDTO;
-import org.gad.inventory_service.dto.CategoryDTO;
-import org.gad.inventory_service.dto.ProductDTO;
-import org.gad.inventory_service.dto.ProviderDTO;
-import org.gad.inventory_service.model.Brand;
-import org.gad.inventory_service.model.Category;
-import org.gad.inventory_service.model.Product;
-import org.gad.inventory_service.model.Provider;
+import org.gad.inventory_service.dto.*;
+import org.gad.inventory_service.model.*;
 
 import static org.gad.inventory_service.utils.UtilsMethods.convertUUIDToString;
 
@@ -54,6 +48,16 @@ public class Mappers {
                 .address(provider.getAddress())
                 .phone(provider.getPhone())
                 .email(provider.getEmail())
+                .build();
+    }
+
+    public static StocktakingDTO stocktakingToDTO(Stocktaking stocktaking) {
+        if (stocktaking == null) return null;
+        return StocktakingDTO.builder()
+                .idStocktaking(convertUUIDToString(stocktaking.getIdStocktaking()))
+                .productName(stocktaking.getProduct().getName())
+                .quantity(stocktaking.getQuantity())
+                .stocktakingDate(stocktaking.getStocktakingDate().toString())
                 .build();
     }
 }

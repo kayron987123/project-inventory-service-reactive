@@ -3,6 +3,7 @@ package org.gad.inventory_service.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Setter
 public class Provider {
     @Id
+    @Field("id_provider")
     private UUID idProvider;
     private String name;
     private String ruc;
