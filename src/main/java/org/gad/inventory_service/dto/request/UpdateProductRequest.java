@@ -1,11 +1,11 @@
-package org.gad.inventory_service.dto;
+package org.gad.inventory_service.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public record CreateProductRequest(
+public record UpdateProductRequest(
         @NotBlank(message = "Name cannot be empty")
         String name,
 

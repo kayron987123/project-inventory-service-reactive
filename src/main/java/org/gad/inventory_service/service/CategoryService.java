@@ -1,8 +1,8 @@
 package org.gad.inventory_service.service;
 
 import org.gad.inventory_service.dto.CategoryDTO;
-import org.gad.inventory_service.dto.CreateCategoryRequest;
-import org.gad.inventory_service.dto.UpdateCategoryRequest;
+import org.gad.inventory_service.dto.request.CreateCategoryRequest;
+import org.gad.inventory_service.dto.request.UpdateCategoryRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

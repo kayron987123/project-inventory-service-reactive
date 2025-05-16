@@ -1,7 +1,7 @@
 package org.gad.inventory_service.exception;
 
 import jakarta.validation.ConstraintViolationException;
-import org.gad.inventory_service.dto.ErrorResponse;
+import org.gad.inventory_service.dto.response.ErrorResponse;
 import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +47,11 @@ public class GlobalExceptionHandler {
     })
     public Mono<ResponseEntity<ErrorResponse>> handleNotFoundExceptions(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.NOT_FOUND, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(ProviderAlreadyExistsException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleProviderAlreadyExistsException(ProviderAlreadyExistsException ex, ServerWebExchange exchange) {
+        return buildErrorResponse(exchange, HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
     private Mono<ResponseEntity<ErrorResponse>> buildErrorResponse(ServerWebExchange exchange,

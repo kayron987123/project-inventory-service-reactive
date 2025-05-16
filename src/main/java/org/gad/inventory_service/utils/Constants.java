@@ -44,10 +44,13 @@ public class Constants {
 
     public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
+    public static final String REGEX_RUC = "^\\d{11}$";
+    public static final String REGEX_DNI = "^\\d{8}$";
 
     public static final String PRODUCT_URI = "/api/v1/products/%s";
     public static final String BRAND_URI = "/api/v1/brands/%s";
     public static final String CATEGORY_URI = "/api/v1/categories/%s";
+    public static final String PROVIDER_URI = "/api/v1/providers/%s";
 
     public static final String MESSAGE_PARAMETER_PRODUCT_NAME = "Parameter name only accepts letters";
     public static final String MESSAGE_PARAMETER_CATEGORY = "Parameter category only accepts letters";
@@ -55,6 +58,12 @@ public class Constants {
     public static final String MESSAGE_PARAMETER_PROVIDER = "Parameter provider only accepts letters";
     public static final String MESSAGE_INCORRECT_UUID_FORMAT = "Incorrect UUID format";
     public static final String MESSAGE_NAME_CANNOT_BE_EMPTY = "Name cannot be empty";
+    public static final String MESSAGE_RUC_CANNOT_BE_EMPTY = "RUC cannot be empty";
+    public static final String MESSAGE_DNI_CANNOT_BE_EMPTY = "DNI cannot be empty";
+    public static final String MESSAGE_EMAIL_CANNOT_BE_EMPTY = "Email cannot be empty";
+    public static final String MESSAGE_EMAIL_INVALID = "Email should be valid";
+    public static final String MESSAGE_RUC_INVALID = "RUC should be 11 digits";
+    public static final String MESSAGE_DNI_INVALID = "DNI should be 8 digits";
 
     public static final String MESSAGE_PRODUCTS_OK = "Products retrieved successfully";
     public static final String MESSAGE_PRODUCT_OK = "Product retrieved successfully";
@@ -70,4 +79,9 @@ public class Constants {
     public static final String MESSAGE_CATEGORY_OK = "Category retrieved successfully";
     public static final String MESSAGE_CATEGORY_CREATED = "Category created successfully";
     public static final String MESSAGE_CATEGORY_UPDATED = "Brand updated successfully";
+
+    public static final String MESSAGE_PROVIDERS_OK = "Providers retrieved successfully";
+    public static final String MESSAGE_PROVIDER_OK = "Provider retrieved successfully";
+    public static final String MESSAGE_PROVIDER_CREATED = "Provider created successfully";
+    public static final String MESSAGE_PROVIDER_UPDATED = "Provider updated successfully";
 }

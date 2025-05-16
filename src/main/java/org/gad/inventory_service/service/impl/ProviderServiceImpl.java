@@ -2,9 +2,10 @@ package org.gad.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gad.inventory_service.dto.CreateProviderRequest;
+import org.gad.inventory_service.dto.request.CreateProviderRequest;
 import org.gad.inventory_service.dto.ProviderDTO;
-import org.gad.inventory_service.dto.UpdateProviderRequest;
+import org.gad.inventory_service.dto.request.UpdateProviderRequest;
+import org.gad.inventory_service.exception.ProviderAlreadyExistsException;
 import org.gad.inventory_service.exception.ProviderNotFoundException;
 import org.gad.inventory_service.model.Provider;
 import org.gad.inventory_service.repository.ProviderRepository;
@@ -15,6 +16,8 @@ import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 import static org.gad.inventory_service.utils.Constants.*;
 
@@ -65,18 +68,24 @@ public class ProviderServiceImpl implements ProviderService {
 
     @Override
     public Mono<ProviderDTO> saveProvider(CreateProviderRequest createProviderRequest) {
-        Provider providerToSave = Provider.builder()
-                .idProvider(UtilsMethods.generateUUID())
-                .name(createProviderRequest.name())
-                .ruc(createProviderRequest.ruc())
-                .dni(createProviderRequest.dni())
-                .address(createProviderRequest.address())
-                .phone(createProviderRequest.phone())
-                .email(createProviderRequest.email())
-                .build();
+        return validateUniqueProviderFields(createProviderRequest.ruc(),
+                createProviderRequest.dni(),
+                createProviderRequest.email(),
+                null)
+                .then(Mono.defer(() -> {
+                    Provider providerToSave = Provider.builder()
+                            .idProvider(UtilsMethods.generateUUID())
+                            .name(createProviderRequest.name())
+                            .ruc(createProviderRequest.ruc())
+                            .dni(createProviderRequest.dni())
+                            .address(createProviderRequest.address())
+                            .phone(createProviderRequest.phone())
+                            .email(createProviderRequest.email())
+                            .build();
 
-        return providerRepository.save(providerToSave)
-                .map(Mappers::providerToDTO)
+                    return providerRepository.save(providerToSave)
+                            .map(Mappers::providerToDTO);
+                }))
                 .doOnError(error -> log.error(ERROR_SAVING_PROVIDER, error.getMessage()));
     }
 
@@ -84,16 +93,24 @@ public class ProviderServiceImpl implements ProviderService {
     public Mono<ProviderDTO> updateProvider(String uuid, UpdateProviderRequest updateProviderRequest) {
         Mono<Provider> providerMono = findProviderByUuidString(uuid);
 
-        return providerMono.
-                flatMap(provider -> {
-                    provider.setName(updateProviderRequest.name());
-                    provider.setRuc(updateProviderRequest.ruc());
-                    provider.setDni(updateProviderRequest.dni());
-                    provider.setAddress(updateProviderRequest.address());
-                    provider.setPhone(updateProviderRequest.phone());
-                    provider.setEmail(updateProviderRequest.email());
-                    return providerRepository.save(provider);
-                })
+        return providerMono
+                .flatMap(existingProvider -> validateUniqueProviderFields(
+                                updateProviderRequest.ruc(),
+                                updateProviderRequest.dni(),
+                                updateProviderRequest.email(),
+                                existingProvider.getIdProvider()
+                        )
+                                .then(Mono.defer(() -> {
+                                    existingProvider.setName(updateProviderRequest.name());
+                                    existingProvider.setRuc(updateProviderRequest.ruc());
+                                    existingProvider.setDni(updateProviderRequest.dni());
+                                    existingProvider.setAddress(updateProviderRequest.address());
+                                    existingProvider.setPhone(updateProviderRequest.phone());
+                                    existingProvider.setEmail(updateProviderRequest.email());
+
+                                    return providerRepository.save(existingProvider);
+                                }))
+                )
                 .map(Mappers::providerToDTO)
                 .doOnError(error -> log.error(ERROR_UPDATING_PROVIDER, error.getMessage()));
     }
@@ -118,5 +135,34 @@ public class ProviderServiceImpl implements ProviderService {
                 .switchIfEmpty(Mono.error(new ProviderNotFoundException(errorMessage)))
                 .map(Mappers::providerToDTO)
                 .doOnError(error -> log.error(ERROR_SEARCHING_PROVIDER, error.getMessage()));
+    }
+
+    private Mono<Void> validateUniqueProviderFields(String ruc, String dni, String email, UUID excludeUuid) {
+        Mono<Boolean> rucExists = providerRepository.findProviderByRuc(ruc)
+                .filter(p -> !p.getIdProvider().equals(excludeUuid))
+                .hasElement();
+        Mono<Boolean> dniExists = providerRepository.findProviderByDni(dni)
+                .filter(p -> !p.getIdProvider().equals(excludeUuid))
+                .hasElement();
+        Mono<Boolean> emailExists = providerRepository.findProviderByEmail(email)
+                .filter(p -> !p.getIdProvider().equals(excludeUuid))
+                .hasElement();
+
+        return Mono.zip(rucExists, dniExists, emailExists)
+                .flatMap(tuple -> {
+                    boolean rucExistsValue = tuple.getT1();
+                    boolean dniExistsValue = tuple.getT2();
+                    boolean emailExistsValue = tuple.getT3();
+
+                    if (rucExistsValue || dniExistsValue || emailExistsValue) {
+                        StringBuilder sb = new StringBuilder("Provider with ");
+                        if (rucExistsValue) sb.append("RUC, ");
+                        if (dniExistsValue) sb.append("DNI, ");
+                        if (emailExistsValue) sb.append("email, ");
+                        String message = sb.substring(0, sb.length() - 2) + " already exists";
+                        return Mono.error(new ProviderAlreadyExistsException(message));
+                    }
+                    return Mono.empty();
+                });
     }
 }

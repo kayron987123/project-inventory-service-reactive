@@ -1,8 +1,8 @@
 package org.gad.inventory_service.service;
 
-import org.gad.inventory_service.dto.CreateProviderRequest;
+import org.gad.inventory_service.dto.request.CreateProviderRequest;
 import org.gad.inventory_service.dto.ProviderDTO;
-import org.gad.inventory_service.dto.UpdateProviderRequest;
+import org.gad.inventory_service.dto.request.UpdateProviderRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

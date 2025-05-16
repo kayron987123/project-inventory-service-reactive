@@ -2,9 +2,9 @@ package org.gad.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gad.inventory_service.dto.CreateProductRequest;
+import org.gad.inventory_service.dto.request.CreateProductRequest;
 import org.gad.inventory_service.dto.ProductDTO;
-import org.gad.inventory_service.dto.UpdateProductRequest;
+import org.gad.inventory_service.dto.request.UpdateProductRequest;
 import org.gad.inventory_service.exception.BrandNotFoundException;
 import org.gad.inventory_service.exception.CategoryNotFoundException;
 import org.gad.inventory_service.exception.ProductNotFoundException;

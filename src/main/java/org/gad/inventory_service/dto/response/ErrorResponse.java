@@ -1,4 +1,4 @@
-package org.gad.inventory_service.dto;
+package org.gad.inventory_service.dto.response;
 
 import lombok.Builder;
 

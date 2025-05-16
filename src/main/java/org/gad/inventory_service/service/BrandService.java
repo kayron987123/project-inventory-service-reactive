@@ -1,8 +1,8 @@
 package org.gad.inventory_service.service;
 
 import org.gad.inventory_service.dto.BrandDTO;
-import org.gad.inventory_service.dto.CreateBrandRequest;
-import org.gad.inventory_service.dto.UpdateBrandRequest;
+import org.gad.inventory_service.dto.request.CreateBrandRequest;
+import org.gad.inventory_service.dto.request.UpdateBrandRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
