@@ -155,11 +155,11 @@ public class ProviderServiceImpl implements ProviderService {
                     boolean emailExistsValue = tuple.getT3();
 
                     if (rucExistsValue || dniExistsValue || emailExistsValue) {
-                        StringBuilder sb = new StringBuilder("Provider with ");
-                        if (rucExistsValue) sb.append("RUC, ");
-                        if (dniExistsValue) sb.append("DNI, ");
-                        if (emailExistsValue) sb.append("email, ");
-                        String message = sb.substring(0, sb.length() - 2) + " already exists";
+                        StringBuilder sb = new StringBuilder(TEXT_PROVIDER);
+                        if (rucExistsValue) sb.append(TEXT_RUC_ALREADY_EXISTS);
+                        if (dniExistsValue) sb.append(TEXT_DNI_ALREADY_EXISTS);
+                        if (emailExistsValue) sb.append(TEXT_EMAIL_ALREADY_EXISTS);
+                        String message = sb.substring(0, sb.length() - 2) + TEXT_ALREADY_EXISTS;
                         return Mono.error(new ProviderAlreadyExistsException(message));
                     }
                     return Mono.empty();

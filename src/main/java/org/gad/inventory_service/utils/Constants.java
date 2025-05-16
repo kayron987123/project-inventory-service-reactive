@@ -41,6 +41,11 @@ public class Constants {
     public static final String ERROR_SAVING_PROVIDER = "Error when saving provider: {}";
     public static final String ERROR_UPDATING_PROVIDER = "Error when updating provider: {}";
     public static final String ERROR_DELETING_PROVIDER = "Error when deleting provider: {}";
+    public static final String TEXT_PROVIDER = "Provider with ";
+    public static final String TEXT_ALREADY_EXISTS = " already exists";
+    public static final String TEXT_RUC_ALREADY_EXISTS = "RUC, ";
+    public static final String TEXT_EMAIL_ALREADY_EXISTS = "email, ";
+    public static final String TEXT_DNI_ALREADY_EXISTS = "DNI, ";
 
     public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";

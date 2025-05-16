@@ -59,7 +59,7 @@ public class ProductController {
     public Mono<ResponseEntity<DataResponse>> createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
         return productService.createProduct(createProductRequest)
                 .map(product -> {
-                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
+                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.uuidProduct());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_PRODUCT_CREATED)
@@ -75,7 +75,7 @@ public class ProductController {
                                                             @Valid @RequestBody UpdateProductRequest updateProductRequest) {
         return productService.updateProduct(uuid, updateProductRequest)
                 .map(product -> {
-                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
+                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.uuidProduct());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
                             .message(MESSAGE_PRODUCT_UPDATED)

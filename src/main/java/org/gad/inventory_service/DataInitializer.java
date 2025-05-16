@@ -65,16 +65,16 @@ public class DataInitializer implements CommandLineRunner {
                             ).doOnNext(b -> log.info("Brand inserted: {}", b.getName())));
 
                             Flux<Provider> providers = providerRepository.saveAll(Flux.just(
-                                    new Provider(UUID.randomUUID(), "Distributor ABC", "12345678", "Main Street 123", "987654321", "abc@gmail.com"),
-                                    new Provider(UUID.randomUUID(), "Imports XYZ", "87654321", "First Avenue 456", "987123456", "xyz@hotmail.com"),
-                                    new Provider(UUID.randomUUID(), "Tech Global", "11223344", "Commerce Street 789", "963852741", "techglobal@outlook.com"),
-                                    new Provider(UUID.randomUUID(), "Food Inc.", "44556677", "Industrial Avenue 101", "912345678", "info@foodinc.com"),
-                                    new Provider(UUID.randomUUID(), "Global Beverages", "99887766", "Refreshment Street 202", "933221144", "contact@globalbeverages.com"),
-                                    new Provider(UUID.randomUUID(), "Modern Furniture", "55443322", "Design Boulevard 303", "944556677", "sales@modernfurniture.com"),
-                                    new Provider(UUID.randomUUID(), "Extreme Sports", "11223399", "Sports Plaza 404", "955667788", "info@extremesports.com"),
-                                    new Provider(UUID.randomUUID(), "Fashion Trends", "88776655", "Mall Center 505", "966778899", "contact@fashiontrends.com"),
-                                    new Provider(UUID.randomUUID(), "Educational Toys", "33445566", "Kids Park 606", "977889900", "sales@educationaltoys.com"),
-                                    new Provider(UUID.randomUUID(), "Professional Gardening", "77889900", "Nursery Street 707", "988990011", "info@progardening.com")
+                                    new Provider(UUID.randomUUID(), "Distributor ABC", "12345678901", "12345678", "Main Street 123", "987654321", "abc@gmail.com"),
+                                    new Provider(UUID.randomUUID(), "Imports XYZ", "20458796532", "87654321", "First Avenue 456", "987123456", "xyz@hotmail.com"),
+                                    new Provider(UUID.randomUUID(), "Tech Global", "10789456321", "11223344", "Commerce Street 789", "963852741", "techglobal@outlook.com"),
+                                    new Provider(UUID.randomUUID(), "Food Inc.", "20547896543", "44556677", "Industrial Avenue 101", "912345678", "info@foodinc.com"),
+                                    new Provider(UUID.randomUUID(), "Global Beverages", "10458963217", "99887766", "Refreshment Street 202", "933221144", "contact@globalbeverages.com"),
+                                    new Provider(UUID.randomUUID(), "Modern Furniture", "20123456789", "55443322", "Design Boulevard 303", "944556677", "sales@modernfurniture.com"),
+                                    new Provider(UUID.randomUUID(), "Extreme Sports", "20659874123", "11223399", "Sports Plaza 404", "955667788", "info@extremesports.com"),
+                                    new Provider(UUID.randomUUID(), "Fashion Trends", "10987654321", "88776655", "Mall Center 505", "966778899", "contact@fashiontrends.com"),
+                                    new Provider(UUID.randomUUID(), "Educational Toys", "20874563219", "33445566", "Kids Park 606", "977889900", "sales@educationaltoys.com"),
+                                    new Provider(UUID.randomUUID(), "Professional Gardening", "10234567891", "77889900", "Nursery Street 707", "988990011", "info@progardening.com")
                             ).doOnNext(p -> log.info("Provider inserted: {}", p.getName())));
 
                             return Flux.zip(
