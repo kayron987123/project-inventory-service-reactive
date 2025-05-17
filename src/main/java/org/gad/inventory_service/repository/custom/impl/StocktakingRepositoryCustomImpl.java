@@ -11,6 +11,8 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 
+import static org.gad.inventory_service.utils.Constants.TEXT_STOCKTAKING_DATE;
+
 @Repository
 @RequiredArgsConstructor
 public class StocktakingRepositoryCustomImpl implements StocktakingRepositoryCustom {
@@ -18,18 +20,17 @@ public class StocktakingRepositoryCustomImpl implements StocktakingRepositoryCus
 
     @Override
     public Flux<Stocktaking> findByOptionalDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        Criteria criteria = new Criteria();
+        Query query;
 
         if (startDate != null && endDate != null) {
-            criteria = Criteria.where("stocktaking_date").gte(startDate).lte(endDate);
+            query = new Query(Criteria.where(TEXT_STOCKTAKING_DATE).gte(startDate).lte(endDate));
         } else if (startDate != null) {
-            criteria = Criteria.where("stocktaking_date").gte(startDate);
+            query = new Query(Criteria.where(TEXT_STOCKTAKING_DATE).gte(startDate));
         } else if (endDate != null) {
-            criteria = Criteria.where("stocktaking_date").lte(endDate);
+            query = new Query(Criteria.where(TEXT_STOCKTAKING_DATE).lte(endDate));
+        } else {
+            query = new Query();
         }
-
-        Query query = new Query(criteria);
-
         return reactiveMongoTemplate.find(query, Stocktaking.class);
     }
 }

@@ -43,7 +43,8 @@ public class GlobalExceptionHandler {
             ProductNotFoundException.class,
             ProviderNotFoundException.class,
             CategoryNotFoundException.class,
-            BrandNotFoundException.class
+            BrandNotFoundException.class,
+            StockTakingNotFoundException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleNotFoundExceptions(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.NOT_FOUND, ex.getMessage(), null);
@@ -52,6 +53,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProviderAlreadyExistsException.class)
     public Mono<ResponseEntity<ErrorResponse>> handleProviderAlreadyExistsException(ProviderAlreadyExistsException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.CONFLICT, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(InvalidDateRangeException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleInvalidDateRangeException(InvalidDateRangeException ex, ServerWebExchange exchange) {
+        return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
     private Mono<ResponseEntity<ErrorResponse>> buildErrorResponse(ServerWebExchange exchange,

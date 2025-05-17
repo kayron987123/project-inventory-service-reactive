@@ -19,6 +19,11 @@ public class UtilsMethods {
         return LocalDateTime.now().format(formatter);
     }
 
+    public static String localDateTimeFormatted(LocalDateTime localDateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN);
+        return localDateTime.format(formatter);
+    }
+
     public static UUID generateUUID() {
         return UUID.randomUUID();
     }

@@ -21,7 +21,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 import static org.gad.inventory_service.utils.Constants.*;
@@ -42,14 +41,28 @@ public class StocktakingServiceImpl implements StocktakingService {
 
     @Override
     public Flux<StocktakingDTO> findAllStocktakingByDateBetween(String dateStart, String dateEnd) {
-        LocalDateTime startDate = parseFlexibleDate(dateStart);
-        LocalDateTime endDate = parseFlexibleDate(dateEnd);
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
 
-        return validateStocktakingDates(startDate, endDate)
-                .thenMany(stocktakingRepository.findByOptionalDateRange(startDate, endDate))
-                .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_BETWEEEN_DATES + dateStart + " and " + dateEnd)))
-                .map(Mappers::stocktakingToDTO)
-                .doOnError(error -> log.error(ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
+        if (dateStart != null) {
+            startDate = parseFlexibleDateStart(dateStart);
+        }
+        if (dateEnd != null) {
+            endDate = parseFlexibleDateEnd(dateEnd);
+        }
+
+        if (startDate != null && endDate != null) {
+            return validateStocktakingDates(startDate, endDate)
+                    .thenMany(stocktakingRepository.findByOptionalDateRange(startDate, endDate))
+                    .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_BETWEEEN_DATES + dateStart + " and " + dateEnd)))
+                    .map(Mappers::stocktakingToDTO)
+                    .doOnError(error -> log.error(Constants.ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
+        } else {
+            return stocktakingRepository.findByOptionalDateRange(startDate, endDate)
+                    .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_BETWEEEN_DATES + dateStart + " and " + dateEnd)))
+                    .map(Mappers::stocktakingToDTO)
+                    .doOnError(error -> log.error(ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
+        }
     }
 
     @Override
@@ -115,16 +128,24 @@ public class StocktakingServiceImpl implements StocktakingService {
         return Mono.empty();
     }
 
-    private LocalDateTime parseFlexibleDate(String dateStr) {
-        if (dateStr == null || dateStr.isBlank()) {
-            throw new InvalidDateRangeException("Date string cannot be null or empty");
-        }
-
+    private LocalDateTime parseFlexibleDateStart(String dateStr) {
         try {
-            return LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            return LocalDateTime.parse(dateStr);
         } catch (DateTimeParseException e) {
             try {
-                return LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+                return LocalDate.parse(dateStr).atStartOfDay();
+            } catch (DateTimeParseException ex) {
+                throw new InvalidDateRangeException("Invalid date format: " + dateStr);
+            }
+        }
+    }
+
+    private LocalDateTime parseFlexibleDateEnd(String dateStr) {
+        try {
+            return LocalDateTime.parse(dateStr);
+        } catch (DateTimeParseException e) {
+            try {
+                return LocalDate.parse(dateStr).atTime(23, 59, 59);
             } catch (DateTimeParseException ex) {
                 throw new InvalidDateRangeException("Invalid date format: " + dateStr);
             }

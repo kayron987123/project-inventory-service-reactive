@@ -4,6 +4,7 @@ import org.gad.inventory_service.dto.*;
 import org.gad.inventory_service.model.*;
 
 import static org.gad.inventory_service.utils.UtilsMethods.convertUUIDToString;
+import static org.gad.inventory_service.utils.UtilsMethods.localDateTimeFormatted;
 
 public class Mappers {
     private Mappers() {
@@ -57,7 +58,7 @@ public class Mappers {
                 .idStocktaking(convertUUIDToString(stocktaking.getIdStocktaking()))
                 .productName(stocktaking.getProduct().getName())
                 .quantity(stocktaking.getQuantity())
-                .stocktakingDate(stocktaking.getStocktakingDate().toString())
+                .stocktakingDate(localDateTimeFormatted(stocktaking.getStocktakingDate()))
                 .build();
     }
 }

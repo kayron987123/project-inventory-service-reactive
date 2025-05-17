@@ -65,6 +65,7 @@ public class Constants {
     public static final String BRAND_URI = "/api/v1/brands/%s";
     public static final String CATEGORY_URI = "/api/v1/categories/%s";
     public static final String PROVIDER_URI = "/api/v1/providers/%s";
+    public static final String STOCKTAKING_URI = "/api/v1/stocktaking/%s";
 
     public static final String MESSAGE_PARAMETER_PRODUCT_NAME = "Parameter name only accepts letters";
     public static final String MESSAGE_PARAMETER_CATEGORY = "Parameter category only accepts letters";
@@ -78,6 +79,7 @@ public class Constants {
     public static final String MESSAGE_EMAIL_INVALID = "Email should be valid";
     public static final String MESSAGE_RUC_INVALID = "RUC should be 11 digits";
     public static final String MESSAGE_DNI_INVALID = "DNI should be 8 digits";
+    public static final String MESSAGE_PRODUCT_EMPTY = "Product name cannot be empty";
 
     public static final String MESSAGE_PRODUCTS_OK = "Products retrieved successfully";
     public static final String MESSAGE_PRODUCT_OK = "Product retrieved successfully";
@@ -102,4 +104,6 @@ public class Constants {
     public static final String MESSAGE_STOCKTAKING_OK = "Stocktaking retrieved successfully";
     public static final String MESSAGE_STOCKTAKING_CREATED = "Stocktaking created successfully";
     public static final String MESSAGE_STOCKTAKING_UPDATED = "Stocktaking updated successfully";
+
+    public static final String TEXT_STOCKTAKING_DATE = "stocktaking_date";
 }
