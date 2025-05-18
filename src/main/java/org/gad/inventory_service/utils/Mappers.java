@@ -55,10 +55,21 @@ public class Mappers {
     public static StocktakingDTO stocktakingToDTO(Stocktaking stocktaking) {
         if (stocktaking == null) return null;
         return StocktakingDTO.builder()
-                .idStocktaking(convertUUIDToString(stocktaking.getIdStocktaking()))
+                .uuidStocktaking(convertUUIDToString(stocktaking.getIdStocktaking()))
                 .productName(stocktaking.getProduct().getName())
                 .quantity(stocktaking.getQuantity())
                 .stocktakingDate(localDateTimeFormatted(stocktaking.getStocktakingDate()))
+                .build();
+    }
+
+    public static SaleDTO saleToDTO(Sale sale) {
+        if (sale == null) return null;
+        return SaleDTO.builder()
+                .uuidSale(convertUUIDToString(sale.getIdSale()))
+                .nameProduct(sale.getProduct().getName())
+                .saleDate(localDateTimeFormatted(sale.getSaleDate()))
+                .quantity(sale.getQuantity())
+                .totalPrice(sale.getTotalPrice())
                 .build();
     }
 }

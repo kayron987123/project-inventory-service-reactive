@@ -6,8 +6,8 @@ import lombok.Builder;
 
 @Builder
 public record StocktakingDTO(
-        @JsonProperty("id_stocktaking")
-        String idStocktaking,
+        @JsonProperty("uuid_stocktaking")
+        String uuidStocktaking,
         @JsonProperty("product_name")
         String productName,
         Integer quantity,

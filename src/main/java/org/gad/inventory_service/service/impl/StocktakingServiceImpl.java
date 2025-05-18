@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gad.inventory_service.dto.StocktakingDTO;
 import org.gad.inventory_service.dto.request.CreateStocktakingRequest;
 import org.gad.inventory_service.dto.request.UpdateStocktakingRequest;
+import org.gad.inventory_service.exception.InvalidDateFormatException;
 import org.gad.inventory_service.exception.InvalidDateRangeException;
 import org.gad.inventory_service.exception.ProductNotFoundException;
 import org.gad.inventory_service.exception.StockTakingNotFoundException;
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import static org.gad.inventory_service.utils.Constants.*;
-import static org.gad.inventory_service.utils.UtilsMethods.convertStringToUUID;
+import static org.gad.inventory_service.utils.UtilsMethods.*;
 
 
 @Slf4j
@@ -104,7 +105,6 @@ public class StocktakingServiceImpl implements StocktakingService {
                                 .flatMap(product -> {
                                     stocktaking.setProduct(product);
                                     stocktaking.setQuantity(updateStocktakingRequest.quantity());
-                                    stocktaking.setStocktakingDate(LocalDateTime.now());
                                     return stocktakingRepository.save(stocktaking);
                                 })
                 )
@@ -122,34 +122,10 @@ public class StocktakingServiceImpl implements StocktakingService {
 
     private Mono<Void> validateStocktakingDates(LocalDateTime dateStart, LocalDateTime dateEnd) {
         if (dateStart.isAfter(dateEnd)) {
-            return Mono.error(new InvalidDateRangeException("Start date cannot be after end date"));
+            return Mono.error(new InvalidDateRangeException(MESSAGE_INVALID_DATE_RANGE));
         }
 
         return Mono.empty();
-    }
-
-    private LocalDateTime parseFlexibleDateStart(String dateStr) {
-        try {
-            return LocalDateTime.parse(dateStr);
-        } catch (DateTimeParseException e) {
-            try {
-                return LocalDate.parse(dateStr).atStartOfDay();
-            } catch (DateTimeParseException ex) {
-                throw new InvalidDateRangeException("Invalid date format: " + dateStr);
-            }
-        }
-    }
-
-    private LocalDateTime parseFlexibleDateEnd(String dateStr) {
-        try {
-            return LocalDateTime.parse(dateStr);
-        } catch (DateTimeParseException e) {
-            try {
-                return LocalDate.parse(dateStr).atTime(23, 59, 59);
-            } catch (DateTimeParseException ex) {
-                throw new InvalidDateRangeException("Invalid date format: " + dateStr);
-            }
-        }
     }
 
     private Mono<StocktakingDTO> findStocktaking(Mono<Stocktaking> stocktakingMono, String errorMessage) {

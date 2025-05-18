@@ -5,8 +5,10 @@ public class Constants {
     }
 
     public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String TEXT_AND = " and ";
 
     public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
+    public static final String PRODUCT_NOT_FOUND_NAME = "Product not found with name: ";
     public static final String PRODUCT_NOT_FOUND_UUID = "Product not found with uuid: ";
     public static final String ERROR_SEARCHING_PRODUCT = "Error when searching for product: {}";
     public static final String ERROR_CREATING_PRODUCTS = "Error when creating product: {}";
@@ -56,6 +58,21 @@ public class Constants {
     public static final String ERROR_UPDATING_STOCKTAKING = "Error when updating stocktaking: {}";
     public static final String ERROR_DELETING_STOCKTAKING = "Error when deleting stocktaking: {}";
 
+    public static final String SALE_NOT_FOUND_FLUX = "No sales found";
+    public static final String SALE_NOT_FOUND_UUID = "Sale not found with uuid: ";
+    public static final String SALE_NOT_FOUND_BETWEEN_PRICES = "No sales found between prices: ";
+    public static final String SALE_NOT_FOUND_BETWEEN_DATES = "No sales found between dates: ";
+    public static final String SALE_NOT_FOUND_NAME = "Sale not found with name product: ";
+    public static final String ERROR_SEARCHING_SALE = "Error when searching for sale: {}";
+    public static final String ERROR_CREATING_SALE = "Error when creating sale: {}";
+    public static final String ERROR_UPDATING_SALE = "Error when updating sale: {}";
+    public static final String ERROR_DELETING_SALE = "Error when deleting sale: {}";
+    public static final String ERROR_SEARCHING_SALE_UUID = "Error when searching for sale by uuid: {}";
+    public static final String ERROR_SEARCHING_SALE_BETWEEN_PRICES = "Error when searching for sales by total price range: {}";
+    public static final String ERROR_SEARCHING_SALE_BETWEEN_DATES = "Error when searching for sales by date range: {}";
+    public static final String ERROR_SEARCHING_SALE_NAME = "Error when searching for sales by product name: {}";
+    public static final String MESSAGE_INVALID_PRICE_RANGE = "The minimum price cannot be greater than the maximum price";
+
     public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     public static final String REGEX_RUC = "^\\d{11}$";
@@ -104,6 +121,10 @@ public class Constants {
     public static final String MESSAGE_STOCKTAKING_OK = "Stocktaking retrieved successfully";
     public static final String MESSAGE_STOCKTAKING_CREATED = "Stocktaking created successfully";
     public static final String MESSAGE_STOCKTAKING_UPDATED = "Stocktaking updated successfully";
-
     public static final String TEXT_STOCKTAKING_DATE = "stocktaking_date";
+    public static final String MESSAGE_INVALID_DATE_FORMAT = "Invalid date format: ";
+    public static final String MESSAGE_INVALID_DATE_RANGE = "Start date cannot be after end date";
+
+    public static final String TEXT_SALE_DATE = "sale_date";
+    public static final String TEXT_SALE_TOTAL_PRICE = "total_price";
 }

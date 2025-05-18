@@ -55,8 +55,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exchange, HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
-    @ExceptionHandler(InvalidDateRangeException.class)
-    public Mono<ResponseEntity<ErrorResponse>> handleInvalidDateRangeException(InvalidDateRangeException ex, ServerWebExchange exchange) {
+    @ExceptionHandler({
+            InvalidDateRangeException.class,
+            InvalidDateFormatException.class
+    })
+    public Mono<ResponseEntity<ErrorResponse>> handleInvalidDateRangeException(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, ex.getMessage(), null);
     }
 
