@@ -85,7 +85,7 @@ public class StocktakingController {
     public Mono<ResponseEntity<DataResponse>> createStocktaking(@RequestBody @Valid CreateStocktakingRequest createStocktakingRequest) {
         return stocktakingService.createStocktaking(createStocktakingRequest)
                 .map(stocktaking -> {
-                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.idStocktaking());
+                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.uuidStocktaking());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_STOCKTAKING_CREATED)
@@ -101,7 +101,7 @@ public class StocktakingController {
                                                                 @RequestBody @Valid UpdateStocktakingRequest updateStocktakingRequest) {
         return stocktakingService.updateStocktaking(uuid, updateStocktakingRequest)
                 .map(stocktaking -> {
-                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.idStocktaking());
+                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.uuidStocktaking());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_STOCKTAKING_UPDATED)

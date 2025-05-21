@@ -32,18 +32,12 @@ public class SaleServiceImpl implements SaleService {
 
     @Override
     public Flux<SaleDTO> getAllSales() {
-        return saleRepository.findAll()
-                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_FLUX)))
-                .map(Mappers::saleToDTO)
-                .doOnError(error -> log.error(ERROR_SEARCHING_SALE, error.getMessage()));
+        return findSales(saleRepository.findAll(), SALE_NOT_FOUND_FLUX, ERROR_SEARCHING_SALE);
     }
 
     @Override
     public Flux<SaleDTO> getSaleByNameProduct(String nameProduct) {
-        return saleRepository.findSalesByProductName(nameProduct)
-                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_NAME + nameProduct)))
-                .map(Mappers::saleToDTO)
-                .doOnError(error -> log.error(ERROR_SEARCHING_SALE_NAME, error.getMessage()));
+        return findSales(saleRepository.findSalesByProductName(nameProduct), SALE_NOT_FOUND_NAME + nameProduct, ERROR_SEARCHING_SALE_NAME);
     }
 
     @Override
@@ -168,5 +162,12 @@ public class SaleServiceImpl implements SaleService {
         }
 
         return Mono.empty();
+    }
+
+    private Flux<SaleDTO> findSales(Flux<Sale> saleFlux, String errorMessage, String errorMessageLog) {
+        return saleFlux
+                .switchIfEmpty(Mono.error(new SalesNotFoundException(errorMessage)))
+                .map(Mappers::saleToDTO)
+                .doOnError(error -> log.error(errorMessageLog, error.getMessage()));
     }
 }
