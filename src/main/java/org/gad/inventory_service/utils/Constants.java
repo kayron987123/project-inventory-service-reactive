@@ -6,6 +6,8 @@ public class Constants {
 
     public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String TEXT_AND = " and ";
+    public static final String MESSAGE_VALIDATION_INCORRECT = "Validation incorrect";
+    public static final String CONTENT_DISPOSITION_EXCEL = "attachment; filename=sales_report.xlsx";
 
     public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
     public static final String PRODUCT_NOT_FOUND_NAME = "Product not found with name: ";
@@ -83,6 +85,7 @@ public class Constants {
     public static final String CATEGORY_URI = "/api/v1/categories/%s";
     public static final String PROVIDER_URI = "/api/v1/providers/%s";
     public static final String STOCKTAKING_URI = "/api/v1/stocktaking/%s";
+    public static final String SALE_URI = "/api/v1/sales/%s";
 
     public static final String MESSAGE_PARAMETER_PRODUCT_NAME = "Parameter name only accepts letters";
     public static final String MESSAGE_PARAMETER_CATEGORY = "Parameter category only accepts letters";
@@ -124,6 +127,10 @@ public class Constants {
     public static final String TEXT_STOCKTAKING_DATE = "stocktaking_date";
     public static final String MESSAGE_INVALID_DATE_FORMAT = "Invalid date format: ";
     public static final String MESSAGE_INVALID_DATE_RANGE = "Start date cannot be after end date";
+
+    public static final String MESSAGE_SALES_OK = "Sales retrieved successfully";
+    public static final String MESSAGE_SALE_CREATED = "Sale created successfully";
+    public static final String MESSAGE_SALE_UPDATED = "Sale updated successfully";
 
     public static final String TEXT_SALE_DATE = "sale_date";
     public static final String TEXT_SALE_TOTAL_PRICE = "total_price";

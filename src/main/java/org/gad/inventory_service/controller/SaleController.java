@@ -6,13 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.gad.inventory_service.dto.request.CreateSaleRequest;
 import org.gad.inventory_service.dto.request.UpdateSaleRequest;
 import org.gad.inventory_service.dto.response.DataResponse;
+import org.gad.inventory_service.service.ExcelReportService;
 import org.gad.inventory_service.service.SaleService;
 import org.gad.inventory_service.utils.UtilsMethods;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -26,6 +31,7 @@ import static org.gad.inventory_service.utils.UtilsMethods.datetimeNowFormatted;
 @RequiredArgsConstructor
 public class SaleController {
     private final SaleService saleService;
+    private final ExcelReportService excelReportService;
 
     @GetMapping
     public Mono<ResponseEntity<DataResponse>> getAllSales() {
@@ -34,7 +40,7 @@ public class SaleController {
                 .map(sales -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message("Sales retrieved successfully")
+                                .message(MESSAGE_SALES_OK)
                                 .data(sales)
                                 .timestamp(datetimeNowFormatted())
                                 .build()
@@ -48,7 +54,7 @@ public class SaleController {
                 .map(sales -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message("Sales retrieved successfully")
+                                .message(MESSAGE_SALES_OK)
                                 .data(sales)
                                 .timestamp(datetimeNowFormatted())
                                 .build()
@@ -63,7 +69,7 @@ public class SaleController {
                 .map(sales -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message("Sales retrieved successfully")
+                                .message(MESSAGE_SALES_OK)
                                 .data(sales)
                                 .timestamp(datetimeNowFormatted())
                                 .build()
@@ -78,7 +84,7 @@ public class SaleController {
                 .map(sales -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message("Sales retrieved successfully")
+                                .message(MESSAGE_SALES_OK)
                                 .data(sales)
                                 .timestamp(datetimeNowFormatted())
                                 .build()
@@ -91,21 +97,38 @@ public class SaleController {
                 .map(sale -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message("Sale retrieved successfully")
+                                .message(MESSAGE_SALES_OK)
                                 .data(sale)
                                 .timestamp(datetimeNowFormatted())
                                 .build()
                 ));
     }
 
+    @GetMapping("/excel")
+    public Mono<ResponseEntity<ByteArrayResource>> generateExcelReport(@RequestParam(required = false) String startDate,
+                                                                        @RequestParam(required = false) String endDate) {
+        return saleService.getSaleByDateRange(startDate, endDate)
+                .collectList()
+                .flatMap(excelReportService::generateSalesReport)
+                .publishOn(Schedulers.boundedElastic())
+                .map(excelBytes -> {
+                    ByteArrayResource resource = new ByteArrayResource(excelBytes);
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, CONTENT_DISPOSITION_EXCEL)
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .contentLength(excelBytes.length)
+                            .body(resource);
+                });
+    }
+
     @PostMapping
     public Mono<ResponseEntity<DataResponse>> createSale(@RequestBody @Validated CreateSaleRequest createSaleRequest) {
         return saleService.createSale(createSaleRequest)
                 .map(sale -> {
-                    URI location = UtilsMethods.createUri("/api/v1/sales", sale.uuidSale());
+                    URI location = UtilsMethods.createUri(SALE_URI, sale.uuidSale());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
-                            .message("Sale created successfully")
+                            .message(MESSAGE_SALE_CREATED)
                             .data(sale)
                             .timestamp(datetimeNowFormatted())
                             .build();
@@ -118,10 +141,10 @@ public class SaleController {
                                                          @RequestBody @Validated UpdateSaleRequest updateSaleRequest) {
         return saleService.updateSale(uuid, updateSaleRequest)
                 .map(sale -> {
-                    URI location = UtilsMethods.createUri("/api/v1/sales", sale.uuidSale());
+                    URI location = UtilsMethods.createUri(SALE_URI, sale.uuidSale());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
-                            .message("Sale updated successfully")
+                            .message(MESSAGE_SALE_UPDATED)
                             .data(sale)
                             .timestamp(datetimeNowFormatted())
                             .build();

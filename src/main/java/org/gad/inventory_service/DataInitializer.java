@@ -24,6 +24,7 @@ public class DataInitializer implements CommandLineRunner {
     private final ProviderRepository providerRepository;
     private final ProductRepository productRepository;
     private final StocktakingRepository stocktakingRepository;
+    private final SaleRepository saleRepository;
     Random random = new Random();
 
     @Override
@@ -32,7 +33,10 @@ public class DataInitializer implements CommandLineRunner {
                         categoryRepository.deleteAll(),
                         brandRepository.deleteAll(),
                         providerRepository.deleteAll(),
-                        productRepository.deleteAll()
+                        productRepository.deleteAll(),
+                        stocktakingRepository.deleteAll(),
+                        saleRepository.deleteAll()
+
                 )
                 .thenMany(
                         Flux.defer(() -> {
@@ -161,6 +165,31 @@ public class DataInitializer implements CommandLineRunner {
                                                                     s.getProduct().getName(), s.getQuantity()));
                                                 })
                                 )
+                                .thenMany(productRepository.findAll().take(10))
+                                .flatMap(product -> {
+                                    int salesCount = random.nextInt(5) + 1;
+                                    return Flux.range(0, salesCount)
+                                            .flatMap(i -> {
+                                                // Datos aleatorios para la venta
+                                                int quantitySold = random.nextInt(10) + 1;
+                                                BigDecimal unitPrice = product.getPrice();
+                                                BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantitySold));
+                                                LocalDateTime saleDate = LocalDateTime.now()
+                                                        .minusDays(random.nextInt(30));
+
+                                                Sale sale = Sale.builder()
+                                                        .idSale(UUID.randomUUID())
+                                                        .product(product)
+                                                        .quantity(quantitySold)
+                                                        .totalPrice(totalPrice)
+                                                        .saleDate(saleDate)
+                                                        .build();
+
+                                                return saleRepository.save(sale)
+                                                        .doOnNext(s -> log.info("Venta creada: Producto={}, Cantidad={}, Total={}",
+                                                                s.getProduct().getName(), s.getQuantity(), s.getTotalPrice()));
+                                            });
+                                })
                 ).subscribe(
                         null,
                         error -> log.error("Error initializing data: {}", error.getMessage()),

@@ -42,6 +42,7 @@ public class UtilsMethods {
     }
 
     public static BigDecimal formatPrice(BigDecimal price) {
+        if (price == null) return null;
         return price.setScale(2, RoundingMode.HALF_UP);
     }
 

@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static org.gad.inventory_service.utils.Constants.MESSAGE_VALIDATION_INCORRECT;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
@@ -26,7 +28,7 @@ public class GlobalExceptionHandler {
                 .sorted()
                 .toList();
 
-        return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, "Validation incorrect", errors);
+        return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, MESSAGE_VALIDATION_INCORRECT, errors);
     }
 
     @ExceptionHandler(WebExchangeBindException.class)
@@ -36,7 +38,7 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .toList();
 
-        return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, "Validation incorrect", errors);
+        return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, MESSAGE_VALIDATION_INCORRECT, errors);
     }
 
     @ExceptionHandler({
@@ -44,7 +46,8 @@ public class GlobalExceptionHandler {
             ProviderNotFoundException.class,
             CategoryNotFoundException.class,
             BrandNotFoundException.class,
-            StockTakingNotFoundException.class
+            StockTakingNotFoundException.class,
+            SalesNotFoundException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleNotFoundExceptions(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.NOT_FOUND, ex.getMessage(), null);
@@ -55,9 +58,15 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(exchange, HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
+    @ExceptionHandler(ExcelReportGenerationException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleExcelReportGenerationException(ExcelReportGenerationException ex, ServerWebExchange exchange) {
+        return buildErrorResponse(exchange, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), null);
+    }
+
     @ExceptionHandler({
             InvalidDateRangeException.class,
-            InvalidDateFormatException.class
+            InvalidDateFormatException.class,
+            InvalidPriceRangeException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleInvalidDateRangeException(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, ex.getMessage(), null);
