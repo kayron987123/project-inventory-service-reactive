@@ -158,9 +158,7 @@ public class SaleServiceImpl implements SaleService {
     private Mono<Void> validatePriceTotal(BigDecimal priceMin, BigDecimal priceMax) {
         if (priceMin.compareTo(priceMax) > 0) {
             return Mono.error(new InvalidPriceRangeException(MESSAGE_INVALID_PRICE_RANGE));
-
         }
-
         return Mono.empty();
     }
 

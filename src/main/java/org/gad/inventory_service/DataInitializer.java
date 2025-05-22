@@ -170,7 +170,6 @@ public class DataInitializer implements CommandLineRunner {
                                     int salesCount = random.nextInt(5) + 1;
                                     return Flux.range(0, salesCount)
                                             .flatMap(i -> {
-                                                // Datos aleatorios para la venta
                                                 int quantitySold = random.nextInt(10) + 1;
                                                 BigDecimal unitPrice = product.getPrice();
                                                 BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantitySold));

@@ -22,13 +22,13 @@ public class SaleRepositoryCustomImpl implements SaleRepositoryCustom {
 
     @Override
     public Flux<Sale> findByOptionalDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        Query query = QueryUtils.buildOptionalDateRangeQuery(TEXT_SALE_DATE, startDate, endDate);
+        Query query = QueryUtils.buildOptionalRangeQuery(TEXT_SALE_DATE, startDate, endDate);
         return reactiveMongoTemplate.find(query, Sale.class);
     }
 
     @Override
     public Flux<Sale> findByOptionalPriceTotalRange(BigDecimal minPrice, BigDecimal maxPrice) {
-        Query query = QueryUtils.buildOptionalDateRangeQuery(TEXT_SALE_TOTAL_PRICE, minPrice, maxPrice);
+        Query query = QueryUtils.buildOptionalRangeQuery(TEXT_SALE_TOTAL_PRICE, minPrice, maxPrice);
         return reactiveMongoTemplate.find(query, Sale.class);
     }
 }

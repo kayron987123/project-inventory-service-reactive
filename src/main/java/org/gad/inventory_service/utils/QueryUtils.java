@@ -8,7 +8,7 @@ public class QueryUtils {
     private QueryUtils() {
     }
 
-    public static <T extends Comparable<T>> Query buildOptionalDateRangeQuery(String fieldName,
+    public static <T extends Comparable<T>> Query buildOptionalRangeQuery(String fieldName,
                                                     T minValue,
                                                     T maxValue) {
         Criteria criteria;

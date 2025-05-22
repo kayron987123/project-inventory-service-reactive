@@ -20,7 +20,7 @@ public class StocktakingRepositoryCustomImpl implements StocktakingRepositoryCus
 
     @Override
     public Flux<Stocktaking> findByOptionalDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        Query query = QueryUtils.buildOptionalDateRangeQuery(TEXT_STOCKTAKING_DATE, startDate, endDate);
+        Query query = QueryUtils.buildOptionalRangeQuery(TEXT_STOCKTAKING_DATE, startDate, endDate);
         return reactiveMongoTemplate.find(query, Stocktaking.class);
     }
 }
