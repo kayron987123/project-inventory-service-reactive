@@ -1,0 +1,35 @@
+package org.gad.inventory_service.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.gad.inventory_service.config.jwt.JwtUtils;
+import org.gad.inventory_service.dto.request.LoginRequest;
+import org.gad.inventory_service.dto.response.DataResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/auth")
+public class AuthController {
+    private final JwtUtils jwtUtils;
+    private final ReactiveAuthenticationManager authenticationManager;
+
+    @PostMapping("/login")
+    public Mono<ResponseEntity<DataResponse>> login(@RequestBody LoginRequest loginRequest) {
+        Authentication authToken = new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password());
+
+        return authenticationManager.authenticate(authToken)
+                .flatMap(auth -> jwtUtils.generateToken(auth)
+                        .map(token -> ResponseEntity.ok(DataResponse.builder()
+                                .message("Login successful")
+                                .data(token)
+                                .build())));
+    }
+}

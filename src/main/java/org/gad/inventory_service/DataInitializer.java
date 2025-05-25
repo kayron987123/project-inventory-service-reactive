@@ -11,9 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -25,6 +23,9 @@ public class DataInitializer implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final StocktakingRepository stocktakingRepository;
     private final SaleRepository saleRepository;
+    private final PermissionRepository permissionRepository;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
     Random random = new Random();
 
     @Override
@@ -35,8 +36,117 @@ public class DataInitializer implements CommandLineRunner {
                         providerRepository.deleteAll(),
                         productRepository.deleteAll(),
                         stocktakingRepository.deleteAll(),
-                        saleRepository.deleteAll()
+                        saleRepository.deleteAll(),
+                        permissionRepository.deleteAll(),
+                        roleRepository.deleteAll(),
+                        userRepository.deleteAll()
+                )
+                .then(
+                        permissionRepository.saveAll(Flux.just(
+                                        new Permission(UUID.randomUUID(), "CREATE_BRAND"),
+                                        new Permission(UUID.randomUUID(), "READ_BRAND"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_BRAND"),
+                                        new Permission(UUID.randomUUID(), "DELETE_BRAND"),
 
+                                        new Permission(UUID.randomUUID(), "CREATE_CATEGORY"),
+                                        new Permission(UUID.randomUUID(), "READ_CATEGORY"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_CATEGORY"),
+                                        new Permission(UUID.randomUUID(), "DELETE_CATEGORY"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_PERMISSION"),
+                                        new Permission(UUID.randomUUID(), "READ_PERMISSION"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_PERMISSION"),
+                                        new Permission(UUID.randomUUID(), "DELETE_PERMISSION"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_PRODUCT"),
+                                        new Permission(UUID.randomUUID(), "READ_PRODUCT"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_PRODUCT"),
+                                        new Permission(UUID.randomUUID(), "DELETE_PRODUCT"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_PROVIDER"),
+                                        new Permission(UUID.randomUUID(), "READ_PROVIDER"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_PROVIDER"),
+                                        new Permission(UUID.randomUUID(), "DELETE_PROVIDER"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_ROLE"),
+                                        new Permission(UUID.randomUUID(), "READ_ROLE"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_ROLE"),
+                                        new Permission(UUID.randomUUID(), "DELETE_ROLE"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_SALE"),
+                                        new Permission(UUID.randomUUID(), "READ_SALE"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_SALE"),
+                                        new Permission(UUID.randomUUID(), "DELETE_SALE"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_STOCKTAKING"),
+                                        new Permission(UUID.randomUUID(), "READ_STOCKTAKING"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_STOCKTAKING"),
+                                        new Permission(UUID.randomUUID(), "DELETE_STOCKTAKING"),
+
+                                        new Permission(UUID.randomUUID(), "CREATE_USER"),
+                                        new Permission(UUID.randomUUID(), "READ_USER"),
+                                        new Permission(UUID.randomUUID(), "UPDATE_USER"),
+                                        new Permission(UUID.randomUUID(), "DELETE_USER")
+                                ))
+                                .doOnNext(p -> log.info("Permission inserted: {}", p.getName()))
+                                .collectList()
+                                .flatMap(savedPermissions -> {
+                                    Map<String, Permission> permissionMap = new HashMap<>();
+                                    for (Permission p : savedPermissions) {
+                                        permissionMap.put(p.getName(), p);
+                                    }
+
+                                    List<Role> rolesList = List.of(
+                                            new Role(UUID.randomUUID(), "ROLE_ADMIN", new HashSet<>(permissionMap.values())),
+                                            new Role(UUID.randomUUID(), "ROLE_INVENTORY_MANAGER", Set.of(
+                                                    permissionMap.get("CREATE_PRODUCT"),
+                                                    permissionMap.get("READ_PRODUCT"),
+                                                    permissionMap.get("UPDATE_PRODUCT"),
+                                                    permissionMap.get("DELETE_PRODUCT"),
+                                                    permissionMap.get("CREATE_STOCKTAKING"),
+                                                    permissionMap.get("READ_STOCKTAKING"),
+                                                    permissionMap.get("UPDATE_STOCKTAKING"),
+                                                    permissionMap.get("DELETE_STOCKTAKING")
+                                            )),
+                                            new Role(UUID.randomUUID(), "ROLE_SALESPERSON", Set.of(
+                                                    permissionMap.get("CREATE_SALE"),
+                                                    permissionMap.get("READ_SALE"),
+                                                    permissionMap.get("UPDATE_SALE"),
+                                                    permissionMap.get("DELETE_SALE")
+                                            )),
+                                            new Role(UUID.randomUUID(), "ROLE_BASIC_USER", Set.of(
+                                                    permissionMap.get("READ_PRODUCT"),
+                                                    permissionMap.get("READ_CATEGORY"),
+                                                    permissionMap.get("READ_BRAND"),
+                                                    permissionMap.get("READ_PROVIDER")
+                                            ))
+                                    );
+
+                                    return roleRepository.saveAll(rolesList)
+                                            .collectList()
+                                            .flatMap(savedRoles -> {
+                                                Map<String, Role> roleMap = new HashMap<>();
+                                                for (Role r : savedRoles) {
+                                                    roleMap.put(r.getName(), r);
+                                                }
+
+                                                List<User> usersList = List.of(
+                                                        new User(
+                                                                UUID.randomUUID(),
+                                                                "Admin",
+                                                                "Principal",
+                                                                "admin",
+                                                                "admin123",
+                                                                "999999999",
+                                                                LocalDateTime.now(),
+                                                                LocalDateTime.now(),
+                                                                Set.of(roleMap.get("ROLE_ADMIN"))
+                                                        )
+                                                );
+
+                                                return userRepository.saveAll(usersList).then();
+                                            });
+                                })
                 )
                 .thenMany(
                         Flux.defer(() -> {
@@ -78,6 +188,7 @@ public class DataInitializer implements CommandLineRunner {
                                             new Provider(UUID.randomUUID(), "Educational Toys", "20874563219", "33445566", "Kids Park 606", "977889900", "sales@educationaltoys.com"),
                                             new Provider(UUID.randomUUID(), "Professional Gardening", "10234567891", "77889900", "Nursery Street 707", "988990011", "info@progardening.com")
                                     ).doOnNext(p -> log.info("Provider inserted: {}", p.getName())));
+
 
                                     return Flux.zip(
                                             categories.collectList(),

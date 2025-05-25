@@ -7,3 +7,7 @@ spring:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
+auth:
+  token:
+    jwt-secret: 123456789
+    expiration-in-millis: 86400000
