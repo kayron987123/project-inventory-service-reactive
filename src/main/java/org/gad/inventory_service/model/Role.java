@@ -19,7 +19,6 @@ public class Role {
     @Id
     private String idRole;
 
-    @Indexed(unique = true)
     @Field("name")
     private String name;
 

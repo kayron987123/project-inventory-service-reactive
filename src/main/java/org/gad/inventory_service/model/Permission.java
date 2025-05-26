@@ -19,7 +19,6 @@ public class Permission{
     private String idPermission;
 
     @Field("name")
-    @Indexed(unique = true)
     private String name;
 
     @Builder.Default
