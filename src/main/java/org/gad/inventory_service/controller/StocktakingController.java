@@ -68,9 +68,9 @@ public class StocktakingController {
                 );
     }
 
-    @GetMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> getStocktakingByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return stocktakingService.findStocktakingByUuid(uuid)
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> getStocktakingById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return stocktakingService.findStocktakingById(id)
                 .map(stocktaking -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
@@ -85,7 +85,7 @@ public class StocktakingController {
     public Mono<ResponseEntity<DataResponse>> createStocktaking(@RequestBody @Valid CreateStocktakingRequest createStocktakingRequest) {
         return stocktakingService.createStocktaking(createStocktakingRequest)
                 .map(stocktaking -> {
-                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.uuidStocktaking());
+                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.idStocktaking());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_STOCKTAKING_CREATED)
@@ -96,12 +96,12 @@ public class StocktakingController {
                 });
     }
 
-    @PutMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> updateStocktaking(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> updateStocktaking(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                                 @RequestBody @Valid UpdateStocktakingRequest updateStocktakingRequest) {
-        return stocktakingService.updateStocktaking(uuid, updateStocktakingRequest)
+        return stocktakingService.updateStocktaking(id, updateStocktakingRequest)
                 .map(stocktaking -> {
-                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.uuidStocktaking());
+                    URI location = UtilsMethods.createUri(STOCKTAKING_URI, stocktaking.idStocktaking());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_STOCKTAKING_UPDATED)
@@ -112,9 +112,9 @@ public class StocktakingController {
                 });
     }
 
-    @DeleteMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> deleteStocktaking(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return stocktakingService.deleteStocktaking(uuid)
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> deleteStocktakingById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return stocktakingService.deleteStocktakingById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

@@ -8,15 +8,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class UserSecurity implements UserDetails {
-    private UUID idUser;
+public class UserSecurity implements UserDetails{
+    private String idUser;
     private String username;
     private String password;
     private Set<Role> roles;

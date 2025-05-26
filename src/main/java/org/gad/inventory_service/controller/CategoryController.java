@@ -53,9 +53,9 @@ public class CategoryController {
                 );
     }
 
-    @GetMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> findCategoryByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return categoryService.findByUuid(uuid)
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> findCategoryById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return categoryService.findCategoryById(id)
                 .map(category -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
@@ -70,7 +70,7 @@ public class CategoryController {
     public Mono<ResponseEntity<DataResponse>> createCategory(@RequestBody @Valid CreateCategoryRequest createCategoryRequest) {
         return categoryService.saveCategory(createCategoryRequest)
                 .map(category -> {
-                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.uuidCategory());
+                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.idCategory());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_CATEGORY_CREATED)
@@ -81,12 +81,12 @@ public class CategoryController {
                 });
     }
 
-    @PutMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> updateCategory(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> updateCategory(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                              @RequestBody @Valid UpdateCategoryRequest updateCategoryRequest) {
-        return categoryService.updateCategory(uuid, updateCategoryRequest)
+        return categoryService.updateCategory(id, updateCategoryRequest)
                 .map(category -> {
-                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.uuidCategory());
+                    URI location = UtilsMethods.createUri(CATEGORY_URI, category.idCategory());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
                             .message(MESSAGE_CATEGORY_UPDATED)
@@ -97,9 +97,9 @@ public class CategoryController {
                 });
     }
 
-    @DeleteMapping("/{uuid}")
-    public Mono<ResponseEntity<Void>> deleteCategory(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return categoryService.deleteCategoryByUuid(uuid)
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> deleteCategoryById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return categoryService.deleteCategoryById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

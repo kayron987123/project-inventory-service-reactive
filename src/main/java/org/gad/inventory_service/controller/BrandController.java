@@ -54,9 +54,9 @@ public class BrandController {
                 );
     }
 
-    @GetMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> findBrandByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return brandService.findByUuid(uuid)
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> findBrandById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return brandService.findBrandById(id)
                 .map(brand -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
@@ -71,7 +71,7 @@ public class BrandController {
     public Mono<ResponseEntity<DataResponse>> createBrand(@RequestBody @Valid CreateBrandRequest createBrandRequest) {
         return brandService.saveBrand(createBrandRequest)
                 .map(brand -> {
-                    URI location = UtilsMethods.createUri(BRAND_URI, brand.uuidBrand());
+                    URI location = UtilsMethods.createUri(BRAND_URI, brand.idBrand());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_BRAND_CREATED)
@@ -82,12 +82,12 @@ public class BrandController {
                 });
     }
 
-    @PutMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> updateBrand(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> updateBrand(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                           @RequestBody @Valid UpdateBrandRequest updateBrandRequest) {
-        return brandService.updateBrand(uuid, updateBrandRequest)
+        return brandService.updateBrand(id, updateBrandRequest)
                 .map(brand ->{
-                    URI location = UtilsMethods.createUri(BRAND_URI, brand.uuidBrand());
+                    URI location = UtilsMethods.createUri(BRAND_URI, brand.idBrand());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_BRAND_UPDATED)
@@ -98,9 +98,9 @@ public class BrandController {
                 });
     }
 
-    @DeleteMapping("/{uuid}")
-    public Mono<ResponseEntity<Void>> deleteBrand(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return brandService.deleteBrandByUuid(uuid)
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> deleteBrandById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return brandService.deleteBrandById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

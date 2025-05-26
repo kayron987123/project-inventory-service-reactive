@@ -39,10 +39,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProviderRepository providerRepository;
 
     @Override
-    public Mono<ProductDTO> findProductByUuid(String uuid) {
-        return productRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + uuid)))
-                .map(Mappers::productToDTO)
+    public Mono<ProductDTO> findProductById(String id) {
+        return productRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + id)))
+                .map(productSaved -> Mappers.productToDTO(productSaved,
+                        productSaved.getCategoryId(), productSaved.getBrandId(), productSaved.getProviderId()))
                 .doOnError(error -> log.error(Constants.ERROR_SEARCHING_PRODUCT, error.getMessage()));
     }
 
@@ -53,7 +54,8 @@ public class ProductServiceImpl implements ProductService {
                                                    String providerName) {
         return productRepository.findByCriteria(name, categoryName, brandName, providerName)
                 .switchIfEmpty(Flux.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX_CRITERIA)))
-                .map(Mappers::productToDTO)
+                .map(productSaved -> Mappers.productToDTO(productSaved,
+                        productSaved.getCategoryId(), productSaved.getBrandId(), productSaved.getProviderId()))
                 .doOnError(error -> log.error(ERROR_SEARCHING_PRODUCT, error.getMessage()));
     }
 
@@ -68,21 +70,19 @@ public class ProductServiceImpl implements ProductService {
                     Category category = tuple.getT1();
                     Brand brand = tuple.getT2();
                     Provider provider = tuple.getT3();
-
                     Product product = new Product();
-                    product.setIdProduct(UtilsMethods.generateUUID());
 
                     return productRepository.save(buildProductFromRequest(product, createProductRequest.name(),
                                     createProductRequest.description(), UtilsMethods.formatPrice(createProductRequest.price()),
-                                    category, brand, provider))
-                            .map(Mappers::productToDTO);
+                                    category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider()))
+                            .map(productSaved -> Mappers.productToDTO(productSaved, category.getName(), brand.getName(), provider.getName()));
                 })
                 .doOnError(error -> log.error(ERROR_CREATING_PRODUCTS, error.getMessage()));
     }
 
     @Override
-    public Mono<ProductDTO> updateProduct(String uuid, UpdateProductRequest updateProductRequest) {
-        Mono<Product> existingProductMono = findProductByUuidString(uuid);
+    public Mono<ProductDTO> updateProduct(String id, UpdateProductRequest updateProductRequest) {
+        Mono<Product> existingProductMono = findById(id);
         Mono<Category> categoryMono = findCategoryByName(updateProductRequest.categoryName());
         Mono<Brand> brandMono = findBrandByName(updateProductRequest.brandName());
         Mono<Provider> providerMono = findProviderByName(updateProductRequest.providerName());
@@ -97,22 +97,22 @@ public class ProductServiceImpl implements ProductService {
 
                     return productRepository.save(buildProductFromRequest(existingProduct, updateProductRequest.name(),
                                     updateProductRequest.description(), UtilsMethods.formatPrice(updateProductRequest.price()),
-                                    category, brand, provider))
-                            .map(Mappers::productToDTO);
+                                    category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider()))
+                            .map(productSaved -> Mappers.productToDTO(productSaved, category.getName(), brand.getName(), provider.getName()));
                 })
                 .doOnError(error -> log.error(ERROR_UPDATING_PRODUCT, error.getMessage()));
     }
 
     @Override
-    public Mono<Void> deleteProduct(String uuid) {
-        Mono<Product> existingProductMono = findProductByUuidString(uuid);
+    public Mono<Void> deleteProductById(String id) {
+        Mono<Product> existingProductMono = findById(id);
         return productRepository.deleteById(existingProductMono.map(Product::getIdProduct))
                 .doOnError(error -> log.error(ERROR_DELETING_PRODUCT, error.getMessage()));
     }
 
-    private Mono<Product> findProductByUuidString(String uuid) {
-        return productRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + uuid)));
+    private Mono<Product> findById(String id) {
+        return productRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + id)));
     }
 
     private Mono<Category> findCategoryByName(String name) {
@@ -130,13 +130,13 @@ public class ProductServiceImpl implements ProductService {
                 .switchIfEmpty(Mono.error(new ProviderNotFoundException(PROVIDER_NOT_FOUND_NAME + name)));
     }
 
-    private Product buildProductFromRequest(Product product, String name, String description, BigDecimal price, Category category, Brand brand, Provider provider) {
+    private Product buildProductFromRequest(Product product, String name, String description, BigDecimal price, String categoryId, String brandId, String providerId) {
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
-        product.setCategory(category);
-        product.setBrand(brand);
-        product.setProvider(provider);
+        product.setCategoryId(categoryId);
+        product.setBrandId(brandId);
+        product.setProviderId(providerId);
         return product;
     }
 }

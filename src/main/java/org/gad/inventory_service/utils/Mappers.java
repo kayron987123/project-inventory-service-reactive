@@ -3,30 +3,32 @@ package org.gad.inventory_service.utils;
 import org.gad.inventory_service.dto.*;
 import org.gad.inventory_service.model.*;
 
-import static org.gad.inventory_service.utils.UtilsMethods.convertUUIDToString;
 import static org.gad.inventory_service.utils.UtilsMethods.localDateTimeFormatted;
 
 public class Mappers {
     private Mappers() {
     }
 
-    public static ProductDTO productToDTO(Product product) {
+    public static ProductDTO productToDTO(Product product, String categoryName, String brandName, String providerName) {
         if (product == null) return null;
         return ProductDTO.builder()
-                .uuidProduct(convertUUIDToString(product.getIdProduct()))
+                .idProduct(product.getIdProduct())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
-                .categoryName(product.getCategory().getName())
-                .brandName(product.getBrand().getName())
-                .providerName(product.getProvider().getName())
+                .categoryName(categoryName)
+                .brandName(brandName)
+                .providerName(providerName)
+                .isActive(product.isActive())
+                .createdAt(localDateTimeFormatted(product.getCreatedAt()))
+                .updatedAt(localDateTimeFormatted(product.getUpdatedAt()))
                 .build();
     }
 
     public static BrandDTO brandToDTO(Brand brand) {
         if (brand == null) return null;
         return BrandDTO.builder()
-                .uuidBrand(convertUUIDToString(brand.getIdBrand()))
+                .idBrand(brand.getIdBrand())
                 .name(brand.getName())
                 .build();
     }
@@ -34,7 +36,7 @@ public class Mappers {
     public static CategoryDTO categoryToDTO(Category category) {
         if (category == null) return null;
         return CategoryDTO.builder()
-                .uuidCategory(convertUUIDToString(category.getIdCategory()))
+                .idCategory(category.getIdCategory())
                 .name(category.getName())
                 .build();
     }
@@ -42,31 +44,30 @@ public class Mappers {
     public static ProviderDTO providerToDTO(Provider provider) {
         if (provider == null) return null;
         return ProviderDTO.builder()
-                .uuidProvider(convertUUIDToString(provider.getIdProvider()))
+                .idProvider(provider.getIdProvider())
                 .name(provider.getName())
-                .ruc(provider.getRuc())
-                .dni(provider.getDni())
                 .address(provider.getAddress())
                 .phone(provider.getPhone())
-                .email(provider.getEmail())
+                .isActive(provider.isActive())
                 .build();
     }
 
-    public static StocktakingDTO stocktakingToDTO(Stocktaking stocktaking) {
+    public static StocktakingDTO stocktakingToDTO(Stocktaking stocktaking, String productName) {
         if (stocktaking == null) return null;
         return StocktakingDTO.builder()
-                .uuidStocktaking(convertUUIDToString(stocktaking.getIdStocktaking()))
-                .productName(stocktaking.getProduct().getName())
+                .idStocktaking(stocktaking.getIdStocktaking())
+                .productName(productName)
                 .quantity(stocktaking.getQuantity())
                 .stocktakingDate(localDateTimeFormatted(stocktaking.getStocktakingDate()))
+                .performedBy(stocktaking.getPerformedBy())
                 .build();
     }
 
-    public static SaleDTO saleToDTO(Sale sale) {
+    public static SaleDTO saleToDTO(Sale sale, String productName) {
         if (sale == null) return null;
         return SaleDTO.builder()
-                .uuidSale(convertUUIDToString(sale.getIdSale()))
-                .nameProduct(sale.getProduct().getName())
+                .idSale(sale.getIdSale())
+                .nameProduct(productName)
                 .saleDate(localDateTimeFormatted(sale.getSaleDate()))
                 .quantity(sale.getQuantity())
                 .totalPrice(sale.getTotalPrice())

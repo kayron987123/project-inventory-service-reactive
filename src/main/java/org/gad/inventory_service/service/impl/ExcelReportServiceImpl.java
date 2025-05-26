@@ -39,7 +39,7 @@ public class ExcelReportServiceImpl implements ExcelReportService {
                 int rowNum = 1;
                 for (SaleDTO sale : sales) {
                     Row row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(sale.uuidSale());
+                    row.createCell(0).setCellValue(sale.idSale());
                     row.createCell(1).setCellValue(sale.nameProduct());
                     row.createCell(2).setCellValue(sale.quantity());
                     row.createCell(3).setCellValue(sale.totalPrice().doubleValue());

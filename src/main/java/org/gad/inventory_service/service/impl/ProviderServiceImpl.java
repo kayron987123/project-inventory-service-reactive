@@ -12,12 +12,12 @@ import org.gad.inventory_service.repository.ProviderRepository;
 import org.gad.inventory_service.service.ProviderService;
 import org.gad.inventory_service.utils.Constants;
 import org.gad.inventory_service.utils.Mappers;
-import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.UUID;
+
+import java.util.Objects;
 
 import static org.gad.inventory_service.utils.Constants.*;
 
@@ -29,9 +29,9 @@ public class ProviderServiceImpl implements ProviderService {
     private final ProviderRepository providerRepository;
 
     @Override
-    public Mono<ProviderDTO> findByUuid(String uuid) {
-        return findProvider(providerRepository.findById(UtilsMethods.convertStringToUUID(uuid)),
-                PROVIDER_NOT_FOUND_UUID + uuid);
+    public Mono<ProviderDTO> findProviderById(String id) {
+        return findProvider(providerRepository.findById(id),
+                PROVIDER_NOT_FOUND_UUID + id);
     }
 
     @Override
@@ -74,7 +74,6 @@ public class ProviderServiceImpl implements ProviderService {
                 null)
                 .then(Mono.defer(() -> {
                     Provider providerToSave = Provider.builder()
-                            .idProvider(UtilsMethods.generateUUID())
                             .name(createProviderRequest.name())
                             .ruc(createProviderRequest.ruc())
                             .dni(createProviderRequest.dni())
@@ -90,8 +89,8 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public Mono<ProviderDTO> updateProvider(String uuid, UpdateProviderRequest updateProviderRequest) {
-        Mono<Provider> providerMono = findProviderByUuidString(uuid);
+    public Mono<ProviderDTO> updateProvider(String id, UpdateProviderRequest updateProviderRequest) {
+        Mono<Provider> providerMono = findById(id);
 
         return providerMono
                 .flatMap(existingProvider -> validateUniqueProviderFields(
@@ -116,17 +115,17 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public Mono<Void> deleteProviderByUuid(String uuid) {
-        Mono<Provider> providerMono = findProviderByUuidString(uuid);
+    public Mono<Void> deleteProviderById(String id) {
+        Mono<Provider> providerMono = findById(id);
 
         return providerMono
                 .flatMap(provider -> providerRepository.deleteById(provider.getIdProvider()))
                 .doOnError(error -> log.error(ERROR_DELETING_PROVIDER, error.getMessage()));
     }
 
-    private Mono<Provider> findProviderByUuidString(String uuid) {
-        return providerRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new ProviderNotFoundException(PROVIDER_NOT_FOUND_UUID + uuid)))
+    private Mono<Provider> findById(String id) {
+        return providerRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ProviderNotFoundException(PROVIDER_NOT_FOUND_UUID + id)))
                 .doOnError(error -> log.error(Constants.ERROR_SEARCHING_PROVIDER, error.getMessage()));
     }
 
@@ -137,15 +136,15 @@ public class ProviderServiceImpl implements ProviderService {
                 .doOnError(error -> log.error(ERROR_SEARCHING_PROVIDER, error.getMessage()));
     }
 
-    private Mono<Void> validateUniqueProviderFields(String ruc, String dni, String email, UUID excludeUuid) {
+    private Mono<Void> validateUniqueProviderFields(String ruc, String dni, String email, String excludeId) {
         Mono<Boolean> rucExists = providerRepository.findProviderByRuc(ruc)
-                .filter(p -> !p.getIdProvider().equals(excludeUuid))
+                .filter(p -> !Objects.equals(p.getIdProvider(), excludeId))
                 .hasElement();
         Mono<Boolean> dniExists = providerRepository.findProviderByDni(dni)
-                .filter(p -> !p.getIdProvider().equals(excludeUuid))
+                .filter(p -> !Objects.equals(p.getIdProvider(), excludeId))
                 .hasElement();
         Mono<Boolean> emailExists = providerRepository.findProviderByEmail(email)
-                .filter(p -> !p.getIdProvider().equals(excludeUuid))
+                .filter(p -> !Objects.equals(p.getIdProvider(), excludeId))
                 .hasElement();
 
         return Mono.zip(rucExists, dniExists, emailExists)

@@ -2,12 +2,12 @@ package org.gad.inventory_service.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Document(collection = "sales")
 @AllArgsConstructor
@@ -15,14 +15,22 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
+@ToString
 public class Sale {
     @Id
-    @Field("id_sale")
-    private UUID idSale;
-    private Product product;
-    @Field("sale_date")
-    private LocalDateTime saleDate;
+    private String idSale;
+
+    @Field("product_id")
+    private String productId;
+
+    @Field("quantity")
     private Integer quantity;
+
     @Field("total_price")
     private BigDecimal totalPrice;
+
+    @Builder.Default
+    @Indexed
+    @Field("sale_date")
+    private LocalDateTime saleDate = LocalDateTime.now();
 }

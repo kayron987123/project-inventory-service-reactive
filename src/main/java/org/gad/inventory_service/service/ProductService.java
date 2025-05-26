@@ -8,12 +8,12 @@ import reactor.core.publisher.Mono;
 
 
 public interface ProductService {
-    Mono<ProductDTO> findProductByUuid(String uuid);
+    Mono<ProductDTO> findProductById(String id);
     Flux<ProductDTO> findProductsByCriteria(String name,
                                   String categoryName,
                                   String brandName,
                                   String providerName);
     Mono<ProductDTO> createProduct(CreateProductRequest createProductRequest);
-    Mono<ProductDTO> updateProduct(String uuid, UpdateProductRequest updateProductRequest);
-    Mono<Void> deleteProduct(String uuid);
+    Mono<ProductDTO> updateProduct(String id, UpdateProductRequest updateProductRequest);
+    Mono<Void> deleteProductById(String id);
 }

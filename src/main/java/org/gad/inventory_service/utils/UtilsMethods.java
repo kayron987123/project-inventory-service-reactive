@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.UUID;
+import java.util.Objects;
 
 import static org.gad.inventory_service.utils.Constants.MESSAGE_INVALID_DATE_FORMAT;
 import static org.gad.inventory_service.utils.Constants.PATTERN;
@@ -26,19 +26,7 @@ public class UtilsMethods {
 
     public static String localDateTimeFormatted(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(PATTERN);
-        return localDateTime.format(formatter);
-    }
-
-    public static UUID generateUUID() {
-        return UUID.randomUUID();
-    }
-
-    public static UUID convertStringToUUID(String uuid) {
-        return UUID.fromString(uuid);
-    }
-
-    public static String convertUUIDToString(UUID uuid) {
-        return uuid.toString();
+        return Objects.requireNonNullElseGet(localDateTime, () -> LocalDate.now().atStartOfDay()).format(formatter);
     }
 
     public static BigDecimal formatPrice(BigDecimal price) {

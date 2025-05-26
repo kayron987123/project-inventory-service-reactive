@@ -13,8 +13,8 @@ public interface SaleService {
     Flux<SaleDTO> getSaleByNameProduct(String nameProduct);
     Flux<SaleDTO> getSaleByTotalPriceRange(BigDecimal minPrice, BigDecimal maxPrice);
     Flux<SaleDTO> getSaleByDateRange(String startDate, String endDate);
-    Mono<SaleDTO> getSaleByUuid(String uuid);
+    Mono<SaleDTO> getSaleById(String id);
     Mono<SaleDTO> createSale(CreateSaleRequest createSaleRequest);
-    Mono<SaleDTO> updateSale(String uuid,   UpdateSaleRequest updateSaleRequest);
-    Mono<Void> deleteSale(String uuid);
+    Mono<SaleDTO> updateSale(String id,   UpdateSaleRequest updateSaleRequest);
+    Mono<Void> deleteSaleById(String id);
 }

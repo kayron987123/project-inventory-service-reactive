@@ -7,10 +7,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CategoryService {
-    Mono<CategoryDTO> findByUuid(String uuid);
+    Mono<CategoryDTO> findCategoryById(String id);
     Mono<CategoryDTO> findCategoryByName(String name);
     Flux<CategoryDTO> findAllCategories();
     Mono<CategoryDTO> saveCategory(CreateCategoryRequest createCategoryRequest);
-    Mono<CategoryDTO> updateCategory(String uuid, UpdateCategoryRequest updateCategoryRequest);
-    Mono<Void> deleteCategoryByUuid(String uuid);
+    Mono<CategoryDTO> updateCategory(String id, UpdateCategoryRequest updateCategoryRequest);
+    Mono<Void> deleteCategoryById(String id);
 }

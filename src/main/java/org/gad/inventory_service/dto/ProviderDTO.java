@@ -1,15 +1,16 @@
 package org.gad.inventory_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 @Builder
 public record ProviderDTO(
-        String uuidProvider,
+        @JsonProperty("id_provider")
+        String idProvider,
         String name,
-        String ruc,
-        String dni,
         String address,
         String phone,
-        String email
+        @JsonProperty("is_active")
+        boolean isActive
 ) {
 }

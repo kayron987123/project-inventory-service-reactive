@@ -91,9 +91,9 @@ public class SaleController {
                 ));
     }
 
-    @GetMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> getSaleByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return saleService.getSaleByUuid(uuid)
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> getSaleById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return saleService.getSaleById(id)
                 .map(sale -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
@@ -125,7 +125,7 @@ public class SaleController {
     public Mono<ResponseEntity<DataResponse>> createSale(@RequestBody @Validated CreateSaleRequest createSaleRequest) {
         return saleService.createSale(createSaleRequest)
                 .map(sale -> {
-                    URI location = UtilsMethods.createUri(SALE_URI, sale.uuidSale());
+                    URI location = UtilsMethods.createUri(SALE_URI, sale.idSale());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_SALE_CREATED)
@@ -136,12 +136,12 @@ public class SaleController {
                 });
     }
 
-    @PutMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> updateSale(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> updateSale(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                          @RequestBody @Validated UpdateSaleRequest updateSaleRequest) {
-        return saleService.updateSale(uuid, updateSaleRequest)
+        return saleService.updateSale(id, updateSaleRequest)
                 .map(sale -> {
-                    URI location = UtilsMethods.createUri(SALE_URI, sale.uuidSale());
+                    URI location = UtilsMethods.createUri(SALE_URI, sale.idSale());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
                             .message(MESSAGE_SALE_UPDATED)
@@ -152,9 +152,9 @@ public class SaleController {
                 });
     }
 
-    @DeleteMapping("/{uuid}")
-    public Mono<ResponseEntity<Void>> deleteSale(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return saleService.deleteSale(uuid)
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> deleteSaleById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return saleService.deleteSaleById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

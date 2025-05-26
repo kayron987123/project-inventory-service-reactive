@@ -25,6 +25,6 @@ public class CustomReactiveAuthenticationManager implements ReactiveAuthenticati
                 .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
                 .map(user -> (Authentication) new UsernamePasswordAuthenticationToken(
                         user, null, user.getAuthorities()))
-                .switchIfEmpty(Mono.error(new BadCredentialsException("Credenciales inválidas")));
+                .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid credentials")));
     }
 }

@@ -2,11 +2,11 @@ package org.gad.inventory_service.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Set;
-import java.util.UUID;
 
 @Document(collection = "roles")
 @AllArgsConstructor
@@ -14,10 +14,19 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
+@ToString
 public class Role {
     @Id
-    @Field("id_role")
-    private UUID idRole;
+    private String idRole;
+
+    @Indexed(unique = true)
+    @Field("name")
     private String name;
+
+    @Field("permissions")
     private Set<Permission> permissions;
+
+    @Builder.Default
+    @Field("is_active")
+    private boolean isActive = true;
 }

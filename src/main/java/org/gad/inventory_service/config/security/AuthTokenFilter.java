@@ -44,7 +44,7 @@ public class AuthTokenFilter implements WebFilter {
                 })
                 .onErrorResume(e -> {
                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                    byte[] bytes = ("Token inválido o expirado: " + e.getMessage()).getBytes();
+                    byte[] bytes = ("Invalid or expired token: " + e.getMessage()).getBytes();
                     return exchange.getResponse().writeWith(
                             Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
                 });

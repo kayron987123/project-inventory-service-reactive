@@ -2,15 +2,12 @@ package org.gad.inventory_service.model;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 
 @Document(collection = "users")
 @AllArgsConstructor
@@ -18,19 +15,46 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
+@ToString(exclude = {"password"})
 public class User {
     @Id
-    @Field("id_user")
-    private UUID idUser;
+    private String idUser;
+
+    @Field("name")
     private String name;
+
     @Field("last_name")
     private String lastName;
+
+    @Indexed(unique = true)
+    @Field("username")
     private String username;
+
+    @Field("password")
     private String password;
+
+    @Field("email")
+    @Indexed(unique = true, sparse = true)
+    private String email;
+
+    @Field("phone")
     private String phone;
+
+    @Field("roles")
+    private Set<Role> roles;
+
+    @Builder.Default
+    @Field("is_active")
+    private Boolean isActive = true;
+
+    @Builder.Default
     @Field("created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     @Field("updated_at")
     private LocalDateTime updatedAt;
-    private Set<Role> roles;
+
+    public void updateTimeStamp() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

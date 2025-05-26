@@ -7,10 +7,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface BrandService {
-    Mono<BrandDTO> findByUuid(String uuid);
+    Mono<BrandDTO> findBrandById(String id);
     Mono<BrandDTO> findBrandByName(String name);
     Flux<BrandDTO> findAllBrands();
     Mono<BrandDTO> saveBrand(CreateBrandRequest createBrandRequest);
-    Mono<BrandDTO> updateBrand(String uuid, UpdateBrandRequest updateBrandRequest);
-    Mono<Void> deleteBrandByUuid(String uuid);
+    Mono<BrandDTO> updateBrand(String id, UpdateBrandRequest updateBrandRequest);
+    Mono<Void> deleteBrandById(String id);
 }

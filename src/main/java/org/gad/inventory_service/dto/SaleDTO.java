@@ -7,18 +7,18 @@ import java.math.BigDecimal;
 
 @Builder
 public record SaleDTO(
-        @JsonProperty("uuid_sale")
-        String uuidSale,
+        @JsonProperty("id_sale")
+        String idSale,
 
         @JsonProperty("name_product")
         String nameProduct,
 
-        @JsonProperty("sale_date")
-        String saleDate,
-
         Integer quantity,
 
         @JsonProperty("total_price")
-        BigDecimal totalPrice
+        BigDecimal totalPrice,
+
+        @JsonProperty("sale_date")
+        String saleDate
 ) {
 }

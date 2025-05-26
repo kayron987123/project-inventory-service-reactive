@@ -11,7 +11,6 @@ import org.gad.inventory_service.repository.CategoryRepository;
 import org.gad.inventory_service.service.CategoryService;
 import org.gad.inventory_service.utils.Constants;
 import org.gad.inventory_service.utils.Mappers;
-import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -25,9 +24,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Mono<CategoryDTO> findByUuid(String uuid) {
-        return findCategory(categoryRepository.findById(UtilsMethods.convertStringToUUID(uuid)),
-                CATEGORY_NOT_FOUND_UUID + uuid);
+    public Mono<CategoryDTO> findCategoryById(String id) {
+        return findCategory(categoryRepository.findById(id),
+                CATEGORY_NOT_FOUND_UUID + id);
     }
 
     @Override
@@ -47,7 +46,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Mono<CategoryDTO> saveCategory(CreateCategoryRequest createCategoryRequest) {
         Category category = Category.builder()
-                .idCategory(UtilsMethods.generateUUID())
                 .name(createCategoryRequest.name())
                 .build();
 
@@ -57,8 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Mono<CategoryDTO> updateCategory(String uuid, UpdateCategoryRequest updateCategoryRequest) {
-        Mono<Category> categoryMono = findCategoryByUuidString(uuid);
+    public Mono<CategoryDTO> updateCategory(String id, UpdateCategoryRequest updateCategoryRequest) {
+        Mono<Category> categoryMono = findById(id);
 
         return categoryMono
                 .flatMap(category -> {
@@ -70,17 +68,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Mono<Void> deleteCategoryByUuid(String uuid) {
-        Mono<Category> categoryMono = findCategoryByUuidString(uuid);
+    public Mono<Void> deleteCategoryById(String id) {
+        Mono<Category> categoryMono = findById(id);
 
         return categoryMono
                 .flatMap(category -> categoryRepository.deleteById(category.getIdCategory()))
                 .doOnError(error -> log.error(CATEGORY_DELETING_BRAND, error.getMessage()));
     }
 
-    private Mono<Category> findCategoryByUuidString(String uuid) {
-        return categoryRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_UUID + uuid)));
+    private Mono<Category> findById(String id) {
+        return categoryRepository.findById(id)
+                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_UUID + id)));
     }
 
     private Mono<CategoryDTO> findCategory(Mono<Category> categoryMono, String errorMessage) {

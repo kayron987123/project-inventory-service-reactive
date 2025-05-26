@@ -11,7 +11,6 @@ import org.gad.inventory_service.repository.BrandRepository;
 import org.gad.inventory_service.service.BrandService;
 import org.gad.inventory_service.utils.Constants;
 import org.gad.inventory_service.utils.Mappers;
-import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -26,9 +25,9 @@ public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;
 
     @Override
-    public Mono<BrandDTO> findByUuid(String uuid) {
-        return findBrand(findBrandByUuidString(uuid),
-                BRAND_NOT_FOUND_UUID + uuid);
+    public Mono<BrandDTO> findBrandById(String id) {
+        return findBrand(findById(id),
+                BRAND_NOT_FOUND_UUID + id);
     }
 
     @Override
@@ -48,7 +47,6 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Mono<BrandDTO> saveBrand(CreateBrandRequest createBrandRequest) {
         Brand brandToSave = Brand.builder()
-                .idBrand(UtilsMethods.generateUUID())
                 .name(createBrandRequest.brandName())
                 .build();
 
@@ -59,7 +57,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public Mono<BrandDTO> updateBrand(String uuid, UpdateBrandRequest updateBrandRequest) {
-        Mono<Brand> brandMono = findBrandByUuidString(uuid);
+        Mono<Brand> brandMono = findById(uuid);
 
         return brandMono
                 .flatMap(brand -> {
@@ -71,17 +69,17 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public Mono<Void> deleteBrandByUuid(String uuid) {
-        Mono<Brand> brandMono = findBrandByUuidString(uuid);
+    public Mono<Void> deleteBrandById(String id) {
+        Mono<Brand> brandMono = findById(id);
 
         return brandMono
                 .flatMap(brand -> brandRepository.deleteById(brand.getIdBrand()))
                 .doOnError(error -> log.error(ERROR_DELETING_BRAND, error.getMessage()));
     }
 
-    private Mono<Brand> findBrandByUuidString(String uuid) {
-        return brandRepository.findById(UtilsMethods.convertStringToUUID(uuid))
-                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_UUID + uuid)))
+    private Mono<Brand> findById(String id) {
+        return brandRepository.findById(id)
+                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_UUID + id)))
                 .doOnError(error -> log.error(ERROR_SEARCHING_BRAND, error.getMessage()));
     }
 

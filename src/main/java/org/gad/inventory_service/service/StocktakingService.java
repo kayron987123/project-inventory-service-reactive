@@ -11,8 +11,8 @@ public interface StocktakingService {
     Flux<StocktakingDTO> findAllStocktaking();
     Flux<StocktakingDTO> findAllStocktakingByDateBetween(String dateStart, String dateEnd);
     Flux<StocktakingDTO> findAllStocktakingByProductName(String productName);
-    Mono<StocktakingDTO> findStocktakingByUuid(String uuid);
+    Mono<StocktakingDTO> findStocktakingById(String id);
     Mono<StocktakingDTO> createStocktaking(CreateStocktakingRequest createStocktakingDTO);
-    Mono<StocktakingDTO> updateStocktaking(String uuid, UpdateStocktakingRequest updateStocktakingRequest);
-    Mono<Void> deleteStocktaking(String uuid);
+    Mono<StocktakingDTO> updateStocktaking(String id, UpdateStocktakingRequest updateStocktakingRequest);
+    Mono<Void> deleteStocktakingById(String id);
 }

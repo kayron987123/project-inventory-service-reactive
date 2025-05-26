@@ -28,9 +28,9 @@ import static org.gad.inventory_service.utils.Constants.*;
 public class ProviderController {
     private final ProviderService providerService;
 
-    @GetMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> findProviderByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return providerService.findByUuid(uuid)
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> findProviderById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return providerService.findProviderById(id)
                 .map(provider -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
@@ -114,7 +114,7 @@ public class ProviderController {
     public Mono<ResponseEntity<DataResponse>> createProvider(@RequestBody @Valid CreateProviderRequest request) {
         return providerService.saveProvider(request)
                 .map(provider -> {
-                    URI location = UtilsMethods.createUri(PROVIDER_URI, provider.uuidProvider());
+                    URI location = UtilsMethods.createUri(PROVIDER_URI, provider.idProvider());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_PROVIDER_CREATED)
@@ -125,12 +125,12 @@ public class ProviderController {
                 });
     }
 
-    @PutMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> updateProvider(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> updateProvider(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                              @RequestBody @Valid UpdateProviderRequest request) {
-        return providerService.updateProvider(uuid, request)
+        return providerService.updateProvider(id, request)
                 .map(provider -> {
-                    URI location = UtilsMethods.createUri(PROVIDER_URI, provider.uuidProvider());
+                    URI location = UtilsMethods.createUri(PROVIDER_URI, provider.idProvider());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
                             .message(MESSAGE_PROVIDER_UPDATED)
@@ -141,9 +141,9 @@ public class ProviderController {
                 });
     }
 
-    @DeleteMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> deleteProvider(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return providerService.deleteProviderByUuid(uuid)
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> deleteProviderById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return providerService.deleteProviderById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }

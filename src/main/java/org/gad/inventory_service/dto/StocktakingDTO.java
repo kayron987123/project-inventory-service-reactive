@@ -6,12 +6,14 @@ import lombok.Builder;
 
 @Builder
 public record StocktakingDTO(
-        @JsonProperty("uuid_stocktaking")
-        String uuidStocktaking,
+        @JsonProperty("id_stocktaking")
+        String idStocktaking,
         @JsonProperty("product_name")
         String productName,
         Integer quantity,
         @JsonProperty("stocktaking_date")
-        String stocktakingDate
+        String stocktakingDate,
+        @JsonProperty("performed_by")
+        String performedBy
 ) {
 }

@@ -1,309 +1,402 @@
 package org.gad.inventory_service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gad.inventory_service.model.*;
-import org.gad.inventory_service.repository.*;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
-public class DataInitializer implements CommandLineRunner {
-    private final CategoryRepository categoryRepository;
-    private final BrandRepository brandRepository;
-    private final ProviderRepository providerRepository;
-    private final ProductRepository productRepository;
-    private final StocktakingRepository stocktakingRepository;
-    private final SaleRepository saleRepository;
-    private final PermissionRepository permissionRepository;
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
-    Random random = new Random();
+@Configuration
+public class DataInitializer {
 
-    @Override
-    public void run(String... args) {
-        Mono.when(
-                        categoryRepository.deleteAll(),
-                        brandRepository.deleteAll(),
-                        providerRepository.deleteAll(),
-                        productRepository.deleteAll(),
-                        stocktakingRepository.deleteAll(),
-                        saleRepository.deleteAll(),
-                        permissionRepository.deleteAll(),
-                        roleRepository.deleteAll(),
-                        userRepository.deleteAll()
-                )
-                .then(
-                        permissionRepository.saveAll(Flux.just(
-                                        new Permission(UUID.randomUUID(), "CREATE_BRAND"),
-                                        new Permission(UUID.randomUUID(), "READ_BRAND"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_BRAND"),
-                                        new Permission(UUID.randomUUID(), "DELETE_BRAND"),
+    @Bean
+    public CommandLineRunner initDatabase(ReactiveMongoTemplate reactiveMongoTemplate) {
+        return args ->
+                Mono.when(
+                        reactiveMongoTemplate.dropCollection(Permission.class),
+                        reactiveMongoTemplate.dropCollection(Role.class),
+                        reactiveMongoTemplate.dropCollection(User.class),
+                        reactiveMongoTemplate.dropCollection(Category.class),
+                        reactiveMongoTemplate.dropCollection(Brand.class),
+                        reactiveMongoTemplate.dropCollection(Provider.class),
+                        reactiveMongoTemplate.dropCollection(Product.class),
+                        reactiveMongoTemplate.dropCollection(Stocktaking.class),
+                        reactiveMongoTemplate.dropCollection(Sale.class)
+                ).thenMany(
+                        Flux.just(
+                                        Permission.builder().name("CREATE_BRAND").isActive(true).build(),
+                                        Permission.builder().name("READ_BRAND").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_BRAND").isActive(true).build(),
+                                        Permission.builder().name("DELETE_BRAND").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_CATEGORY"),
-                                        new Permission(UUID.randomUUID(), "READ_CATEGORY"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_CATEGORY"),
-                                        new Permission(UUID.randomUUID(), "DELETE_CATEGORY"),
+                                        Permission.builder().name("CREATE_CATEGORY").isActive(true).build(),
+                                        Permission.builder().name("READ_CATEGORY").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_CATEGORY").isActive(true).build(),
+                                        Permission.builder().name("DELETE_CATEGORY").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_PERMISSION"),
-                                        new Permission(UUID.randomUUID(), "READ_PERMISSION"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_PERMISSION"),
-                                        new Permission(UUID.randomUUID(), "DELETE_PERMISSION"),
+                                        Permission.builder().name("CREATE_PERMISSION").isActive(true).build(),
+                                        Permission.builder().name("READ_PERMISSION").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_PERMISSION").isActive(true).build(),
+                                        Permission.builder().name("DELETE_PERMISSION").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_PRODUCT"),
-                                        new Permission(UUID.randomUUID(), "READ_PRODUCT"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_PRODUCT"),
-                                        new Permission(UUID.randomUUID(), "DELETE_PRODUCT"),
+                                        Permission.builder().name("CREATE_PRODUCT").isActive(true).build(),
+                                        Permission.builder().name("READ_PRODUCT").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_PRODUCT").isActive(true).build(),
+                                        Permission.builder().name("DELETE_PRODUCT").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_PROVIDER"),
-                                        new Permission(UUID.randomUUID(), "READ_PROVIDER"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_PROVIDER"),
-                                        new Permission(UUID.randomUUID(), "DELETE_PROVIDER"),
+                                        Permission.builder().name("CREATE_PROVIDER").isActive(true).build(),
+                                        Permission.builder().name("READ_PROVIDER").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_PROVIDER").isActive(true).build(),
+                                        Permission.builder().name("DELETE_PROVIDER").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_ROLE"),
-                                        new Permission(UUID.randomUUID(), "READ_ROLE"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_ROLE"),
-                                        new Permission(UUID.randomUUID(), "DELETE_ROLE"),
+                                        Permission.builder().name("CREATE_ROLE").isActive(true).build(),
+                                        Permission.builder().name("READ_ROLE").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_ROLE").isActive(true).build(),
+                                        Permission.builder().name("DELETE_ROLE").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_SALE"),
-                                        new Permission(UUID.randomUUID(), "READ_SALE"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_SALE"),
-                                        new Permission(UUID.randomUUID(), "DELETE_SALE"),
+                                        Permission.builder().name("CREATE_SALE").isActive(true).build(),
+                                        Permission.builder().name("READ_SALE").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_SALE").isActive(true).build(),
+                                        Permission.builder().name("DELETE_SALE").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_STOCKTAKING"),
-                                        new Permission(UUID.randomUUID(), "READ_STOCKTAKING"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_STOCKTAKING"),
-                                        new Permission(UUID.randomUUID(), "DELETE_STOCKTAKING"),
+                                        Permission.builder().name("CREATE_STOCKTAKING").isActive(true).build(),
+                                        Permission.builder().name("READ_STOCKTAKING").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_STOCKTAKING").isActive(true).build(),
+                                        Permission.builder().name("DELETE_STOCKTAKING").isActive(true).build(),
 
-                                        new Permission(UUID.randomUUID(), "CREATE_USER"),
-                                        new Permission(UUID.randomUUID(), "READ_USER"),
-                                        new Permission(UUID.randomUUID(), "UPDATE_USER"),
-                                        new Permission(UUID.randomUUID(), "DELETE_USER")
-                                ))
-                                .doOnNext(p -> log.info("Permission inserted: {}", p.getName()))
+                                        Permission.builder().name("CREATE_USER").isActive(true).build(),
+                                        Permission.builder().name("READ_USER").isActive(true).build(),
+                                        Permission.builder().name("UPDATE_USER").isActive(true).build(),
+                                        Permission.builder().name("DELETE_USER").isActive(true).build()
+                                ).flatMap(reactiveMongoTemplate::save)
                                 .collectList()
-                                .flatMap(savedPermissions -> {
-                                    Map<String, Permission> permissionMap = new HashMap<>();
-                                    for (Permission p : savedPermissions) {
-                                        permissionMap.put(p.getName(), p);
-                                    }
+                                .flatMapMany(permissions -> {
+                                    Permission createBrand = permissions.get(0);
+                                    Permission readBrand = permissions.get(1);
+                                    Permission updateBrand = permissions.get(2);
+                                    Permission deleteBrand = permissions.get(3);
 
-                                    List<Role> rolesList = List.of(
-                                            new Role(UUID.randomUUID(), "ROLE_ADMIN", new HashSet<>(permissionMap.values())),
-                                            new Role(UUID.randomUUID(), "ROLE_INVENTORY_MANAGER", Set.of(
-                                                    permissionMap.get("CREATE_PRODUCT"),
-                                                    permissionMap.get("READ_PRODUCT"),
-                                                    permissionMap.get("UPDATE_PRODUCT"),
-                                                    permissionMap.get("DELETE_PRODUCT"),
-                                                    permissionMap.get("CREATE_STOCKTAKING"),
-                                                    permissionMap.get("READ_STOCKTAKING"),
-                                                    permissionMap.get("UPDATE_STOCKTAKING"),
-                                                    permissionMap.get("DELETE_STOCKTAKING")
-                                            )),
-                                            new Role(UUID.randomUUID(), "ROLE_SALESPERSON", Set.of(
-                                                    permissionMap.get("CREATE_SALE"),
-                                                    permissionMap.get("READ_SALE"),
-                                                    permissionMap.get("UPDATE_SALE"),
-                                                    permissionMap.get("DELETE_SALE")
-                                            )),
-                                            new Role(UUID.randomUUID(), "ROLE_BASIC_USER", Set.of(
-                                                    permissionMap.get("READ_PRODUCT"),
-                                                    permissionMap.get("READ_CATEGORY"),
-                                                    permissionMap.get("READ_BRAND"),
-                                                    permissionMap.get("READ_PROVIDER")
-                                            ))
-                                    );
+                                    Permission createCategory = permissions.get(4);
+                                    Permission readCategory = permissions.get(5);
+                                    Permission updateCategory = permissions.get(6);
+                                    Permission deleteCategory = permissions.get(7);
 
-                                    return roleRepository.saveAll(rolesList)
-                                            .collectList()
-                                            .flatMap(savedRoles -> {
-                                                Map<String, Role> roleMap = new HashMap<>();
-                                                for (Role r : savedRoles) {
-                                                    roleMap.put(r.getName(), r);
-                                                }
+                                    Permission createPermission = permissions.get(8);
+                                    Permission readPermission = permissions.get(9);
+                                    Permission updatePermission = permissions.get(10);
+                                    Permission deletePermission = permissions.get(11);
 
-                                                List<User> usersList = List.of(
-                                                        new User(
-                                                                UUID.randomUUID(),
-                                                                "Admin",
-                                                                "Principal",
-                                                                "admin",
-                                                                "admin123",
-                                                                "999999999",
-                                                                LocalDateTime.now(),
-                                                                LocalDateTime.now(),
-                                                                Set.of(roleMap.get("ROLE_ADMIN"))
-                                                        )
-                                                );
+                                    Permission createProduct = permissions.get(12);
+                                    Permission readProduct = permissions.get(13);
+                                    Permission updateProduct = permissions.get(14);
+                                    Permission deleteProduct = permissions.get(15);
 
-                                                return userRepository.saveAll(usersList).then();
-                                            });
+                                    Permission createProvider = permissions.get(16);
+                                    Permission readProvider = permissions.get(17);
+                                    Permission updateProvider = permissions.get(18);
+                                    Permission deleteProvider = permissions.get(19);
+
+                                    Permission createRole = permissions.get(20);
+                                    Permission readRole = permissions.get(21);
+                                    Permission updateRole = permissions.get(22);
+                                    Permission deleteRole = permissions.get(23);
+
+                                    Permission createSale = permissions.get(24);
+                                    Permission readSale = permissions.get(25);
+                                    Permission updateSale = permissions.get(26);
+                                    Permission deleteSale = permissions.get(27);
+
+                                    Permission createStocktaking = permissions.get(28);
+                                    Permission readStocktaking = permissions.get(29);
+                                    Permission updateStocktaking = permissions.get(30);
+                                    Permission deleteStocktaking = permissions.get(31);
+
+                                    Permission createUser = permissions.get(32);
+                                    Permission readUser = permissions.get(33);
+                                    Permission updateUser = permissions.get(34);
+                                    Permission deleteUser = permissions.get(35);
+
+                                    return Flux.just(
+                                            Role.builder().name("ROLE_ADMIN").permissions(Set.of(
+                                                    createBrand, readBrand,
+                                                    updateBrand, deleteBrand,
+                                                    createCategory, readCategory,
+                                                    updateCategory, deleteCategory,
+                                                    createPermission, readPermission,
+                                                    updatePermission, deletePermission,
+                                                    createProduct, readProduct,
+                                                    updateProduct, deleteProduct,
+                                                    createProvider, readProvider,
+                                                    updateProvider, deleteProvider,
+                                                    createRole, readRole,
+                                                    updateRole, deleteRole,
+                                                    createSale, readSale,
+                                                    updateSale, deleteSale,
+                                                    createStocktaking, readStocktaking,
+                                                    updateStocktaking, deleteStocktaking,
+                                                    createUser, readUser,
+                                                    updateUser, deleteUser
+                                            )).isActive(true).build(),
+                                            Role.builder().name("ROLE_INVENTORY_MANAGER").permissions(Set.of(
+                                                    createProduct, readProduct,
+                                                    updateProduct, deleteProduct,
+                                                    createCategory, readCategory,
+                                                    updateCategory, deleteCategory,
+                                                    createBrand, readBrand,
+                                                    updateBrand, deleteBrand,
+                                                    createProvider, readProvider,
+                                                    updateProvider, deleteProvider,
+                                                    createStocktaking, readStocktaking,
+                                                    readSale)).isActive(true).build(),
+                                            Role.builder().name("ROLE_SALESPERSON").permissions(Set.of(
+                                                    createSale, readSale,
+                                                    updateSale, deleteSale,
+                                                    readProduct, readStocktaking)).isActive(true).build(),
+                                            Role.builder().name("ROLE_WAREHOUSE_STAFF").permissions(Set.of(
+                                                    createStocktaking, readStocktaking,
+                                                    updateStocktaking, deleteStocktaking,
+                                                    readProduct, readProvider)).isActive(true).build(),
+                                            Role.builder().name("ROLE_ANALYST").permissions(Set.of(
+                                                    readBrand, readCategory,
+                                                    readProduct, readProvider,
+                                                    readRole, readSale,
+                                                    readStocktaking, readUser)).isActive(true).build(),
+                                            Role.builder().name("ROLE_SUPPORT").permissions(Set.of(
+                                                    createUser, readUser,
+                                                    updateUser, createRole,
+                                                    readRole, updateRole,
+                                                    readBrand, readCategory,
+                                                    readProduct, readProvider,
+                                                    readSale, readStocktaking)).isActive(true).build(),
+                                            Role.builder().name("ROLE_BASIC_USER").permissions(Set.of(
+                                                    readProduct, readCategory,
+                                                    readBrand, readProvider)).isActive(true).build()
+                                    ).flatMap(reactiveMongoTemplate::save);
                                 })
-                )
-                .thenMany(
-                        Flux.defer(() -> {
-                                    Flux<Category> categories = categoryRepository.saveAll(Flux.just(
-                                            new Category(UUID.randomUUID(), "Appliances"),
-                                            new Category(UUID.randomUUID(), "Technology"),
-                                            new Category(UUID.randomUUID(), "Home"),
-                                            new Category(UUID.randomUUID(), "Sports"),
-                                            new Category(UUID.randomUUID(), "Clothing"),
-                                            new Category(UUID.randomUUID(), "Toys"),
-                                            new Category(UUID.randomUUID(), "Food"),
-                                            new Category(UUID.randomUUID(), "Beverages"),
-                                            new Category(UUID.randomUUID(), "Furniture"),
-                                            new Category(UUID.randomUUID(), "Garden")
-                                    ).doOnNext(c -> log.info("Category inserted: {}", c.getName())));
+                                .collectList()
+                                .flatMapMany(roles -> {
+                                    Role admin = roles.get(0);
+                                    Role inventoryManager = roles.get(1);
+                                    Role salesPerson = roles.get(2);
+                                    Role warehouseStaff = roles.get(3);
+                                    Role analyst = roles.get(4);
+                                    Role support = roles.get(5);
+                                    Role roleBasic = roles.get(6);
 
-                                    Flux<Brand> brands = brandRepository.saveAll(Flux.just(
-                                            new Brand(UUID.randomUUID(), "Samsung"),
-                                            new Brand(UUID.randomUUID(), "LG"),
-                                            new Brand(UUID.randomUUID(), "Sony"),
-                                            new Brand(UUID.randomUUID(), "Xiaomi"),
-                                            new Brand(UUID.randomUUID(), "Apple"),
-                                            new Brand(UUID.randomUUID(), "Nike"),
-                                            new Brand(UUID.randomUUID(), "Adidas"),
-                                            new Brand(UUID.randomUUID(), "Coca-Cola"),
-                                            new Brand(UUID.randomUUID(), "Nestlé"),
-                                            new Brand(UUID.randomUUID(), "IKEA")
-                                    ).doOnNext(b -> log.info("Brand inserted: {}", b.getName())));
+                                    return Flux.just(
+                                            User.builder()
+                                                    .name("Admin").lastName("System").username("admin")
+                                                    .password("$2a$10$xyz123").email("admin@inventory.com")
+                                                    .phone("123456789").roles(Set.of(admin)).isActive(true).build(),
+                                            User.builder()
+                                                    .name("Juan").lastName("Perez").username("jperez")
+                                                    .password("$2a$10$xyz456").email("jperez@inventory.com")
+                                                    .phone("987654321").roles(Set.of(inventoryManager)).isActive(true).build(),
+                                            User.builder()
+                                                    .name("Maria").lastName("Gomez").username("mgomez")
+                                                    .password("$2a$10$xyz789").email("mgomez@inventory.com")
+                                                    .phone("555444333").roles(Set.of(salesPerson)).isActive(true).build(),
+                                            User.builder()
+                                                    .name("Carlos").lastName("Lopez").username("clopez")
+                                                    .password("$2a$10$xyz012").email("clopez@inventory.com")
+                                                    .phone("111222333").roles(Set.of(warehouseStaff)).isActive(true).build(),
+                                            User.builder()
+                                                    .name("Ana").lastName("Martinez").username("amartinez")
+                                                    .password("$2a$10$xyz345").email("amartinez@inventory.com")
+                                                    .phone("444555666").roles(Set.of(analyst)).isActive(true).build(),
+                                            User.builder()
+                                                    .name("Luis").lastName("Rodriguez").username("lrodriguez")
+                                                    .password("$2a$10$xyz678").email("lrodriguez@inventory.com")
+                                                    .phone("777888999").roles(Set.of(support)).isActive(true).build(),
+                                            User.builder()
+                                                    .name("Basic").lastName("User").username("basicuser")
+                                                    .password("$2a$10$xyz123").email("userbasic@gmail.com")
+                                                    .phone("000111222").roles(Set.of(roleBasic)).isActive(true).build()
 
-                                    Flux<Provider> providers = providerRepository.saveAll(Flux.just(
-                                            new Provider(UUID.randomUUID(), "Distributor ABC", "12345678901", "12345678", "Main Street 123", "987654321", "abc@gmail.com"),
-                                            new Provider(UUID.randomUUID(), "Imports XYZ", "20458796532", "87654321", "First Avenue 456", "987123456", "xyz@hotmail.com"),
-                                            new Provider(UUID.randomUUID(), "Tech Global", "10789456321", "11223344", "Commerce Street 789", "963852741", "techglobal@outlook.com"),
-                                            new Provider(UUID.randomUUID(), "Food Inc.", "20547896543", "44556677", "Industrial Avenue 101", "912345678", "info@foodinc.com"),
-                                            new Provider(UUID.randomUUID(), "Global Beverages", "10458963217", "99887766", "Refreshment Street 202", "933221144", "contact@globalbeverages.com"),
-                                            new Provider(UUID.randomUUID(), "Modern Furniture", "20123456789", "55443322", "Design Boulevard 303", "944556677", "sales@modernfurniture.com"),
-                                            new Provider(UUID.randomUUID(), "Extreme Sports", "20659874123", "11223399", "Sports Plaza 404", "955667788", "info@extremesports.com"),
-                                            new Provider(UUID.randomUUID(), "Fashion Trends", "10987654321", "88776655", "Mall Center 505", "966778899", "contact@fashiontrends.com"),
-                                            new Provider(UUID.randomUUID(), "Educational Toys", "20874563219", "33445566", "Kids Park 606", "977889900", "sales@educationaltoys.com"),
-                                            new Provider(UUID.randomUUID(), "Professional Gardening", "10234567891", "77889900", "Nursery Street 707", "988990011", "info@progardening.com")
-                                    ).doOnNext(p -> log.info("Provider inserted: {}", p.getName())));
-
-
-                                    return Flux.zip(
-                                            categories.collectList(),
-                                            brands.collectList(),
-                                            providers.collectList()
-                                    ).flatMap(tuple -> {
-                                        List<Category> categoryList = tuple.getT1();
-                                        List<Brand> brandList = tuple.getT2();
-                                        List<Provider> providerList = tuple.getT3();
-
-                                        return productRepository.saveAll(Flux.just(
-                                                new Product(UUID.randomUUID(), "55-inch TV", "4K UHD Smart TV", new BigDecimal("2499.99"),
-                                                        categoryList.get(0), brandList.get(0), providerList.get(0)),
-                                                new Product(UUID.randomUUID(), "Refrigerator", "Double door, frost free", new BigDecimal("1899.99"),
-                                                        categoryList.get(0), brandList.get(1), providerList.get(0)),
-                                                new Product(UUID.randomUUID(), "Washing Machine", "Front load 15kg", new BigDecimal("899.99"),
-                                                        categoryList.get(0), brandList.get(2), providerList.get(1)),
-
-                                                new Product(UUID.randomUUID(), "Ultrabook Laptop", "16GB RAM, 512GB SSD", new BigDecimal("3599.99"),
-                                                        categoryList.get(1), brandList.get(0), providerList.get(2)),
-                                                new Product(UUID.randomUUID(), "5G Smartphone", "128GB storage", new BigDecimal("1299.99"),
-                                                        categoryList.get(1), brandList.get(3), providerList.get(2)),
-                                                new Product(UUID.randomUUID(), "10-inch Tablet", "2K resolution", new BigDecimal("499.99"),
-                                                        categoryList.get(1), brandList.get(4), providerList.get(1)),
-
-                                                new Product(UUID.randomUUID(), "Bed Sheet Set", "Egyptian cotton, king size", new BigDecimal("129.99"),
-                                                        categoryList.get(2), brandList.get(5), providerList.get(3)),
-                                                new Product(UUID.randomUUID(), "Blackout Curtains", "For large windows", new BigDecimal("89.99"),
-                                                        categoryList.get(2), brandList.get(6), providerList.get(4)),
-
-                                                new Product(UUID.randomUUID(), "Soccer Ball", "Official size", new BigDecimal("49.99"),
-                                                        categoryList.get(3), brandList.get(5), providerList.get(6)),
-                                                new Product(UUID.randomUUID(), "Tennis Racket", "Lightweight", new BigDecimal("129.99"),
-                                                        categoryList.get(3), brandList.get(6), providerList.get(6)),
-
-                                                new Product(UUID.randomUUID(), "Sports T-shirt", "Dry-fit technology", new BigDecimal("39.99"),
-                                                        categoryList.get(4), brandList.get(5), providerList.get(7)),
-                                                new Product(UUID.randomUUID(), "Running Shoes", "Air cushioning", new BigDecimal("119.99"),
-                                                        categoryList.get(4), brandList.get(6), providerList.get(7)),
-
-                                                new Product(UUID.randomUUID(), "Building Blocks Set", "250 pieces", new BigDecimal("59.99"),
-                                                        categoryList.get(5), brandList.get(8), providerList.get(8)),
-                                                new Product(UUID.randomUUID(), "Interactive Doll", "Talks and walks", new BigDecimal("79.99"),
-                                                        categoryList.get(5), brandList.get(9), providerList.get(8)),
-
-                                                new Product(UUID.randomUUID(), "Whole Grain Cereal", "500g, high fiber", new BigDecimal("5.99"),
-                                                        categoryList.get(6), brandList.get(8), providerList.get(3)),
-                                                new Product(UUID.randomUUID(), "Dark Chocolate", "70% cocoa", new BigDecimal("3.99"),
-                                                        categoryList.get(6), brandList.get(8), providerList.get(4)),
-
-                                                new Product(UUID.randomUUID(), "Mineral Water", "6-bottle pack", new BigDecimal("4.99"),
-                                                        categoryList.get(7), brandList.get(7), providerList.get(4)),
-                                                new Product(UUID.randomUUID(), "Cola Drink", "12-can pack", new BigDecimal("7.99"),
-                                                        categoryList.get(7), brandList.get(7), providerList.get(4)),
-
-                                                new Product(UUID.randomUUID(), "Sectional Sofa", "Durable fabric", new BigDecimal("899.99"),
-                                                        categoryList.get(8), brandList.get(9), providerList.get(5)),
-                                                new Product(UUID.randomUUID(), "Coffee Table", "Oak wood", new BigDecimal("299.99"),
-                                                        categoryList.get(8), brandList.get(9), providerList.get(5)),
-
-                                                new Product(UUID.randomUUID(), "Gardening Tool Set", "5 pieces", new BigDecimal("49.99"),
-                                                        categoryList.get(9), brandList.get(9), providerList.get(9)),
-                                                new Product(UUID.randomUUID(), "Gas Grill", "3 burners", new BigDecimal("199.99"),
-                                                        categoryList.get(9), brandList.get(1), providerList.get(9))
-                                        ).doOnNext(p -> log.info("Product inserted: {}", p.getName())));
-                                    });
+                                    ).flatMap(reactiveMongoTemplate::save);
                                 })
-                                .thenMany(productRepository.findAll())
-                                .flatMap(product ->
-                                        Flux.range(0, 3)
-                                                .flatMap(i -> {
-                                                    int randomQuantity = random.nextInt(100) + 10;
-                                                    int randomDays = random.nextInt(365);
-                                                    LocalDateTime randomDate = LocalDateTime.now().minusDays(randomDays);
-
-                                                    Stocktaking stocktaking = Stocktaking.builder()
-                                                            .idStocktaking(UUID.randomUUID())
-                                                            .product(product)
-                                                            .quantity(randomQuantity)
-                                                            .stocktakingDate(randomDate)
-                                                            .build();
-
-                                                    return stocktakingRepository.save(stocktaking)
-                                                            .doOnNext(s -> log.info("Stocktaking created for product {}: quantity {}",
-                                                                    s.getProduct().getName(), s.getQuantity()));
-                                                })
+                                .thenMany(
+                                        Flux.just(
+                                                Category.builder().name("Electrónicos").isActive(true).build(),
+                                                Category.builder().name("Ropa").isActive(true).build(),
+                                                Category.builder().name("Hogar").isActive(true).build(),
+                                                Category.builder().name("Deportes").isActive(true).build(),
+                                                Category.builder().name("Juguetes").isActive(true).build(),
+                                                Category.builder().name("Alimentos").isActive(true).build()
+                                        ).flatMap(reactiveMongoTemplate::save)
                                 )
-                                .thenMany(productRepository.findAll().take(10))
-                                .flatMap(product -> {
-                                    int salesCount = random.nextInt(5) + 1;
-                                    return Flux.range(0, salesCount)
-                                            .flatMap(i -> {
-                                                int quantitySold = random.nextInt(10) + 1;
-                                                BigDecimal unitPrice = product.getPrice();
-                                                BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(quantitySold));
-                                                LocalDateTime saleDate = LocalDateTime.now()
-                                                        .minusDays(random.nextInt(30));
+                                .thenMany(
+                                        Flux.just(
+                                                Brand.builder().name("Samsung").isActive(true).build(),
+                                                Brand.builder().name("Nike").isActive(true).build(),
+                                                Brand.builder().name("Sony").isActive(true).build(),
+                                                Brand.builder().name("Adidas").isActive(true).build(),
+                                                Brand.builder().name("Apple").isActive(true).build(),
+                                                Brand.builder().name("LG").isActive(true).build()
+                                        ).flatMap(reactiveMongoTemplate::save)
+                                )
+                                .thenMany(
+                                        Flux.just(
+                                                Provider.builder()
+                                                        .name("TecnoSuministros S.A.").ruc("12345678901").dni("12345678")
+                                                        .address("Av. Tecnológica 123").phone("111222333")
+                                                        .email("contacto@tecnosum.com").isActive(true).build(),
+                                                Provider.builder()
+                                                        .name("Distribuidora Rápida").ruc("98765432109").dni("23456789")
+                                                        .address("Calle Veloz 456").phone("444555666")
+                                                        .email("info@distribuidorarapida.com").isActive(true).build(),
+                                                Provider.builder()
+                                                        .name("Juan Pérez").ruc("12345678901").dni("87654321")
+                                                        .address("Jr. Independencia 789").phone("777888999")
+                                                        .email("juanperez@proveedor.com").isActive(true).build(),
+                                                Provider.builder()
+                                                        .name("Importaciones Elite").ruc("45678912345").dni("12345978")
+                                                        .address("Av. Importadora 321").phone("222333444")
+                                                        .email("ventas@eliteimport.com").isActive(true).build(),
+                                                Provider.builder()
+                                                        .name("María Gómez").ruc("98765498765").dni("76543210")
+                                                        .address("Calle Proveedora 654").phone("555666777")
+                                                        .email("mariagomez@proveedor.com").isActive(true).build(),
+                                                Provider.builder()
+                                                        .name("Global Suppliers").ruc("32165498701").dni("98765432")
+                                                        .address("Av. Mundial 987").phone("888999000")
+                                                        .email("contact@globalsuppliers.com").isActive(true).build()
+                                        ).flatMap(reactiveMongoTemplate::save)
+                                )
+                                .thenMany(
+                                        reactiveMongoTemplate.findAll(Category.class).collectList().flatMapMany(categories -> {
+                                            Category electronicos = categories.get(0);
+                                            Category ropa = categories.get(1);
+                                            Category hogar = categories.get(2);
+                                            Category deportes = categories.get(3);
 
-                                                Sale sale = Sale.builder()
-                                                        .idSale(UUID.randomUUID())
-                                                        .product(product)
-                                                        .quantity(quantitySold)
-                                                        .totalPrice(totalPrice)
-                                                        .saleDate(saleDate)
-                                                        .build();
+                                            return reactiveMongoTemplate.findAll(Brand.class).collectList().flatMapMany(brands -> {
+                                                Brand samsung = brands.get(0);
+                                                Brand nike = brands.get(1);
+                                                Brand sony = brands.get(2);
+                                                Brand adidas = brands.get(3);
+                                                Brand apple = brands.get(4);
 
-                                                return saleRepository.save(sale)
-                                                        .doOnNext(s -> log.info("Venta creada: Producto={}, Cantidad={}, Total={}",
-                                                                s.getProduct().getName(), s.getQuantity(), s.getTotalPrice()));
+                                                return reactiveMongoTemplate.findAll(Provider.class).collectList().flatMapMany(providers -> {
+                                                    Provider prov1 = providers.get(0);
+                                                    Provider prov2 = providers.get(1);
+                                                    Provider prov3 = providers.get(2);
+                                                    Provider prov4 = providers.get(3);
+                                                    Provider prov5 = providers.get(4);
+                                                    Provider prov6 = providers.get(5);
+
+                                                    return Flux.just(
+                                                            Product.builder()
+                                                                    .name("Smartphone Galaxy S21").description("Teléfono inteligente de última generación")
+                                                                    .price(new BigDecimal("899.99")).categoryId(electronicos.getIdCategory())
+                                                                    .brandId(samsung.getIdBrand()).providerId(prov1.getIdProvider()).isActive(true).build(),
+                                                            Product.builder()
+                                                                    .name("Zapatillas Air Max").description("Zapatillas deportivas para running")
+                                                                    .price(new BigDecimal("129.99")).categoryId(ropa.getIdCategory())
+                                                                    .brandId(nike.getIdBrand()).providerId(prov2.getIdProvider()).isActive(true).build(),
+                                                            Product.builder()
+                                                                    .name("Televisor OLED 55").description("TV con tecnología OLED y resolución 4K")
+                                                                    .price(new BigDecimal("1299.99")).categoryId(electronicos.getIdCategory())
+                                                                    .brandId(apple.getIdBrand()).providerId(prov4.getIdProvider()).isActive(true).build(),
+                                                            Product.builder()
+                                                                    .name("Sofá Seccional").description("Sofá de 3 plazas en tela resistente")
+                                                                    .price(new BigDecimal("599.99")).categoryId(hogar.getIdCategory())
+                                                                    .brandId(apple.getIdBrand()).providerId(prov3.getIdProvider()).isActive(true).build(),
+                                                            Product.builder()
+                                                                    .name("Balón de Fútbol").description("Balón oficial tamaño 5")
+                                                                    .price(new BigDecimal("29.99")).categoryId(deportes.getIdCategory())
+                                                                    .brandId(adidas.getIdBrand()).providerId(prov5.getIdProvider()).isActive(true).build(),
+                                                            Product.builder()
+                                                                    .name("Auriculares Inalámbricos").description("Auriculares con cancelación de ruido")
+                                                                    .price(new BigDecimal("199.99")).categoryId(electronicos.getIdCategory())
+                                                                    .brandId(sony.getIdBrand()).providerId(prov6.getIdProvider()).isActive(true).build()
+                                                    ).flatMap(reactiveMongoTemplate::save);
+                                                });
                                             });
-                                })
+                                        })
+                                )
+                                .thenMany(
+                                        reactiveMongoTemplate.findAll(Product.class).collectList().flatMapMany(products -> {
+                                            Product prod1 = products.get(0);
+                                            Product prod2 = products.get(1);
+                                            Product prod3 = products.get(2);
+                                            Product prod4 = products.get(3);
+                                            Product prod5 = products.get(4);
+                                            Product prod6 = products.get(5);
+
+                                            return reactiveMongoTemplate.findAll(User.class).collectList().flatMapMany(users -> {
+                                                User user1 = users.get(0);
+                                                User user2 = users.get(1);
+                                                User user3 = users.get(2);
+                                                User user4 = users.get(3);
+                                                User user5 = users.get(4);
+                                                User user6 = users.get(5);
+
+                                                return Flux.just(
+                                                        Stocktaking.builder()
+                                                                .productId(prod1.getIdProduct()).quantity(50)
+                                                                .performedBy(user1.getIdUser()).build(),
+                                                        Stocktaking.builder()
+                                                                .productId(prod2.getIdProduct()).quantity(120)
+                                                                .performedBy(user2.getIdUser()).build(),
+                                                        Stocktaking.builder()
+                                                                .productId(prod3.getIdProduct()).quantity(25)
+                                                                .performedBy(user3.getIdUser()).build(),
+                                                        Stocktaking.builder()
+                                                                .productId(prod4.getIdProduct()).quantity(15)
+                                                                .performedBy(user4.getIdUser()).build(),
+                                                        Stocktaking.builder()
+                                                                .productId(prod5.getIdProduct()).quantity(80)
+                                                                .performedBy(user5.getIdUser()).build(),
+                                                        Stocktaking.builder()
+                                                                .productId(prod6.getIdProduct()).quantity(40)
+                                                                .performedBy(user6.getIdUser()).build()
+                                                ).flatMap(reactiveMongoTemplate::save);
+                                            });
+                                        })
+                                )
+                                .thenMany(
+                                        reactiveMongoTemplate.findAll(Product.class).collectList().flatMapMany(products -> {
+                                            Product prod1 = products.get(0);
+                                            Product prod2 = products.get(1);
+                                            Product prod3 = products.get(2);
+                                            Product prod4 = products.get(3);
+                                            Product prod5 = products.get(4);
+                                            Product prod6 = products.get(5);
+
+                                            return Flux.just(
+                                                    Sale.builder()
+                                                            .productId(prod1.getIdProduct()).quantity(2)
+                                                            .totalPrice(prod1.getPrice().multiply(new BigDecimal(2))).build(),
+                                                    Sale.builder()
+                                                            .productId(prod2.getIdProduct()).quantity(1)
+                                                            .totalPrice(prod2.getPrice()).build(),
+                                                    Sale.builder()
+                                                            .productId(prod3.getIdProduct()).quantity(1)
+                                                            .totalPrice(prod3.getPrice()).build(),
+                                                    Sale.builder()
+                                                            .productId(prod4.getIdProduct()).quantity(1)
+                                                            .totalPrice(prod4.getPrice()).build(),
+                                                    Sale.builder()
+                                                            .productId(prod5.getIdProduct()).quantity(3)
+                                                            .totalPrice(prod5.getPrice().multiply(new BigDecimal(3))).build(),
+                                                    Sale.builder()
+                                                            .productId(prod6.getIdProduct()).quantity(2)
+                                                            .totalPrice(prod6.getPrice().multiply(new BigDecimal(2))).build()
+                                            ).flatMap(reactiveMongoTemplate::save);
+                                        })
+                                )
                 ).subscribe(
                         null,
-                        error -> log.error("Error initializing data: {}", error.getMessage()),
-                        () -> log.info("Data initialization completed successfully")
+                        p -> log.error("Error al inicializar la base de datos: {}", p.getMessage()),
+                        () -> log.info("Base de datos inicializada correctamente con datos de prueba.")
                 );
     }
 }

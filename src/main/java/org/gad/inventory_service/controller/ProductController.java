@@ -42,9 +42,9 @@ public class ProductController {
                 );
     }
 
-    @GetMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> getProductByUuid(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return productService.findProductByUuid(uuid)
+    @GetMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> getProductById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return productService.findProductById(id)
                 .map(product -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
@@ -59,7 +59,7 @@ public class ProductController {
     public Mono<ResponseEntity<DataResponse>> createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
         return productService.createProduct(createProductRequest)
                 .map(product -> {
-                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.uuidProduct());
+                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_PRODUCT_CREATED)
@@ -70,12 +70,12 @@ public class ProductController {
                 });
     }
 
-    @PutMapping("/{uuid}")
-    public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid,
+    @PutMapping("/{id}")
+    public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                             @Valid @RequestBody UpdateProductRequest updateProductRequest) {
-        return productService.updateProduct(uuid, updateProductRequest)
+        return productService.updateProduct(id, updateProductRequest)
                 .map(product -> {
-                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.uuidProduct());
+                    URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
                     DataResponse dataResponse = DataResponse.builder()
                             .status(HttpStatus.OK.value())
                             .message(MESSAGE_PRODUCT_UPDATED)
@@ -86,9 +86,9 @@ public class ProductController {
                 });
     }
 
-    @DeleteMapping("/{uuid}")
-    public Mono<ResponseEntity<Void>> deleteProduct(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String uuid) {
-        return productService.deleteProduct(uuid)
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> deleteProductById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+        return productService.deleteProductById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
 }
