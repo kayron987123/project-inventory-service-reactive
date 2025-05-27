@@ -31,7 +31,7 @@ public class ProviderServiceImpl implements ProviderService {
     @Override
     public Mono<ProviderDTO> findProviderById(String id) {
         return findProvider(providerRepository.findById(id),
-                PROVIDER_NOT_FOUND_UUID + id);
+                PROVIDER_NOT_FOUND_ID + id);
     }
 
     @Override
@@ -125,7 +125,7 @@ public class ProviderServiceImpl implements ProviderService {
 
     private Mono<Provider> findById(String id) {
         return providerRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ProviderNotFoundException(PROVIDER_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new ProviderNotFoundException(PROVIDER_NOT_FOUND_ID + id)))
                 .doOnError(error -> log.error(Constants.ERROR_SEARCHING_PROVIDER, error.getMessage()));
     }
 

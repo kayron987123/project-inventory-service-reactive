@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Mono<CategoryDTO> findCategoryById(String id) {
         return findCategory(categoryRepository.findById(id),
-                CATEGORY_NOT_FOUND_UUID + id);
+                CATEGORY_NOT_FOUND_ID + id);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private Mono<Category> findById(String id) {
         return categoryRepository.findById(id)
-                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_UUID + id)));
+                .switchIfEmpty(Mono.error(new CategoryNotFoundException(CATEGORY_NOT_FOUND_ID + id)));
     }
 
     private Mono<CategoryDTO> findCategory(Mono<Category> categoryMono, String errorMessage) {

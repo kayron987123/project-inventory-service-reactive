@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.gad.inventory_service.config.jwt.JwtUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,13 +17,16 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
+
 @RequiredArgsConstructor
 public class AuthTokenFilter implements WebFilter {
     private final JwtUtils jwtUtils;
     private final ReactiveUserDetailsService userDetailsService;
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange,WebFilterChain chain) {
+    @NonNull
+    public Mono<Void> filter(ServerWebExchange exchange, @NonNull WebFilterChain chain) {
         String header = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String token = parseJwt(header);
 
@@ -30,8 +35,9 @@ public class AuthTokenFilter implements WebFilter {
         }
 
         return jwtUtils.validateTokenReactive(token)
+                .filter(Boolean.TRUE::equals)
+                .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid Token")))
                 .flatMap(valid -> {
-                    if (!valid) return Mono.error(new RuntimeException("Invalid Token"));
                     String username = jwtUtils.getUsernameFromToken(token);
                     return userDetailsService.findByUsername(username);
                 })
@@ -44,7 +50,7 @@ public class AuthTokenFilter implements WebFilter {
                 })
                 .onErrorResume(e -> {
                     exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                    byte[] bytes = ("Invalid or expired token: " + e.getMessage()).getBytes();
+                    byte[] bytes = ("Invalid or expired token: " + e.getMessage()).getBytes(StandardCharsets.UTF_8);
                     return exchange.getResponse().writeWith(
                             Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
                 });

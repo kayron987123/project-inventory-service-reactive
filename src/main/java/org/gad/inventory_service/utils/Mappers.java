@@ -73,4 +73,16 @@ public class Mappers {
                 .totalPrice(sale.getTotalPrice())
                 .build();
     }
+
+    public static UserDTO userToDTO(User user) {
+        if (user == null) return null;
+        return UserDTO.builder()
+                .idUser(user.getIdUser())
+                .name(user.getName())
+                .lastName(user.getLastName())
+                .phone(user.getPhone())
+                .createdAt(localDateTimeFormatted(user.getCreatedAt()))
+                .updatedAt(localDateTimeFormatted(user.getUpdatedAt()))
+                .build();
+    }
 }

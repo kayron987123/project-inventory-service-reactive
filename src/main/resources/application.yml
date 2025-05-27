@@ -18,5 +18,5 @@ logging:
 
 auth:
   token:
-    jwt-secret: 123456789
-    expiration-in-millis: 86400000
+    jwt-secret: dsM8Y+SX84uRfHCHIRabRKiY2HOFmyU0aqqnrxbGeak=
+    expiration-in-millis: 43200000

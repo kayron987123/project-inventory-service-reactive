@@ -27,7 +27,7 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Mono<BrandDTO> findBrandById(String id) {
         return findBrand(findById(id),
-                BRAND_NOT_FOUND_UUID + id);
+                BRAND_NOT_FOUND_ID + id);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class BrandServiceImpl implements BrandService {
 
     private Mono<Brand> findById(String id) {
         return brandRepository.findById(id)
-                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new BrandNotFoundException(BRAND_NOT_FOUND_ID + id)))
                 .doOnError(error -> log.error(ERROR_SEARCHING_BRAND, error.getMessage()));
     }
 

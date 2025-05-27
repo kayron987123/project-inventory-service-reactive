@@ -55,7 +55,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                     .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_BETWEEEN_DATES + dateStart + " and " + dateEnd)))
                     .flatMap(stocktaking -> {
                         Mono<Product> productMono = productRepository.findById(stocktaking.getProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + stocktaking.getProductId())));
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + stocktaking.getProductId())));
                         return productMono.map(product -> Mappers.stocktakingToDTO(stocktaking, product.getName()));
                     })
                     .doOnError(error -> log.error(ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
@@ -64,10 +64,10 @@ public class StocktakingServiceImpl implements StocktakingService {
                     .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_BETWEEEN_DATES + dateStart + " and " + dateEnd)))
                     .flatMap(stocktaking -> {
                         Mono<Product> productMono = productRepository.findById(stocktaking.getProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + stocktaking.getProductId())));
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + stocktaking.getProductId())));
                         return productMono.map(product -> Mappers.stocktakingToDTO(stocktaking, product.getName()));
                     })
-                    .doOnError(error -> log.error(ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
+                    .doOnError(error -> log.error(Constants.ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
         }
     }
 
@@ -82,7 +82,7 @@ public class StocktakingServiceImpl implements StocktakingService {
     @Override
     public Mono<StocktakingDTO> findStocktakingById(String id) {
         return findStocktaking(stocktakingRepository.findById(id),
-                STOCKTAKING_NOT_FOUND_UUID + id);
+                STOCKTAKING_NOT_FOUND_ID + id);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class StocktakingServiceImpl implements StocktakingService {
     @Override
     public Mono<StocktakingDTO> updateStocktaking(String id, UpdateStocktakingRequest updateStocktakingRequest) {
         return stocktakingRepository.findById(id)
-                .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_ID + id)))
                 .flatMap(stocktaking ->
                         productRepository.findProductByNameContainingIgnoreCase(updateStocktakingRequest.productName())
                                 .switchIfEmpty(Mono.error(new ProductNotFoundException(STOCKTAKING_NOT_FOUND_NAME + updateStocktakingRequest.productName())))
@@ -121,7 +121,7 @@ public class StocktakingServiceImpl implements StocktakingService {
     @Override
     public Mono<Void> deleteStocktakingById(String id) {
         return stocktakingRepository.findById(id)
-                .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new StockTakingNotFoundException(STOCKTAKING_NOT_FOUND_ID + id)))
                 .flatMap(stocktaking -> stocktakingRepository.deleteById(stocktaking.getIdStocktaking()))
                 .doOnError(error -> log.error(ERROR_DELETING_STOCKTAKING, error.getMessage()));
     }
@@ -139,7 +139,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                 .switchIfEmpty(Mono.error(new StockTakingNotFoundException(errorMessage)))
                 .flatMap(stocktaking -> {
                     Mono<Product> productMono = productRepository.findById(stocktaking.getProductId())
-                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + stocktaking.getProductId())));
+                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + stocktaking.getProductId())));
                     return productMono.map(product -> Mappers.stocktakingToDTO(stocktaking, product.getName()));
                 })
                 .doOnError(error -> log.error(Constants.ERROR_SEARCHING_STOCKTAKING, error.getMessage()));
@@ -150,7 +150,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                 .switchIfEmpty(Flux.error(new StockTakingNotFoundException(errorMessage)))
                 .flatMap(stocktaking -> {
                     Mono<Product> productMono = productRepository.findById(stocktaking.getProductId())
-                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + stocktaking.getProductId())));
+                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + stocktaking.getProductId())));
                     return productMono.map(product -> Mappers.stocktakingToDTO(stocktaking, product.getName()));
                 })
                 .doOnError(error -> log.error(Constants.ERROR_SEARCHING_STOCKTAKING, error.getMessage()));

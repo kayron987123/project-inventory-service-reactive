@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,10 +32,16 @@ public class UserSecurity implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
+        var permissions = roles.stream()
                 .flatMap(role -> role.getPermissions().stream())
                 .map(permission -> (GrantedAuthority) permission::getName)
                 .toList();
+
+        var roleAuthorities = roles.stream()
+                .map(authority -> (GrantedAuthority) authority::getName)
+                .toList();
+
+        return Stream.concat(permissions.stream(), roleAuthorities.stream()).toList();
     }
 
     @Override

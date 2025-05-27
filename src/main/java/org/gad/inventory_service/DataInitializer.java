@@ -1,11 +1,13 @@
 package org.gad.inventory_service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gad.inventory_service.model.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -14,7 +16,9 @@ import java.util.*;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class DataInitializer {
+private final PasswordEncoder passwordEncoder;
 
     @Bean
     public CommandLineRunner initDatabase(ReactiveMongoTemplate reactiveMongoTemplate) {
@@ -75,7 +79,7 @@ public class DataInitializer {
                                         Permission.builder().name("READ_USER").isActive(true).build(),
                                         Permission.builder().name("UPDATE_USER").isActive(true).build(),
                                         Permission.builder().name("DELETE_USER").isActive(true).build()
-                                ).flatMap(reactiveMongoTemplate::save)
+                                ).concatMap(reactiveMongoTemplate::save)
                                 .collectList()
                                 .flatMapMany(permissions -> {
                                     Permission createBrand = permissions.get(0);
@@ -178,7 +182,7 @@ public class DataInitializer {
                                             Role.builder().name("ROLE_BASIC_USER").permissions(Set.of(
                                                     readProduct, readCategory,
                                                     readBrand, readProvider)).isActive(true).build()
-                                    ).flatMap(reactiveMongoTemplate::save);
+                                    ).concatMap(reactiveMongoTemplate::save);
                                 })
                                 .collectList()
                                 .flatMapMany(roles -> {
@@ -193,34 +197,34 @@ public class DataInitializer {
                                     return Flux.just(
                                             User.builder()
                                                     .name("Admin").lastName("System").username("admin")
-                                                    .password("$2a$10$xyz123").email("admin@inventory.com")
+                                                    .password(passwordEncoder.encode("123")).email("admin@inventory.com")
                                                     .phone("123456789").roles(Set.of(admin)).isActive(true).build(),
                                             User.builder()
                                                     .name("Juan").lastName("Perez").username("jperez")
-                                                    .password("$2a$10$xyz456").email("jperez@inventory.com")
+                                                    .password(passwordEncoder.encode("1234")).email("jperez@inventory.com")
                                                     .phone("987654321").roles(Set.of(inventoryManager)).isActive(true).build(),
                                             User.builder()
                                                     .name("Maria").lastName("Gomez").username("mgomez")
-                                                    .password("$2a$10$xyz789").email("mgomez@inventory.com")
+                                                    .password(passwordEncoder.encode("12345")).email("mgomez@inventory.com")
                                                     .phone("555444333").roles(Set.of(salesPerson)).isActive(true).build(),
                                             User.builder()
                                                     .name("Carlos").lastName("Lopez").username("clopez")
-                                                    .password("$2a$10$xyz012").email("clopez@inventory.com")
+                                                    .password(passwordEncoder.encode("123456")).email("clopez@inventory.com")
                                                     .phone("111222333").roles(Set.of(warehouseStaff)).isActive(true).build(),
                                             User.builder()
                                                     .name("Ana").lastName("Martinez").username("amartinez")
-                                                    .password("$2a$10$xyz345").email("amartinez@inventory.com")
+                                                    .password(passwordEncoder.encode("1234567")).email("amartinez@inventory.com")
                                                     .phone("444555666").roles(Set.of(analyst)).isActive(true).build(),
                                             User.builder()
                                                     .name("Luis").lastName("Rodriguez").username("lrodriguez")
-                                                    .password("$2a$10$xyz678").email("lrodriguez@inventory.com")
+                                                    .password(passwordEncoder.encode("1234568")).email("lrodriguez@inventory.com")
                                                     .phone("777888999").roles(Set.of(support)).isActive(true).build(),
                                             User.builder()
                                                     .name("Basic").lastName("User").username("basicuser")
-                                                    .password("$2a$10$xyz123").email("userbasic@gmail.com")
+                                                    .password(passwordEncoder.encode("1234569")).email("userbasic@gmail.com")
                                                     .phone("000111222").roles(Set.of(roleBasic)).isActive(true).build()
 
-                                    ).flatMap(reactiveMongoTemplate::save);
+                                    ).concatMap(reactiveMongoTemplate::save);
                                 })
                                 .thenMany(
                                         Flux.just(
@@ -230,7 +234,7 @@ public class DataInitializer {
                                                 Category.builder().name("Deportes").isActive(true).build(),
                                                 Category.builder().name("Juguetes").isActive(true).build(),
                                                 Category.builder().name("Alimentos").isActive(true).build()
-                                        ).flatMap(reactiveMongoTemplate::save)
+                                        ).concatMap(reactiveMongoTemplate::save)
                                 )
                                 .thenMany(
                                         Flux.just(
@@ -240,7 +244,7 @@ public class DataInitializer {
                                                 Brand.builder().name("Adidas").isActive(true).build(),
                                                 Brand.builder().name("Apple").isActive(true).build(),
                                                 Brand.builder().name("LG").isActive(true).build()
-                                        ).flatMap(reactiveMongoTemplate::save)
+                                        ).concatMap(reactiveMongoTemplate::save)
                                 )
                                 .thenMany(
                                         Flux.just(
@@ -253,7 +257,7 @@ public class DataInitializer {
                                                         .address("Calle Veloz 456").phone("444555666")
                                                         .email("info@distribuidorarapida.com").isActive(true).build(),
                                                 Provider.builder()
-                                                        .name("Juan Pérez").ruc("12345678901").dni("87654321")
+                                                        .name("Juan Pérez").ruc("12345678909").dni("87654321")
                                                         .address("Jr. Independencia 789").phone("777888999")
                                                         .email("juanperez@proveedor.com").isActive(true).build(),
                                                 Provider.builder()
@@ -268,7 +272,7 @@ public class DataInitializer {
                                                         .name("Global Suppliers").ruc("32165498701").dni("98765432")
                                                         .address("Av. Mundial 987").phone("888999000")
                                                         .email("contact@globalsuppliers.com").isActive(true).build()
-                                        ).flatMap(reactiveMongoTemplate::save)
+                                        ).concatMap(reactiveMongoTemplate::save)
                                 )
                                 .thenMany(
                                         reactiveMongoTemplate.findAll(Category.class).collectList().flatMapMany(categories -> {
@@ -317,7 +321,7 @@ public class DataInitializer {
                                                                     .name("Auriculares Inalámbricos").description("Auriculares con cancelación de ruido")
                                                                     .price(new BigDecimal("199.99")).categoryId(electronicos.getIdCategory())
                                                                     .brandId(sony.getIdBrand()).providerId(prov6.getIdProvider()).isActive(true).build()
-                                                    ).flatMap(reactiveMongoTemplate::save);
+                                                    ).concatMap(reactiveMongoTemplate::save);
                                                 });
                                             });
                                         })
@@ -358,7 +362,7 @@ public class DataInitializer {
                                                         Stocktaking.builder()
                                                                 .productId(prod6.getIdProduct()).quantity(40)
                                                                 .performedBy(user6.getIdUser()).build()
-                                                ).flatMap(reactiveMongoTemplate::save);
+                                                ).concatMap(reactiveMongoTemplate::save);
                                             });
                                         })
                                 )
@@ -390,7 +394,7 @@ public class DataInitializer {
                                                     Sale.builder()
                                                             .productId(prod6.getIdProduct()).quantity(2)
                                                             .totalPrice(prod6.getPrice().multiply(new BigDecimal(2))).build()
-                                            ).flatMap(reactiveMongoTemplate::save);
+                                            ).concatMap(reactiveMongoTemplate::save);
                                         })
                                 )
                 ).subscribe(

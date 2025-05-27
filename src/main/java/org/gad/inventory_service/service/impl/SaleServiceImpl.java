@@ -60,7 +60,7 @@ public class SaleServiceImpl implements SaleService {
                     .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_BETWEEN_PRICES + minPrice + TEXT_AND + maxPrice)))
                     .flatMap(sale -> {
                         Mono<Product> productMono = productRepository.findById(sale.getProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + sale.getProductId())));
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + sale.getProductId())));
                         return productMono.map(product -> Mappers.saleToDTO(sale, product.getName()));
                     })
                     .doOnError(error -> log.error(Constants.ERROR_SEARCHING_SALE_BETWEEN_PRICES, error.getMessage()));
@@ -69,7 +69,7 @@ public class SaleServiceImpl implements SaleService {
                     .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_BETWEEN_PRICES + minPrice + TEXT_AND + maxPrice)))
                     .flatMap(sale -> {
                         Mono<Product> productMono = productRepository.findById(sale.getProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + sale.getProductId())));
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + sale.getProductId())));
                         return productMono.map(product -> Mappers.saleToDTO(sale, product.getName()));
                     })
                     .doOnError(error -> log.error(ERROR_SEARCHING_SALE_BETWEEN_PRICES, error.getMessage()));
@@ -94,7 +94,7 @@ public class SaleServiceImpl implements SaleService {
                     .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_BETWEEN_DATES + startDate + TEXT_AND + endDate)))
                     .flatMap(sale -> {
                         Mono<Product> productMono = productRepository.findById(sale.getProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + sale.getProductId())));
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + sale.getProductId())));
                         return productMono.map(product -> Mappers.saleToDTO(sale, product.getName()));
                     })
                     .doOnError(error -> log.error(ERROR_SEARCHING_SALE_BETWEEN_DATES, error.getMessage()));
@@ -103,7 +103,7 @@ public class SaleServiceImpl implements SaleService {
                     .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_BETWEEN_DATES + startDate + TEXT_AND + endDate)))
                     .flatMap(sale -> {
                         Mono<Product> productMono = productRepository.findById(sale.getProductId())
-                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + sale.getProductId())));
+                                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + sale.getProductId())));
                         return productMono.map(product -> Mappers.saleToDTO(sale, product.getName()));
                     })
                     .doOnError(error -> log.error(Constants.ERROR_SEARCHING_SALE_BETWEEN_DATES, error.getMessage()));
@@ -113,10 +113,10 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public Mono<SaleDTO> getSaleById(String id) {
         return saleRepository.findById(id)
-                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_ID + id)))
                 .flatMap(sale -> {
                     Mono<Product> productMono = productRepository.findById(sale.getProductId())
-                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + sale.getProductId())));
+                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + sale.getProductId())));
                     return productMono.map(product -> Mappers.saleToDTO(sale, product.getName()));
                 })
                 .doOnError(error -> log.error(ERROR_SEARCHING_SALE_UUID, error.getMessage()));
@@ -142,7 +142,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public Mono<SaleDTO> updateSale(String id, UpdateSaleRequest updateSaleRequest) {
         return saleRepository.findById(id)
-                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_ID + id)))
                 .flatMap(sale ->
                         productRepository.findProductByNameContainingIgnoreCase(updateSaleRequest.nameProduct())
                                 .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_NAME + updateSaleRequest.nameProduct())))
@@ -160,7 +160,7 @@ public class SaleServiceImpl implements SaleService {
     @Override
     public Mono<Void> deleteSaleById(String id) {
         return saleRepository.findById(id)
-                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new SalesNotFoundException(SALE_NOT_FOUND_ID + id)))
                 .flatMap(sale -> saleRepository.deleteById(sale.getIdSale()))
                 .doOnError(error -> log.error(ERROR_DELETING_SALE, error.getMessage()));
     }
@@ -189,7 +189,7 @@ public class SaleServiceImpl implements SaleService {
                 .switchIfEmpty(Mono.error(new SalesNotFoundException(errorMessage)))
                 .flatMap(sale -> {
                     Mono<Product> productMono = productRepository.findById(sale.getProductId())
-                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + sale.getProductId())));
+                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + sale.getProductId())));
                     return productMono.map(product -> Mappers.saleToDTO(sale, product.getName()));
                 })
                 .doOnError(error -> log.error(logMessage, error.getMessage()));

@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Mono<ProductDTO> findProductById(String id) {
         return productRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + id)))
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + id)))
                 .map(productSaved -> Mappers.productToDTO(productSaved,
                         productSaved.getCategoryId(), productSaved.getBrandId(), productSaved.getProviderId()))
                 .doOnError(error -> log.error(Constants.ERROR_SEARCHING_PRODUCT, error.getMessage()));
@@ -52,10 +52,20 @@ public class ProductServiceImpl implements ProductService {
                                                    String categoryName,
                                                    String brandName,
                                                    String providerName) {
-        return productRepository.findByCriteria(name, categoryName, brandName, providerName)
-                .switchIfEmpty(Flux.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX_CRITERIA)))
-                .map(productSaved -> Mappers.productToDTO(productSaved,
-                        productSaved.getCategoryId(), productSaved.getBrandId(), productSaved.getProviderId()))
+        Mono<Category> categoryMono = findCategoryByName(categoryName);
+        Mono<Brand> brandMono = findBrandByName(brandName);
+        Mono<Provider> providerMono = findProviderByName(providerName);
+
+        return Mono.zip(categoryMono, brandMono, providerMono)
+                .flatMapMany(tuple -> {
+                    Category category = tuple.getT1();
+                    Brand brand = tuple.getT2();
+                    Provider provider = tuple.getT3();
+
+                    return productRepository.findByCriteria(name, category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider())
+                            .switchIfEmpty(Flux.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX_CRITERIA)))
+                            .map(productSaved -> Mappers.productToDTO(productSaved, category.getName(), brand.getName(), provider.getName()));
+                })
                 .doOnError(error -> log.error(ERROR_SEARCHING_PRODUCT, error.getMessage()));
     }
 
@@ -112,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
 
     private Mono<Product> findById(String id) {
         return productRepository.findById(id)
-                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_UUID + id)));
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + id)));
     }
 
     private Mono<Category> findCategoryByName(String name) {

@@ -17,21 +17,21 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public Flux<Product> findByCriteria(String name,
-                                        String categoryName,
-                                        String brandName,
-                                        String providerName) {
+                                        String categoryId,
+                                        String brandId,
+                                        String providerId) {
         Query query = new Query();
         if (name != null) {
             query.addCriteria(Criteria.where("name").regex(name, "i"));
         }
-        if (categoryName != null) {
-            query.addCriteria(Criteria.where("category.name").regex(categoryName, "i"));
+        if (categoryId != null) {
+            query.addCriteria(Criteria.where("category_id"));
         }
-        if (brandName != null) {
-            query.addCriteria(Criteria.where("brand.name").regex(brandName, "i"));
+        if (brandId != null) {
+            query.addCriteria(Criteria.where("brand_id"));
         }
-        if (providerName != null) {
-            query.addCriteria(Criteria.where("provider.name").regex(providerName, "i"));
+        if (providerId != null) {
+            query.addCriteria(Criteria.where("provider_id"));
         }
         return reactiveMongoTemplate.find(query, Product.class);
     }

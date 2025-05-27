@@ -47,7 +47,9 @@ public class GlobalExceptionHandler {
             CategoryNotFoundException.class,
             BrandNotFoundException.class,
             StockTakingNotFoundException.class,
-            SalesNotFoundException.class
+            SalesNotFoundException.class,
+            UserNotFoundException.class,
+            RoleNotFoundException.class
     })
     public Mono<ResponseEntity<ErrorResponse>> handleNotFoundExceptions(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.NOT_FOUND, ex.getMessage(), null);
