@@ -3,6 +3,9 @@ package org.gad.inventory_service.utils;
 import org.gad.inventory_service.dto.*;
 import org.gad.inventory_service.model.*;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.gad.inventory_service.utils.UtilsMethods.localDateTimeFormatted;
 
 public class Mappers {
@@ -84,5 +87,29 @@ public class Mappers {
                 .createdAt(localDateTimeFormatted(user.getCreatedAt()))
                 .updatedAt(localDateTimeFormatted(user.getUpdatedAt()))
                 .build();
+    }
+
+    public static RoleDTO roleToDTO(Role role) {
+        if (role == null) return null;
+        return RoleDTO.builder()
+                .idRole(role.getIdRole())
+                .name(role.getName())
+                .permissions(permissionsToSetString(role.getPermissions()))
+                .build();
+    }
+
+    public static PermissionDTO permissionToDTO(Permission permission) {
+        if (permission == null) return null;
+        return PermissionDTO.builder()
+                .idPermission(permission.getIdPermission())
+                .name(permission.getName())
+                .build();
+    }
+
+    private static Set<String> permissionsToSetString(Set<Permission> permissions) {
+        if (permissions == null || permissions.isEmpty()) return Set.of();
+        return permissions.stream()
+                .map(Permission::getName)
+                .collect(Collectors.toSet());
     }
 }

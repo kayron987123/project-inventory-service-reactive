@@ -11,6 +11,7 @@ public class Constants {
     public static final String CONTENT_DISPOSITION_EXCEL = "attachment; filename=sales_report.xlsx";
 
     public static final String DEFAULT_ROLE_FOR_NEW_USER = "ROLE_BASIC_USER";
+    public static final String PREFIX_ROLE = "ROLE_";
 
     public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
     public static final String PRODUCT_NOT_FOUND_NAME = "Product not found with name: ";
@@ -93,6 +94,22 @@ public class Constants {
     public static final String ERROR_UPDATING_USER = "Error updating user: {}";
     public static final String ERROR_DELETING_USER = "Error deleting user: {}";
 
+    public static final String ROLES_NOT_FOUND = "Roles not found";
+    public static final String ROLE_NOT_FOUND_ID = "Role not found with id: ";
+    public static final String ERROR_MESSAGE_FINDING_ROLES = "Error finding all roles: {}";
+    public static final String ERROR_MESSAGE_ROLE_NOT_FOUND_ID = "Error when finding role with id {}: {}";
+    public static final String ERROR_CREATING_ROLE = "Error creating role: {}";
+    public static final String ERROR_UPDATING_ROLE_BY_ID = "Error updating role with id {}: {}";
+    public static final String ERROR_DELETING_ROLE_BY_ID = "Error deleting role with id {}: {}";
+
+    public static final String PERMISSION_NOT_FOUND_FLUX = "Permissions not found";
+    public static final String PERMISSION_NOT_FOUND_ID = "Permission not found with id: ";
+    public static final String ERROR_SEARCHING_PERMISSIONS = "Error searching permissions: {}";
+    public static final String ERRORS_SEARCHING_PERMISSION_BY_ID = "Error searching permission with id {}: {}";
+    public static final String ERROR_CREATING_PERMISSION = "Error creating permission: {}";
+    public static final String ERROR_UPDATING_PERMISSION = "Error updating permission with id {}: {}";
+    public static final String ERROR_DELETING_PERMISSION = "Error deleting permission with id {}: {}";
+
     public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     public static final String REGEX_RUC = "^\\d{11}$";
@@ -105,6 +122,8 @@ public class Constants {
     public static final String STOCKTAKING_URI = "/api/v1/stocktaking/%s";
     public static final String SALE_URI = "/api/v1/sales/%s";
     public static final String USER_URI = "/api/v1/users/%s";
+    public static final String ROLE_URI = "/api/v1/roles/%s";
+    public static final String PERMISSION_URI = "/api/v1/permissions/%s";
 
     public static final String BRAND_URL = "/api/v1/brands/**";
     public static final String CATEGORY_URL = "/api/v1/categories/**";
@@ -170,6 +189,16 @@ public class Constants {
     public static final String MESSAGE_USER_OK = "User retrieved successfully";
     public static final String MESSAGE_USER_CREATED = "User created successfully";
     public static final String MESSAGE_USER_UPDATED = "User updated successfully";
+
+    public static final String MESSAGE_ROLES_OK = "Roles retrieved successfully";
+    public static final String MESSAGE_ROLE_OK = "Role retrieved successfully";
+    public static final String MESSAGE_ROLE_CREATED = "Role created successfully";
+    public static final String MESSAGE_ROLE_UPDATED = "Role updated successfully";
+
+    public static final String MESSAGE_PERMISSIONS_OK = "Permissions retrieved successfully";
+    public static final String MESSAGE_PERMISSION_OK = "Permission retrieved successfully";
+    public static final String MESSAGE_PERMISSION_CREATED = "Permission created successfully";
+    public static final String MESSAGE_PERMISSION_UPDATED = "Permission updated successfully";
 
     public static final String TEXT_SALE_DATE = "sale_date";
     public static final String TEXT_SALE_TOTAL_PRICE = "total_price";
