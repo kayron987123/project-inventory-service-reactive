@@ -18,10 +18,10 @@ public class CustomReactiveAuthenticationManager implements ReactiveAuthenticati
 
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
-        String email = authentication.getName();
+        String username = authentication.getName();
         String rawPassword = authentication.getCredentials().toString();
 
-        return userDetailsService.findByUsername(email)
+        return userDetailsService.findByUsername(username)
                 .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
                 .map(user -> (Authentication) new UsernamePasswordAuthenticationToken(
                         user, null, user.getAuthorities()))

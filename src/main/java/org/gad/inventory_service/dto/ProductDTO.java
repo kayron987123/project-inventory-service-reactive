@@ -12,11 +12,11 @@ public record ProductDTO(
         String name,
         String description,
         BigDecimal price,
-        @JsonProperty("id_category")
+        @JsonProperty("category_name")
         String categoryName,
-        @JsonProperty("id_brand")
+        @JsonProperty("brand_name")
         String brandName,
-        @JsonProperty("id_provider")
+        @JsonProperty("provider_name")
         String providerName,
         @JsonProperty("is_active")
         boolean isActive,

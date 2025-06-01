@@ -10,7 +10,4 @@ public interface ProviderRepository extends ReactiveMongoRepository<Provider, St
     Mono<Provider> findProviderByEmail(String email);
     Mono<Provider> findProviderByRuc(String ruc);
     Mono<Provider> findProviderByDni(String dni);
-    Mono<Boolean> existsByEmail(String email);
-    Mono<Boolean> existsByRuc(String ruc);
-    Mono<Boolean> existsByDni(String dni);
 }

@@ -1,6 +1,7 @@
 package org.gad.inventory_service.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.gad.inventory_service.dto.request.CreateProductRequest;
@@ -26,11 +27,30 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public Mono<ResponseEntity<DataResponse>> getAllProducts(@RequestParam(required = false) @Pattern(regexp = REGEX_PRODUCTS, message = MESSAGE_PARAMETER_PRODUCT_NAME) String name,
-                                                             @RequestParam(required = false) @Pattern(regexp = REGEX_PRODUCTS, message = MESSAGE_PARAMETER_CATEGORY) String category,
-                                                             @RequestParam(required = false) @Pattern(regexp = REGEX_PRODUCTS, message = MESSAGE_PARAMETER_BRAND) String brand,
-                                                             @RequestParam(required = false) @Pattern(regexp = REGEX_PRODUCTS, message = MESSAGE_PARAMETER_PROVIDER) String provider) {
-        return productService.findProductsByCriteria(name, category, brand, provider)
+    public Mono<ResponseEntity<DataResponse>> getAllProducts() {
+        return productService.findAllProducts()
+                .collectList()
+                .map(products -> ResponseEntity.ok(
+                        DataResponse.builder()
+                                .status(HttpStatus.OK.value())
+                                .message(MESSAGE_PRODUCTS_OK)
+                                .data(products)
+                                .timestamp(UtilsMethods.datetimeNowFormatted())
+                                .build())
+                );
+    }
+
+
+    @GetMapping(params = {"name", "categoryName", "brandName", "providerName"})
+    public Mono<ResponseEntity<DataResponse>> getAllProducts(@RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_PRODUCT_NAME)
+                                                             @NotBlank(message = "Name of product cannot be empty") String name,
+                                                             @RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_CATEGORY)
+                                                             @NotBlank(message = "Name of category cannot be empty") String categoryName,
+                                                             @RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_BRAND)
+                                                             @NotBlank(message = "Name of brand cannot be empty") String brandName,
+                                                             @RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_PROVIDER)
+                                                             @NotBlank(message = "Name of provider cannot be empty") String providerName) {
+        return productService.findProductsByCriteria(name, categoryName, brandName, providerName)
                 .collectList()
                 .map(products -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -43,7 +63,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> getProductById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> getProductById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
         return productService.findProductById(id)
                 .map(product -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -71,7 +91,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
+    public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
                                                             @Valid @RequestBody UpdateProductRequest updateProductRequest) {
         return productService.updateProduct(id, updateProductRequest)
                 .map(product -> {
@@ -87,7 +107,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteProductById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<Void>> deleteProductById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
         return productService.deleteProductById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

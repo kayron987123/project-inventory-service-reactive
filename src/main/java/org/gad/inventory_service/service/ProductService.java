@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 
 
 public interface ProductService {
+    Flux<ProductDTO> findAllProducts();
     Mono<ProductDTO> findProductById(String id);
     Flux<ProductDTO> findProductsByCriteria(String name,
                                   String categoryName,

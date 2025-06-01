@@ -39,6 +39,14 @@ public class ProductServiceImpl implements ProductService {
     private final ProviderRepository providerRepository;
 
     @Override
+    public Flux<ProductDTO> findAllProducts() {
+        return productRepository.findAll()
+                .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX)))
+                .map(product -> Mappers.productToDTO(product, product.getCategoryId(), product.getBrandId(), product.getProviderId()))
+                .doOnError(error -> log.error(Constants.ERROR_SEARCHING_PRODUCT, error.getMessage()));
+    }
+
+    @Override
     public Mono<ProductDTO> findProductById(String id) {
         return productRepository.findById(id)
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_ID + id)))
@@ -63,8 +71,7 @@ public class ProductServiceImpl implements ProductService {
                     Provider provider = tuple.getT3();
 
                     return productRepository.findByCriteria(name, category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider())
-                            .switchIfEmpty(Flux.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX_CRITERIA)))
-                            .map(productSaved -> Mappers.productToDTO(productSaved, category.getName(), brand.getName(), provider.getName()));
+                            .map(product -> Mappers.productToDTO(product, category.getName(), brand.getName(), provider.getName()));
                 })
                 .doOnError(error -> log.error(ERROR_SEARCHING_PRODUCT, error.getMessage()));
     }

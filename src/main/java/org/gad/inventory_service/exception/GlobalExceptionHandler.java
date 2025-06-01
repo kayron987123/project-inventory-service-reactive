@@ -5,6 +5,8 @@ import org.gad.inventory_service.dto.response.ErrorResponse;
 import org.gad.inventory_service.utils.UtilsMethods;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
@@ -73,6 +75,11 @@ public class GlobalExceptionHandler {
     })
     public Mono<ResponseEntity<ErrorResponse>> handleInvalidDateRangeException(RuntimeException ex, ServerWebExchange exchange) {
         return buildErrorResponse(exchange, HttpStatus.BAD_REQUEST, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleBadCredentialsException(BadCredentialsException ex, ServerWebExchange exchange) {
+        return buildErrorResponse(exchange, HttpStatus.UNAUTHORIZED, ex.getMessage(), null);
     }
 
     private Mono<ResponseEntity<ErrorResponse>> buildErrorResponse(ServerWebExchange exchange,

@@ -14,6 +14,7 @@ public class Constants {
     public static final String PREFIX_ROLE = "ROLE_";
 
     public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
+    public static final String PRODUCT_NOT_FOUND_FLUX = "No products found";
     public static final String PRODUCT_NOT_FOUND_NAME = "Product not found with name: ";
     public static final String PRODUCT_NOT_FOUND_ID = "Product not found with id: ";
     public static final String ERROR_SEARCHING_PRODUCT = "Error when searching for product: {}";
@@ -110,7 +111,8 @@ public class Constants {
     public static final String ERROR_UPDATING_PERMISSION = "Error updating permission with id {}: {}";
     public static final String ERROR_DELETING_PERMISSION = "Error deleting permission with id {}: {}";
 
-    public static final String REGEX_PRODUCTS = "^[a-zA-Z]*$";
+    public static final String REGEX_ONLY_TEXT = "^[a-zA-Z]*$";
+    public static final String REGEX_ID = "^[a-fA-F0-9]{24}$";
     public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     public static final String REGEX_RUC = "^\\d{11}$";
     public static final String REGEX_DNI = "^\\d{8}$";
