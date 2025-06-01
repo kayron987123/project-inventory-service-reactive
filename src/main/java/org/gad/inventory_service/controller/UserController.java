@@ -47,7 +47,7 @@ public class UserController {
                 );
     }
 
-    @GetMapping(params = {"username", "email"})
+    @GetMapping("/search/username-or-email")
     public Mono<ResponseEntity<DataResponse>> findUserByUsernameOrEmail(@RequestParam(required = false) String username,
                                                                         @RequestParam(required = false) String email) {
         return userService.findUserByUsernameOrEmail(username, email)
@@ -60,7 +60,7 @@ public class UserController {
                 );
     }
 
-    @GetMapping(params = {"name", "lastName"})
+    @GetMapping("/search/name-or-lastname")
     public Mono<ResponseEntity<DataResponse>> findUsersByNameOrLastName(@RequestParam(required = false) String name,
                                                                         @RequestParam(required = false) String lastName) {
         return userService.findUsersByNameOrLastName(name, lastName)

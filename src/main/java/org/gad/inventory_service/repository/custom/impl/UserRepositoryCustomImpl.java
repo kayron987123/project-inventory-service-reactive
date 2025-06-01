@@ -22,34 +22,27 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
 
     @Override
-    public Flux<User> findUsersByNameOrLastName(String name, String lastName) {
+    public Flux<User> findUsersByNameLastName(String name, String lastName) {
         Query query = new Query();
-
-        if (StringUtils.hasText(name) && StringUtils.hasText(lastName)) {
-            query.addCriteria(new Criteria().orOperator(
-                    Criteria.where("name").regex(".*" + Pattern.quote(name.trim()) + ".*", "i"),
-                    Criteria.where("last_name").regex(".*" + Pattern.quote(lastName.trim()) + ".*", "i")
-            ));
-        } else if (StringUtils.hasText(name)) {
+        if (name != null){
             query.addCriteria(Criteria.where("name").regex(".*" + Pattern.quote(name.trim()) + ".*", "i"));
-        } else if (StringUtils.hasText(lastName)) {
-            query.addCriteria(Criteria.where("last_name").regex(".*" + Pattern.quote(lastName.trim()) + ".*", "i"));
+        }
+
+        if (lastName != null) {
+            query.addCriteria(Criteria.where("lastName").regex(".*" + Pattern.quote(lastName.trim()) + ".*", "i"));
         }
         return reactiveMongoTemplate.find(query, User.class);
     }
 
     @Override
-    public Mono<User> findUserByUsernameOrEmail(String username, String email) {
+    public Mono<User> findUserByUsernameEmail(String username, String email) {
         Query query = new Query();
-        if (username != null && email != null) {
-            query.addCriteria(new Criteria().orOperator(
-                    Criteria.where("username").is(username),
-                    Criteria.where("email").is(email)
-            ));
-        } else if (username != null) {
-            query.addCriteria(Criteria.where("username").is(username));
-        } else if (email != null) {
-            query.addCriteria(Criteria.where("email").is(email));
+        if (StringUtils.hasText(username)) {
+            query.addCriteria(Criteria.where("username").is(username.trim()));
+        }
+
+        if (StringUtils.hasText(email)) {
+            query.addCriteria(Criteria.where("email").is(email.trim()));
         }
         return reactiveMongoTemplate.findOne(query, User.class);
     }

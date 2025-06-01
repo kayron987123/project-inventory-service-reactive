@@ -5,6 +5,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface UserRepositoryCustom {
-    Flux<User> findUsersByNameOrLastName(String name, String lastName);
-    Mono<User> findUserByUsernameOrEmail(String username, String email);
+    Flux<User> findUsersByNameLastName(String name, String lastName);
+    Mono<User> findUserByUsernameEmail(String username, String email);
 }

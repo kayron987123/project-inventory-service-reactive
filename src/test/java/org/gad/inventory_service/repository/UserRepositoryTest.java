@@ -72,4 +72,49 @@ class UserRepositoryTest {
                 .expectNextCount(0)
                 .verifyComplete();
     }
+
+    @Test
+    void findUsersByNameOrLastName_ShouldReturnUsers_WhenNameOrLastNameMatches() {
+        var foundUsers = userRepository.findUsersByNameLastName("Test", "User");
+
+        StepVerifier.create(foundUsers)
+                .assertNext(user -> {
+                    assertNotNull(user.getIdUser());
+                    assertEquals("Test", user.getName());
+                    assertEquals("User", user.getLastName());
+                    assertEquals("testuser", user.getUsername());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void findUsersByNameOrLastName_ShouldReturnEmpty_WhenNoMatch() {
+        var foundUsers = userRepository.findUsersByNameLastName("NonexistentName", "NonexistentLastName");
+
+        StepVerifier.create(foundUsers)
+                .expectNextCount(0)
+                .verifyComplete();
+    }
+
+    @Test
+    void findUserByUsernameEmail_ShouldReturnUser_WhenUsernameAndEmailMatch() {
+        var foundUser = userRepository.findUserByUsernameEmail("testuser", "email@mail.com");
+        StepVerifier.create(foundUser)
+                .assertNext(user -> {
+                    assertNotNull(user.getIdUser());
+                    assertEquals("Test", user.getName());
+                    assertEquals("User", user.getLastName());
+                    assertEquals("testuser", user.getUsername());
+                    assertEquals("email@mail.com", user.getEmail());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void findUserByUsernameEmail_ShouldReturnEmpty_WhenUsernameOrEmailDoesNotMatch() {
+        var foundUser = userRepository.findUserByUsernameEmail("NonexistentUsername", "NonExistentEmail");
+        StepVerifier.create(foundUser)
+                .expectNextCount(0)
+                .verifyComplete();
+    }
 }

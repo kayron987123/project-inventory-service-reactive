@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<UserDTO> findUserByUsernameOrEmail(String username, String email) {
-        return userRepository.findUserByUsernameOrEmail(username, email)
+        return userRepository.findUserByUsernameEmail(username, email)
                 .switchIfEmpty(Mono.error(new UserNotFoundException(USER_NOT_FOUND_USERNAME + username + OR_EMAIL + email)))
                 .map(Mappers::userToDTO)
                 .doOnError(error -> log.error(ERROR_SEARCHING_USER_BY_USERNAME_EMAIL, error.getMessage()));
@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<UserDTO> findUsersByNameOrLastName(String name, String lastName) {
-        return userRepository.findUsersByNameOrLastName(name, lastName)
-                .switchIfEmpty(Flux.error(new UserNotFoundException(USER_NOT_FOUND_NAME + name + OR_LAST_NAME + lastName)))
+        return userRepository.findUsersByNameLastName(name, lastName)
+                .switchIfEmpty(Flux.error(new UserNotFoundException(USER_NOT_FOUND_NAME + name + AND_LAST_NAME + lastName)))
                 .map(Mappers::userToDTO)
                 .doOnError(error -> log.error(ERROR_SEARCHING_USERS_BY_NAME_LAST_NAME, error.getMessage()));
     }

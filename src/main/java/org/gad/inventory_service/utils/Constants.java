@@ -85,7 +85,7 @@ public class Constants {
     public static final String USER_NOT_FOUND_USERNAME = "User not found with username: ";
     public static final String USER_NOT_FOUND_NAME = "User not found with name: ";
     public static final String OR_EMAIL = " or email: ";
-    public static final String OR_LAST_NAME = " or last name: ";
+    public static final String AND_LAST_NAME = " and last name: ";
     public static final String DEFAULT_ROLE_NOT_FOUND = "Default role not found: ";
     public static final String ERROR_SEARCHING_USERS = "Error searching users: {}";
     public static final String ERROR_SEARCHING_USER_BY_USERNAME_EMAIL = "Error finding user by username or email: {}";
