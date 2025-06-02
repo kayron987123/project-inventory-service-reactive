@@ -116,9 +116,7 @@ public class ProviderServiceImpl implements ProviderService {
 
     @Override
     public Mono<Void> deleteProviderById(String id) {
-        Mono<Provider> providerMono = findById(id);
-
-        return providerMono
+        return findById(id)
                 .flatMap(provider -> providerRepository.deleteById(provider.getIdProvider()))
                 .doOnError(error -> log.error(ERROR_DELETING_PROVIDER, error.getMessage()));
     }

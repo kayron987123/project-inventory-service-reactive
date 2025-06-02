@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        .pathMatchers(HttpMethod.GET, "api/v1/sales/excel").permitAll()
 
                         .pathMatchers(HttpMethod.GET, BRAND_URL).hasAnyRole(ROLE_ADMIN, ROLE_INVENTORY_MANAGER, ROLE_ANALYST, ROLE_SUPPORT, ROLE_BASIC_USER)
                         .pathMatchers(HttpMethod.GET, CATEGORY_URL).hasAnyRole(ROLE_ADMIN, ROLE_INVENTORY_MANAGER, ROLE_ANALYST, ROLE_SUPPORT, ROLE_BASIC_USER)

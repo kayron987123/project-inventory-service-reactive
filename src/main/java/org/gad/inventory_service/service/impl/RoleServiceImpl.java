@@ -87,7 +87,7 @@ public class RoleServiceImpl implements RoleService {
     public Mono<Void> deleteRoleById(String id) {
         return roleRepository.findById(id)
                 .switchIfEmpty(Mono.error(new RoleNotFoundException(ROLE_NOT_FOUND_ID + id)))
-                .flatMap(roleRepository::delete)
+                .flatMap(existingRole -> roleRepository.deleteById(existingRole.getIdRole()))
                 .doOnError(error -> log.error(ERROR_DELETING_ROLE_BY_ID, id, error.getMessage()));
     }
 

@@ -71,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
                     Provider provider = tuple.getT3();
 
                     return productRepository.findByCriteria(name, category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider())
+                            .switchIfEmpty(Mono.error(new ProductNotFoundException(PRODUCT_NOT_FOUND_FLUX_CRITERIA)))
                             .map(product -> Mappers.productToDTO(product, category.getName(), brand.getName(), provider.getName()));
                 })
                 .doOnError(error -> log.error(ERROR_SEARCHING_PRODUCT, error.getMessage()));
@@ -78,52 +79,70 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Mono<ProductDTO> createProduct(CreateProductRequest createProductRequest) {
-        Mono<Category> categoryMono = findCategoryByName(createProductRequest.categoryName());
-        Mono<Brand> brandMono = findBrandByName(createProductRequest.brandName());
-        Mono<Provider> providerMono = findProviderByName(createProductRequest.providerName());
+        return findCategoryByName(createProductRequest.categoryName())
+                .flatMap(category ->
+                        findBrandByName(createProductRequest.brandName())
+                                .flatMap(brand ->
+                                        findProviderByName(createProductRequest.providerName())
+                                                .flatMap(provider -> {
+                                                    Product newProduct = new Product();
+                                                    newProduct.setName(createProductRequest.name());
+                                                    newProduct.setDescription(createProductRequest.description());
+                                                    newProduct.setPrice(UtilsMethods.formatPrice(createProductRequest.price()));
+                                                    newProduct.setCategoryId(category.getIdCategory());
+                                                    newProduct.setBrandId(brand.getIdBrand());
+                                                    newProduct.setProviderId(provider.getIdProvider());
 
-        return Mono.zip(categoryMono, brandMono, providerMono)
-                .flatMap(tuple -> {
-                    Category category = tuple.getT1();
-                    Brand brand = tuple.getT2();
-                    Provider provider = tuple.getT3();
-                    Product product = new Product();
-
-                    return productRepository.save(buildProductFromRequest(product, createProductRequest.name(),
-                                    createProductRequest.description(), UtilsMethods.formatPrice(createProductRequest.price()),
-                                    category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider()))
-                            .map(productSaved -> Mappers.productToDTO(productSaved, category.getName(), brand.getName(), provider.getName()));
-                })
+                                                    return productRepository.save(newProduct)
+                                                            .map(saved -> Mappers.productToDTO(
+                                                                    saved,
+                                                                    category.getName(),
+                                                                    brand.getName(),
+                                                                    provider.getName()
+                                                            ));
+                                                })
+                                )
+                )
                 .doOnError(error -> log.error(ERROR_CREATING_PRODUCTS, error.getMessage()));
     }
 
     @Override
     public Mono<ProductDTO> updateProduct(String id, UpdateProductRequest updateProductRequest) {
-        Mono<Product> existingProductMono = findById(id);
-        Mono<Category> categoryMono = findCategoryByName(updateProductRequest.categoryName());
-        Mono<Brand> brandMono = findBrandByName(updateProductRequest.brandName());
-        Mono<Provider> providerMono = findProviderByName(updateProductRequest.providerName());
-
-        return existingProductMono
-                .zipWith(Mono.zip(categoryMono, brandMono, providerMono))
-                .flatMap(tuple -> {
-                    Product existingProduct = tuple.getT1();
-                    Category category = tuple.getT2().getT1();
-                    Brand brand = tuple.getT2().getT2();
-                    Provider provider = tuple.getT2().getT3();
-
-                    return productRepository.save(buildProductFromRequest(existingProduct, updateProductRequest.name(),
-                                    updateProductRequest.description(), UtilsMethods.formatPrice(updateProductRequest.price()),
-                                    category.getIdCategory(), brand.getIdBrand(), provider.getIdProvider()))
-                            .map(productSaved -> Mappers.productToDTO(productSaved, category.getName(), brand.getName(), provider.getName()));
-                })
+        return findById(id)
+                .flatMap(existingProduct ->
+                        findCategoryByName(updateProductRequest.categoryName())
+                                .flatMap(category ->
+                                        findBrandByName(updateProductRequest.brandName())
+                                                .flatMap(brand ->
+                                                        findProviderByName(updateProductRequest.providerName())
+                                                                .flatMap(provider -> {
+                                                                    Product updatedProduct = buildProductFromRequest(
+                                                                            existingProduct,
+                                                                            updateProductRequest.name(),
+                                                                            updateProductRequest.description(),
+                                                                            UtilsMethods.formatPrice(updateProductRequest.price()),
+                                                                            category.getIdCategory(),
+                                                                            brand.getIdBrand(),
+                                                                            provider.getIdProvider()
+                                                                    );
+                                                                    return productRepository.save(updatedProduct)
+                                                                            .map(saved -> Mappers.productToDTO(
+                                                                                    saved,
+                                                                                    category.getName(),
+                                                                                    brand.getName(),
+                                                                                    provider.getName()
+                                                                            ));
+                                                                })
+                                                )
+                                )
+                )
                 .doOnError(error -> log.error(ERROR_UPDATING_PRODUCT, error.getMessage()));
     }
 
     @Override
     public Mono<Void> deleteProductById(String id) {
-        Mono<Product> existingProductMono = findById(id);
-        return productRepository.deleteById(existingProductMono.map(Product::getIdProduct))
+        return findById(id)
+                .flatMap(product -> productRepository.deleteById(product.getIdProduct()))
                 .doOnError(error -> log.error(ERROR_DELETING_PRODUCT, error.getMessage()));
     }
 

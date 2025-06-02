@@ -5,6 +5,14 @@ public class Constants {
     private Constants() {
     }
 
+    public static final String[] REPORT_HEADERS = {
+            "ID Sale",
+            "Product",
+            "Amount",
+            "Total Price",
+            "DateTime"
+    };
+    public static final String SHEET_NAME = "Sales Report";
     public static final String PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String TEXT_AND = " and ";
     public static final String MESSAGE_VALIDATION_INCORRECT = "Validation incorrect";

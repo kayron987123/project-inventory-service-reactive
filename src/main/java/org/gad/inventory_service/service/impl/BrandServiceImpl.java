@@ -70,9 +70,7 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public Mono<Void> deleteBrandById(String id) {
-        Mono<Brand> brandMono = findById(id);
-
-        return brandMono
+        return findById(id)
                 .flatMap(brand -> brandRepository.deleteById(brand.getIdBrand()))
                 .doOnError(error -> log.error(ERROR_DELETING_BRAND, error.getMessage()));
     }

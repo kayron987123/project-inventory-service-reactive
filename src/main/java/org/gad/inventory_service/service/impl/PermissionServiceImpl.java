@@ -65,7 +65,7 @@ public class PermissionServiceImpl implements PermissionService {
     public Mono<Void> deletePermissionById(String id) {
         return permissionRepository.findById(id)
                 .switchIfEmpty(Mono.error(new PermissionNotFoundException(PERMISSION_NOT_FOUND_ID + id)))
-                .flatMap(permissionRepository::delete)
+                .flatMap(permission -> permissionRepository.deleteById(permission.getIdPermission()))
                 .doOnError(error -> log.error(ERROR_DELETING_PERMISSION, id, error.getMessage()));
     }
 

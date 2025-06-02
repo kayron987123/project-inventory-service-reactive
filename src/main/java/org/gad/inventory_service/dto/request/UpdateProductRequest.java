@@ -2,9 +2,11 @@ package org.gad.inventory_service.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 
+@Builder
 public record UpdateProductRequest(
         @NotBlank(message = "Name cannot be empty")
         String name,
