@@ -18,8 +18,7 @@ import reactor.test.StepVerifier;
 import static org.gad.inventory_service.utils.Constants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
@@ -59,7 +58,7 @@ class CategoryServiceImplTest {
                         dto.idCategory().equals("123456") &&
                                 dto.name().equals("Electronics"))
                 .verifyComplete();
-        verify(categoryRepository).findById(anyString());
+        verify(categoryRepository, times(1)).findById(anyString());
     }
 
     @Test
@@ -71,7 +70,7 @@ class CategoryServiceImplTest {
                 .expectErrorMatches(throwable -> throwable instanceof CategoryNotFoundException &&
                         throwable.getMessage().equals(CATEGORY_NOT_FOUND_ID + "non-existent-id"))
                 .verify();
-        verify(categoryRepository).findById(anyString());
+        verify(categoryRepository, times(1)).findById(anyString());
     }
 
     @Test
@@ -84,7 +83,7 @@ class CategoryServiceImplTest {
                         dto.idCategory().equals("123456") &&
                                 dto.name().equals("Electronics"))
                 .verifyComplete();
-        verify(categoryRepository).findCategoryByNameContainingIgnoreCase(anyString());
+        verify(categoryRepository, times(1)).findCategoryByNameContainingIgnoreCase(anyString());
     }
 
     @Test
@@ -96,7 +95,7 @@ class CategoryServiceImplTest {
                 .expectErrorMatches(throwable -> throwable instanceof CategoryNotFoundException &&
                         throwable.getMessage().equals(CATEGORY_NOT_FOUND_NAME + "NonExistentCategory"))
                 .verify();
-        verify(categoryRepository).findCategoryByNameContainingIgnoreCase(anyString());
+        verify(categoryRepository, times(1)).findCategoryByNameContainingIgnoreCase(anyString());
     }
 
     @Test
@@ -109,7 +108,7 @@ class CategoryServiceImplTest {
                         dto.idCategory().equals("123456") &&
                                 dto.name().equals("Electronics"))
                 .verifyComplete();
-        verify(categoryRepository).findAll();
+        verify(categoryRepository, times(1)).findAll();
     }
 
     @Test
@@ -121,7 +120,7 @@ class CategoryServiceImplTest {
                 .expectErrorMatches(throwable -> throwable instanceof CategoryNotFoundException &&
                         throwable.getMessage().equals(CATEGORY_NOT_FOUND_FLUX))
                 .verify();
-        verify(categoryRepository).findAll();
+        verify(categoryRepository, times(1)).findAll();
     }
 
     @Test
@@ -134,7 +133,7 @@ class CategoryServiceImplTest {
                         dto.idCategory().equals("123456") &&
                                 dto.name().equals("Electronics"))
                 .verifyComplete();
-        verify(categoryRepository).save(any(Category.class));
+        verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
     @Test
@@ -149,8 +148,8 @@ class CategoryServiceImplTest {
                         dto.idCategory().equals("123456") &&
                                 dto.name().equals("Updated Electronics"))
                 .verifyComplete();
-        verify(categoryRepository).findById(anyString());
-        verify(categoryRepository).save(any(Category.class));
+        verify(categoryRepository, times(1)).findById(anyString());
+        verify(categoryRepository, times(1)).save(any(Category.class));
     }
 
     @Test
@@ -162,7 +161,7 @@ class CategoryServiceImplTest {
                 .expectErrorMatches(throwable -> throwable instanceof CategoryNotFoundException &&
                         throwable.getMessage().equals(CATEGORY_NOT_FOUND_ID + "non-existent-id"))
                 .verify();
-        verify(categoryRepository).findById(anyString());
+        verify(categoryRepository, times(1)).findById(anyString());
     }
 
     @Test
@@ -174,8 +173,8 @@ class CategoryServiceImplTest {
 
         StepVerifier.create(categoryService.deleteCategoryById("123456"))
                 .verifyComplete();
-        verify(categoryRepository).findById(anyString());
-        verify(categoryRepository).deleteById(anyString());
+        verify(categoryRepository, times(1)).findById(anyString());
+        verify(categoryRepository, times(1)).deleteById(anyString());
     }
 
     @Test
@@ -187,6 +186,6 @@ class CategoryServiceImplTest {
                 .expectErrorMatches(throwable -> throwable instanceof CategoryNotFoundException &&
                         throwable.getMessage().equals(CATEGORY_NOT_FOUND_ID + "non-existent-id"))
                 .verify();
-        verify(categoryRepository).findById(anyString());
+        verify(categoryRepository, times(1)).findById(anyString());
     }
 }

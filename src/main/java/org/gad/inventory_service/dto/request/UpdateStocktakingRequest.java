@@ -5,7 +5,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Builder;
 
+@Builder
 public record UpdateStocktakingRequest(
         @JsonProperty("product_name")
         @NotBlank(message = "Product name cannot be blank")

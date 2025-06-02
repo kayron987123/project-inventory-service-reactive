@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     public Mono<Void> deleteUserById(String id) {
         return userRepository.findById(id)
                 .switchIfEmpty(Mono.error(new UserNotFoundException(USER_NOT_FOUND_ID + id)))
-                .flatMap(userRepository::delete)
+                .flatMap(user -> userRepository.deleteById(user.getIdUser()))
                 .doOnError(error -> log.error(ERROR_DELETING_USER, error.getMessage()));
     }
 }
