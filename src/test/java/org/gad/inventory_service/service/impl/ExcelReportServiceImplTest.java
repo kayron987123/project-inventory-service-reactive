@@ -23,7 +23,7 @@ class ExcelReportServiceImplTest {
     @InjectMocks
     private ExcelReportServiceImpl excelReportService;
 
-    List<SaleDTO> sales;
+    private List<SaleDTO> sales;
 
     @BeforeEach
     void setUp() {

@@ -27,9 +27,9 @@ class PermissionServiceImplTest {
     @InjectMocks
     private PermissionServiceImpl permissionService;
 
-    Permission permission;
-    CreatePermissionRequest createPermissionRequest;
-    UpdatePermissionRequest updatePermissionRequest;
+    private Permission permission;
+    private CreatePermissionRequest createPermissionRequest;
+    private UpdatePermissionRequest updatePermissionRequest;
 
     @BeforeEach
     void setUp() {

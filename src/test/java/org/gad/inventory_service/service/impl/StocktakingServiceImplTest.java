@@ -36,10 +36,10 @@ class StocktakingServiceImplTest {
     @InjectMocks
     private StocktakingServiceImpl stocktakingService;
 
-    Stocktaking stocktaking;
-    Product product;
-    CreateStocktakingRequest createStocktakingRequest;
-    UpdateStocktakingRequest updateStocktakingRequest;
+    private Stocktaking stocktaking;
+    private Product product;
+    private CreateStocktakingRequest createStocktakingRequest;
+    private UpdateStocktakingRequest updateStocktakingRequest;
 
     @BeforeEach
     void setUp() {

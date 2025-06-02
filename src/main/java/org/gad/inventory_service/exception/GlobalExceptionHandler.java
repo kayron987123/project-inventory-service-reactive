@@ -87,13 +87,17 @@ public class GlobalExceptionHandler {
                                                                    String message,
                                                                    List<String> errors) {
 
+        String fullPath = exchange.getRequest().getURI().getPath();
+        String query = exchange.getRequest().getURI().getQuery();
+        String pathWithParams = query != null ? fullPath + "?" + query : fullPath;
+
         String methodHttp = exchange.getRequest().getMethod().name();
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(status.value())
                 .message(message)
                 .errors(errors)
                 .timestamp(UtilsMethods.datetimeNowFormatted())
-                .path(methodHttp + ": " + exchange.getRequest().getPath())
+                .path(methodHttp + ": " + pathWithParams)
                 .build();
 
         return Mono.just(ResponseEntity.status(status).body(errorResponse));

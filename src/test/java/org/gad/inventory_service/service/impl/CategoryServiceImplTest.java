@@ -28,9 +28,9 @@ class CategoryServiceImplTest {
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
-    Category category;
-    CreateCategoryRequest createCategoryRequest;
-    UpdateCategoryRequest updateCategoryRequest;
+    private Category category;
+    private CreateCategoryRequest createCategoryRequest;
+    private UpdateCategoryRequest updateCategoryRequest;
 
     @BeforeEach
     void setUp() {

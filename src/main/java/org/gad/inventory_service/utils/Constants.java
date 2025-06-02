@@ -125,7 +125,7 @@ public class Constants {
     public static final String ERROR_UPDATING_PERMISSION = "Error updating permission with id {}: {}";
     public static final String ERROR_DELETING_PERMISSION = "Error deleting permission with id {}: {}";
 
-    public static final String REGEX_ONLY_TEXT = "^[a-zA-Z]*$";
+    public static final String REGEX_ONLY_TEXT = "^[a-zA-Z\\s]*$";
     public static final String REGEX_ID = "^[a-fA-F0-9]{24}$";
     public static final String REGEX_RUC = "^\\d{11}$";
     public static final String REGEX_DNI = "^\\d{8}$";

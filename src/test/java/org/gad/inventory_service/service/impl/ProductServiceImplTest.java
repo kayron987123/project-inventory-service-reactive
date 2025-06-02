@@ -46,12 +46,12 @@ class ProductServiceImplTest {
     @InjectMocks
     private ProductServiceImpl productService;
 
-    Product product;
-    Category category;
-    Brand brand;
-    Provider provider;
-    CreateProductRequest createProductRequest;
-    UpdateProductRequest updateProductRequest;
+    private Product product;
+    private Category category;
+    private Brand brand;
+    private Provider provider;
+    private CreateProductRequest createProductRequest;
+    private UpdateProductRequest updateProductRequest;
 
     @BeforeEach
     void setUp() {

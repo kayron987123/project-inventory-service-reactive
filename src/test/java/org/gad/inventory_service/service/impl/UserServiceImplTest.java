@@ -37,10 +37,10 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    User user;
-    Role role;
-    CreateUserRequest createUserRequest;
-    UpdateUserRequest updateUserRequest;
+    private User user;
+    private Role role;
+    private CreateUserRequest createUserRequest;
+    private UpdateUserRequest updateUserRequest;
 
     @BeforeEach
     void setUp() {

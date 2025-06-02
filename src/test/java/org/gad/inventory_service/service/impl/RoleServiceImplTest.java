@@ -34,10 +34,10 @@ class RoleServiceImplTest {
     @InjectMocks
     private RoleServiceImpl roleService;
 
-    Permission permission;
-    Role role;
-    CreateRoleRequest createRoleRequest;
-    UpdateRoleRequest updateRoleRequest;
+    private Permission permission;
+    private Role role;
+    private CreateRoleRequest createRoleRequest;
+    private UpdateRoleRequest updateRoleRequest;
 
     @BeforeEach
     void setUp() {

@@ -28,9 +28,9 @@ class ProviderServiceImplTest {
     @InjectMocks
     private ProviderServiceImpl providerService;
 
-    Provider provider;
-    CreateProviderRequest createProviderRequest;
-    UpdateProviderRequest updateProviderRequest;
+    private Provider provider;
+    private CreateProviderRequest createProviderRequest;
+    private UpdateProviderRequest updateProviderRequest;
 
     @BeforeEach
     void setUp() {

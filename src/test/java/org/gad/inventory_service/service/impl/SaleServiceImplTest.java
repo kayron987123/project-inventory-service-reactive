@@ -37,10 +37,10 @@ class SaleServiceImplTest {
     @InjectMocks
     private SaleServiceImpl saleService;
 
-    Sale sale;
-    Product product;
-    CreateSaleRequest createSaleRequest;
-    UpdateSaleRequest updateSaleRequest;
+    private Sale sale;
+    private Product product;
+    private CreateSaleRequest createSaleRequest;
+    private UpdateSaleRequest updateSaleRequest;
 
     @BeforeEach
     void setUp() {

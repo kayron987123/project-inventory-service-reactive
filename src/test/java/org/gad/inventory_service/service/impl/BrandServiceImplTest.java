@@ -28,9 +28,9 @@ class BrandServiceImplTest {
     @InjectMocks
     private BrandServiceImpl brandService;
 
-    Brand brand;
-    CreateBrandRequest createBrandRequest;
-    UpdateBrandRequest updateBrandRequest;
+    private Brand brand;
+    private CreateBrandRequest createBrandRequest;
+    private UpdateBrandRequest updateBrandRequest;
 
     @BeforeEach
     void setUp() {
