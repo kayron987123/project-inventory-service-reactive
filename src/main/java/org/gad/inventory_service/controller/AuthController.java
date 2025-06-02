@@ -1,5 +1,6 @@
 package org.gad.inventory_service.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.gad.inventory_service.config.jwt.JwtUtils;
 import org.gad.inventory_service.dto.request.LoginRequest;
@@ -26,7 +27,7 @@ public class AuthController {
     private final ReactiveAuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<DataResponse>> login(@RequestBody LoginRequest loginRequest) {
+    public Mono<ResponseEntity<DataResponse>> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authToken = new UsernamePasswordAuthenticationToken(loginRequest.username(), loginRequest.password());
 
         return authenticationManager.authenticate(authToken)

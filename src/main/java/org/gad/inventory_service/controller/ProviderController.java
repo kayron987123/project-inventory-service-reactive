@@ -29,7 +29,8 @@ public class ProviderController {
     private final ProviderService providerService;
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> findProviderById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> findProviderById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                               @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return providerService.findProviderById(id)
                 .map(provider -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -56,7 +57,8 @@ public class ProviderController {
     }
 
     @GetMapping("/{name}")
-    public Mono<ResponseEntity<DataResponse>> findProviderByName(@PathVariable @NotBlank(message = Constants.MESSAGE_NAME_CANNOT_BE_EMPTY) String name) {
+    public Mono<ResponseEntity<DataResponse>> findProviderByName(@PathVariable @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME)
+                                                                 @NotBlank(message = Constants.MESSAGE_NAME_CANNOT_BE_EMPTY) String name) {
         return providerService.findProviderByName(name)
                 .map(provider -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -126,7 +128,8 @@ public class ProviderController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateProvider(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
+    public Mono<ResponseEntity<DataResponse>> updateProvider(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                             @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id,
                                                              @RequestBody @Valid UpdateProviderRequest request) {
         return providerService.updateProvider(id, request)
                 .map(provider -> {
@@ -142,7 +145,8 @@ public class ProviderController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> deleteProviderById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> deleteProviderById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                                 @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return providerService.deleteProviderById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

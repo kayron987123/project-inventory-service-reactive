@@ -20,6 +20,12 @@ public class Constants {
 
     public static final String DEFAULT_ROLE_FOR_NEW_USER = "ROLE_BASIC_USER";
     public static final String PREFIX_ROLE = "ROLE_";
+    public static final String MESSAGE_ID_CANNOT_BE_EMPTY = "Id cannot be empty";
+
+    public static final String MESSAGE_NAME_PRODUCT_CANNOT_BE_EMPTY = "Product name cannot be empty";
+    public static final String MESSAGE_NAME_BRAND_CANNOT_BE_EMPTY = "Brand name cannot be empty";
+    public static final String MESSAGE_NAME_CATEGORY_CANNOT_BE_EMPTY = "Category name cannot be empty";
+    public static final String MESSAGE_NAME_PROVIDER_CANNOT_BE_EMPTY = "Provider name cannot be empty";
 
     public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
     public static final String PRODUCT_NOT_FOUND_FLUX = "No products found";
@@ -121,9 +127,16 @@ public class Constants {
 
     public static final String REGEX_ONLY_TEXT = "^[a-zA-Z]*$";
     public static final String REGEX_ID = "^[a-fA-F0-9]{24}$";
-    public static final String REGEX_UUID = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     public static final String REGEX_RUC = "^\\d{11}$";
     public static final String REGEX_DNI = "^\\d{8}$";
+    public static final String REGEX_ONLY_NUMBERS = "^\\d+$";
+    public static final String REGEX_DATE_OR_TIME = "^\\d{4}-\\d{2}-\\d{2}(?:\\s\\d{2}:\\d{2}:\\d{2})?$";
+    public static final String REGEX_ONLY_TEST_AND_NUMBERS = "^[a-zA-Z0-9]+$";
+    public static final String MESSAGE_INVALID_DATE_OR_FORMAT = "Invalid date format. It must be YYYY-MM-DD O YYY-MM-DD HH: mm: SS";
+    public static final String MESSAGE_ONLY_NUMBERS = "Only numbers are accepted";
+    public static final String MESSAGE_ONLY_TEST_AND_NUMBERS = "Only letters and numbers are accepted";
+    public static final String INVALID_EMAIL_FORMAT = "Invalid email format";
+    public static final String MESSAGE_PARAMETER_LAST_NAME = "Parameter Last Name only accepts letters";
 
     public static final String PRODUCT_URI = "/api/v1/products/%s";
     public static final String BRAND_URI = "/api/v1/brands/%s";
@@ -150,11 +163,11 @@ public class Constants {
     public static final String ROLE_SUPPORT = "SUPPORT";
     public static final String ROLE_BASIC_USER = "BASIC_USER";
 
-    public static final String MESSAGE_PARAMETER_PRODUCT_NAME = "Parameter name only accepts letters";
+    public static final String MESSAGE_PARAMETER_NAME = "Parameter name only accepts letters";
     public static final String MESSAGE_PARAMETER_CATEGORY = "Parameter category only accepts letters";
     public static final String MESSAGE_PARAMETER_BRAND = "Parameter brand only accepts letters";
     public static final String MESSAGE_PARAMETER_PROVIDER = "Parameter provider only accepts letters";
-    public static final String MESSAGE_INCORRECT_UUID_FORMAT = "Incorrect UUID format";
+    public static final String MESSAGE_INCORRECT_ID_FORMAT = "ID format is incorrect, it should be a 24-character hexadecimal string";
     public static final String MESSAGE_NAME_CANNOT_BE_EMPTY = "Name cannot be empty";
     public static final String MESSAGE_RUC_CANNOT_BE_EMPTY = "RUC cannot be empty";
     public static final String MESSAGE_DNI_CANNOT_BE_EMPTY = "DNI cannot be empty";

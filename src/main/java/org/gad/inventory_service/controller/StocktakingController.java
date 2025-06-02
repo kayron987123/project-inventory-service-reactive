@@ -41,7 +41,10 @@ public class StocktakingController {
     }
 
     @GetMapping("/date-range")
-    public Mono<ResponseEntity<DataResponse>> getStocktakingByDateRange(@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate) {
+    public Mono<ResponseEntity<DataResponse>> getStocktakingByDateRange(@RequestParam(required = false)
+                                                                        @Pattern(regexp = REGEX_DATE_OR_TIME, message = MESSAGE_INVALID_DATE_OR_FORMAT) String startDate,
+                                                                        @RequestParam(required = false)
+                                                                        @Pattern(regexp = REGEX_DATE_OR_TIME, message = MESSAGE_INVALID_DATE_OR_FORMAT) String endDate) {
         return stocktakingService.findAllStocktakingByDateBetween(startDate, endDate)
                 .collectList()
                 .map(stocktaking -> ResponseEntity.ok(
@@ -55,7 +58,8 @@ public class StocktakingController {
     }
 
     @GetMapping("/product-name")
-    public Mono<ResponseEntity<DataResponse>> getStocktakingByProductName(@RequestParam @NotBlank(message = MESSAGE_PRODUCT_EMPTY) String productName) {
+    public Mono<ResponseEntity<DataResponse>> getStocktakingByProductName(@RequestParam @NotBlank(message = MESSAGE_PRODUCT_EMPTY)
+                                                                          @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME) String productName) {
         return stocktakingService.findAllStocktakingByProductName(productName)
                 .collectList()
                 .map(stocktaking -> ResponseEntity.ok(
@@ -69,7 +73,8 @@ public class StocktakingController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> getStocktakingById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> getStocktakingById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                                 @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return stocktakingService.findStocktakingById(id)
                 .map(stocktaking -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -97,7 +102,8 @@ public class StocktakingController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateStocktaking(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
+    public Mono<ResponseEntity<DataResponse>> updateStocktaking(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                                @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id,
                                                                 @RequestBody @Valid UpdateStocktakingRequest updateStocktakingRequest) {
         return stocktakingService.updateStocktaking(id, updateStocktakingRequest)
                 .map(stocktaking -> {
@@ -113,7 +119,8 @@ public class StocktakingController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> deleteStocktakingById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> deleteStocktakingById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                                    @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return stocktakingService.deleteStocktakingById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

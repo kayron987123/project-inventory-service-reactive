@@ -40,8 +40,9 @@ public class CategoryController {
                 );
     }
 
-    @GetMapping("/name")
-    public Mono<ResponseEntity<DataResponse>> findCategoryByName(@RequestParam @NotBlank(message = MESSAGE_NAME_CANNOT_BE_EMPTY) String name) {
+    @GetMapping("/search")
+    public Mono<ResponseEntity<DataResponse>> findCategoryByName(@RequestParam @NotBlank(message = MESSAGE_NAME_CANNOT_BE_EMPTY)
+                                                                 @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME) String name) {
         return categoryService.findCategoryByName(name)
                 .map(category -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -54,7 +55,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> findCategoryById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> findCategoryById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                               @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return categoryService.findCategoryById(id)
                 .map(category -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -82,7 +84,8 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateCategory(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
+    public Mono<ResponseEntity<DataResponse>> updateCategory(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                             @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id,
                                                              @RequestBody @Valid UpdateCategoryRequest updateCategoryRequest) {
         return categoryService.updateCategory(id, updateCategoryRequest)
                 .map(category -> {
@@ -98,7 +101,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteCategoryById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<Void>> deleteCategoryById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                         @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return categoryService.deleteCategoryById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

@@ -1,5 +1,6 @@
 package org.gad.inventory_service.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,8 @@ public class SaleController {
     }
 
     @GetMapping("/name-product")
-    public Mono<ResponseEntity<DataResponse>> getSalesByNameProduct(@RequestParam @NotBlank(message = MESSAGE_PRODUCT_EMPTY) String nameProduct) {
+    public Mono<ResponseEntity<DataResponse>> getSalesByNameProduct(@RequestParam @NotBlank(message = MESSAGE_PRODUCT_EMPTY)
+                                                                    @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME) String nameProduct) {
         return saleService.getSaleByNameProduct(nameProduct)
                 .collectList()
                 .map(sales -> ResponseEntity.ok(
@@ -62,8 +64,10 @@ public class SaleController {
     }
 
     @GetMapping("/price-range")
-    public Mono<ResponseEntity<DataResponse>> getSalesByPriceRange(@RequestParam(required = false) BigDecimal minPrice,
-                                                                   @RequestParam(required = false) BigDecimal maxPrice) {
+    public Mono<ResponseEntity<DataResponse>> getSalesByPriceRange(@RequestParam(required = false)
+                                                                   @Pattern(regexp = REGEX_ONLY_NUMBERS, message = MESSAGE_ONLY_NUMBERS) BigDecimal minPrice,
+                                                                   @RequestParam(required = false)
+                                                                   @Pattern(regexp = REGEX_ONLY_NUMBERS, message = MESSAGE_ONLY_NUMBERS) BigDecimal maxPrice) {
         return saleService.getSaleByTotalPriceRange(minPrice, maxPrice)
                 .collectList()
                 .map(sales -> ResponseEntity.ok(
@@ -77,8 +81,10 @@ public class SaleController {
     }
 
     @GetMapping("/date-range")
-    public Mono<ResponseEntity<DataResponse>> getSalesByDateRange(@RequestParam(required = false) String startDate,
-                                                                  @RequestParam(required = false) String endDate) {
+    public Mono<ResponseEntity<DataResponse>> getSalesByDateRange(@RequestParam(required = false)
+                                                                  @Pattern(regexp = REGEX_DATE_OR_TIME, message = MESSAGE_INVALID_DATE_OR_FORMAT) String startDate,
+                                                                  @RequestParam(required = false)
+                                                                  @Pattern(regexp = REGEX_DATE_OR_TIME, message = MESSAGE_INVALID_DATE_OR_FORMAT) String endDate) {
         return saleService.getSaleByDateRange(startDate, endDate)
                 .collectList()
                 .map(sales -> ResponseEntity.ok(
@@ -92,7 +98,8 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> getSaleById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> getSaleById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                          @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return saleService.getSaleById(id)
                 .map(sale -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -105,8 +112,10 @@ public class SaleController {
     }
 
     @GetMapping("/excel")
-    public Mono<ResponseEntity<ByteArrayResource>> generateExcelReport(@RequestParam(required = false) String startDate,
-                                                                        @RequestParam(required = false) String endDate) {
+    public Mono<ResponseEntity<ByteArrayResource>> generateExcelReport(@RequestParam(required = false)
+                                                                       @Pattern(regexp = REGEX_DATE_OR_TIME, message = MESSAGE_INVALID_DATE_OR_FORMAT) String startDate,
+                                                                       @RequestParam(required = false)
+                                                                       @Pattern(regexp = REGEX_DATE_OR_TIME, message = MESSAGE_INVALID_DATE_OR_FORMAT) String endDate) {
         return saleService.getSaleByDateRange(startDate, endDate)
                 .collectList()
                 .flatMap(excelReportService::generateSalesReport)
@@ -122,7 +131,7 @@ public class SaleController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<DataResponse>> createSale(@RequestBody @Validated CreateSaleRequest createSaleRequest) {
+    public Mono<ResponseEntity<DataResponse>> createSale(@RequestBody @Valid CreateSaleRequest createSaleRequest) {
         return saleService.createSale(createSaleRequest)
                 .map(sale -> {
                     URI location = UtilsMethods.createUri(SALE_URI, sale.idSale());
@@ -137,8 +146,9 @@ public class SaleController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateSale(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
-                                                         @RequestBody @Validated UpdateSaleRequest updateSaleRequest) {
+    public Mono<ResponseEntity<DataResponse>> updateSale(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                         @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id,
+                                                         @RequestBody @Valid UpdateSaleRequest updateSaleRequest) {
         return saleService.updateSale(id, updateSaleRequest)
                 .map(sale -> {
                     URI location = UtilsMethods.createUri(SALE_URI, sale.idSale());
@@ -153,7 +163,8 @@ public class SaleController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteSaleById(@PathVariable @Pattern(regexp = REGEX_UUID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<Void>> deleteSaleById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                     @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return saleService.deleteSaleById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

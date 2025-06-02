@@ -1,5 +1,9 @@
 package org.gad.inventory_service.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.gad.inventory_service.dto.request.CreateUserRequest;
 import org.gad.inventory_service.dto.request.UpdateUserRequest;
@@ -36,7 +40,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> findUserById(@PathVariable String id) {
+    public Mono<ResponseEntity<DataResponse>> findUserById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                           @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return userService.findUserById(id)
                 .map(user -> ResponseEntity.ok(DataResponse.builder()
                         .status(HttpStatus.OK.value())
@@ -48,8 +53,10 @@ public class UserController {
     }
 
     @GetMapping("/search/username-or-email")
-    public Mono<ResponseEntity<DataResponse>> findUserByUsernameOrEmail(@RequestParam(required = false) String username,
-                                                                        @RequestParam(required = false) String email) {
+    public Mono<ResponseEntity<DataResponse>> findUserByUsernameOrEmail(@RequestParam(required = false)
+                                                                        @Pattern(regexp = REGEX_ONLY_TEST_AND_NUMBERS, message = MESSAGE_ONLY_TEST_AND_NUMBERS) String username,
+                                                                        @RequestParam(required = false)
+                                                                        @Email(message = INVALID_EMAIL_FORMAT) String email) {
         return userService.findUserByUsernameOrEmail(username, email)
                 .map(user -> ResponseEntity.ok(DataResponse.builder()
                         .status(HttpStatus.OK.value())
@@ -61,8 +68,10 @@ public class UserController {
     }
 
     @GetMapping("/search/name-or-lastname")
-    public Mono<ResponseEntity<DataResponse>> findUsersByNameOrLastName(@RequestParam(required = false) String name,
-                                                                        @RequestParam(required = false) String lastName) {
+    public Mono<ResponseEntity<DataResponse>> findUsersByNameOrLastName(@RequestParam(required = false)
+                                                                        @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME) String name,
+                                                                        @RequestParam(required = false)
+                                                                        @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_LAST_NAME) String lastName) {
         return userService.findUsersByNameOrLastName(name, lastName)
                 .collectList()
                 .map(users -> ResponseEntity.ok(DataResponse.builder()
@@ -75,7 +84,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<DataResponse>> createUser(@RequestBody CreateUserRequest createUserRequest) {
+    public Mono<ResponseEntity<DataResponse>> createUser(@RequestBody @Valid CreateUserRequest createUserRequest) {
         return userService.createUSer(createUserRequest)
                 .map(user -> {
                     URI location = UtilsMethods.createUri(USER_URI, user.idUser());
@@ -91,7 +100,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateUser(@PathVariable String id, @RequestBody UpdateUserRequest updateUserRequest) {
+    public Mono<ResponseEntity<DataResponse>> updateUser(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                         @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id,
+                                                         @RequestBody @Valid UpdateUserRequest updateUserRequest) {
         return userService.updateUser(id, updateUserRequest)
                 .map(user -> {
                     URI location = UtilsMethods.createUri(USER_URI, user.idUser());
@@ -106,7 +117,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> deleteUserById(@PathVariable String id) {
+    public Mono<ResponseEntity<DataResponse>> deleteUserById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                             @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return userService.deleteUserById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }

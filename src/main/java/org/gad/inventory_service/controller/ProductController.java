@@ -41,15 +41,15 @@ public class ProductController {
     }
 
 
-    @GetMapping(params = {"name", "categoryName", "brandName", "providerName"})
-    public Mono<ResponseEntity<DataResponse>> getAllProducts(@RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_PRODUCT_NAME)
-                                                             @NotBlank(message = "Name of product cannot be empty") String name,
+    @GetMapping("/search")
+    public Mono<ResponseEntity<DataResponse>> getAllProducts(@RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME)
+                                                             @NotBlank(message = MESSAGE_NAME_PRODUCT_CANNOT_BE_EMPTY) String name,
                                                              @RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_CATEGORY)
-                                                             @NotBlank(message = "Name of category cannot be empty") String categoryName,
+                                                             @NotBlank(message = MESSAGE_NAME_CATEGORY_CANNOT_BE_EMPTY) String categoryName,
                                                              @RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_BRAND)
-                                                             @NotBlank(message = "Name of brand cannot be empty") String brandName,
+                                                             @NotBlank(message = MESSAGE_NAME_BRAND_CANNOT_BE_EMPTY) String brandName,
                                                              @RequestParam @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_PROVIDER)
-                                                             @NotBlank(message = "Name of provider cannot be empty") String providerName) {
+                                                             @NotBlank(message = MESSAGE_NAME_PROVIDER_CANNOT_BE_EMPTY) String providerName) {
         return productService.findProductsByCriteria(name, categoryName, brandName, providerName)
                 .collectList()
                 .map(products -> ResponseEntity.ok(
@@ -63,7 +63,8 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> getProductById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<DataResponse>> getProductById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                             @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return productService.findProductById(id)
                 .map(product -> ResponseEntity.ok(
                         DataResponse.builder()
@@ -91,7 +92,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id,
+    public Mono<ResponseEntity<DataResponse>> updateProduct(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                            @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id,
                                                             @Valid @RequestBody UpdateProductRequest updateProductRequest) {
         return productService.updateProduct(id, updateProductRequest)
                 .map(product -> {
@@ -107,7 +109,8 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> deleteProductById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_UUID_FORMAT) String id) {
+    public Mono<ResponseEntity<Void>> deleteProductById(@PathVariable @Pattern(regexp = REGEX_ID, message = MESSAGE_INCORRECT_ID_FORMAT)
+                                                        @NotBlank(message = MESSAGE_ID_CANNOT_BE_EMPTY) String id) {
         return productService.deleteProductById(id)
                 .then(Mono.just(ResponseEntity.noContent().build()));
     }
