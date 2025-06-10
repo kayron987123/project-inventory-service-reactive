@@ -91,7 +91,7 @@ public class CategoryController {
                 .map(category -> {
                     URI location = UtilsMethods.createUri(CATEGORY_URI, category.idCategory());
                     DataResponse dataResponse = DataResponse.builder()
-                            .status(HttpStatus.OK.value())
+                            .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_CATEGORY_UPDATED)
                             .data(category)
                             .timestamp(UtilsMethods.datetimeNowFormatted())

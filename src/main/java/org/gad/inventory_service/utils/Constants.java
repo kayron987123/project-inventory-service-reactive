@@ -56,7 +56,7 @@ public class Constants {
 
     public static final String PROVIDER_NOT_FOUND_FLUX = "No providers found";
     public static final String PROVIDER_NOT_FOUND_ID = "Provider not found with id: ";
-    public static final String PROVIDER_NOT_FOUND_NAME = "Provider not found with name: ";
+    public static final String PROVIDER_NOT_FOUND_NAME = "Provider not found with name : ";
     public static final String PROVIDER_NOT_FOUND_RUC = "Provider not found with ruc: ";
     public static final String PROVIDER_NOT_FOUND_EMAIL = "Provider not found with email: ";
     public static final String PROVIDER_NOT_FOUND_DNI = "Provider not found with dni: ";
@@ -190,7 +190,7 @@ public class Constants {
     public static final String MESSAGE_CATEGORIES_OK = "Categories retrieved successfully";
     public static final String MESSAGE_CATEGORY_OK = "Category retrieved successfully";
     public static final String MESSAGE_CATEGORY_CREATED = "Category created successfully";
-    public static final String MESSAGE_CATEGORY_UPDATED = "Brand updated successfully";
+    public static final String MESSAGE_CATEGORY_UPDATED = "Category updated successfully";
 
     public static final String MESSAGE_PROVIDERS_OK = "Providers retrieved successfully";
     public static final String MESSAGE_PROVIDER_OK = "Provider retrieved successfully";

@@ -99,7 +99,7 @@ public class ProductController {
                 .map(product -> {
                     URI location = UtilsMethods.createUri(PRODUCT_URI, product.idProduct());
                     DataResponse dataResponse = DataResponse.builder()
-                            .status(HttpStatus.OK.value())
+                            .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_PRODUCT_UPDATED)
                             .data(product)
                             .timestamp(UtilsMethods.datetimeNowFormatted())

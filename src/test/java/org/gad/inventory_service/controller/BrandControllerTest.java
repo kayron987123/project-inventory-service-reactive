@@ -1,7 +1,6 @@
 package org.gad.inventory_service.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gad.inventory_service.TestConfig;
 import org.gad.inventory_service.dto.BrandDTO;
 import org.gad.inventory_service.dto.request.CreateBrandRequest;
@@ -37,9 +36,6 @@ class BrandControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private Flux<BrandDTO> brands;
     private Mono<BrandDTO> brand;
@@ -207,13 +203,13 @@ class BrandControllerTest {
 
     @Test
     void createBrand_ShouldReturnCreatedBrandAndStatus201_WhenBrandIsCreated() throws JsonProcessingException {
-        when(brandService.saveBrand(Mockito.any()))
+        when(brandService.saveBrand(Mockito.any(CreateBrandRequest.class)))
                 .thenReturn(brand);
 
         webTestClient.post()
                 .uri("/api/v1/brands")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(objectMapper.writeValueAsString(createBrandRequest))
+                .bodyValue(createBrandRequest)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -230,13 +226,13 @@ class BrandControllerTest {
 
     @Test
     void updateBrand_ShouldReturnUpdatedBrandAndStatus201_WhenBrandIsUpdated() throws JsonProcessingException {
-        when(brandService.updateBrand(Mockito.anyString(), Mockito.any()))
+        when(brandService.updateBrand(Mockito.anyString(), Mockito.any(UpdateBrandRequest.class)))
                 .thenReturn(brand);
 
         webTestClient.put()
                 .uri("/api/v1/brands/" + idBrand)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(objectMapper.writeValueAsString(updateBrandRequest))
+                .bodyValue(updateBrandRequest)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -253,13 +249,13 @@ class BrandControllerTest {
 
     @Test
     void updateBrand_ShouldThrowAndReturnStatus404_WhenBrandDoesNotExist() throws JsonProcessingException {
-        when(brandService.updateBrand(anyString(), Mockito.any()))
+        when(brandService.updateBrand(anyString(), Mockito.any(UpdateBrandRequest.class)))
                 .thenThrow(new BrandNotFoundException(Constants.BRAND_NOT_FOUND_ID + idBrand));
 
         webTestClient.put()
                 .uri("/api/v1/brands/" + idBrand)
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(objectMapper.writeValueAsString(updateBrandRequest))
+                .bodyValue(updateBrandRequest)
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
