@@ -70,6 +70,11 @@ public class TestConfig {
     }
 
     @Bean
+    public ExcelReportService excelReportService() {
+        return Mockito.mock(ExcelReportService.class);
+    }
+
+    @Bean
     public StocktakingService stocktakingService() {
         return Mockito.mock(StocktakingService.class);
     }

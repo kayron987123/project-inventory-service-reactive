@@ -5,6 +5,7 @@ import org.gad.inventory_service.dto.CategoryDTO;
 import org.gad.inventory_service.dto.request.CreateCategoryRequest;
 import org.gad.inventory_service.dto.request.UpdateCategoryRequest;
 import org.gad.inventory_service.dto.response.DataResponse;
+import org.gad.inventory_service.dto.response.ErrorResponse;
 import org.gad.inventory_service.exception.CategoryNotFoundException;
 import org.gad.inventory_service.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,13 +97,14 @@ class CategoryControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("No categories found", dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("No categories found", errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -139,13 +141,14 @@ class CategoryControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Category not found with name: " + categoryName, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Category not found with name: " + categoryName, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -180,13 +183,14 @@ class CategoryControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Category not found with id: " + idCategory, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Category not found with id: " + idCategory, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -224,6 +228,7 @@ class CategoryControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
                 .expectBody(DataResponse.class)
                 .value(dataResponse -> {
                     assertNotNull(dataResponse);
@@ -246,13 +251,14 @@ class CategoryControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Category not found with id: " + idCategory, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Category not found with id: " + idCategory, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -278,13 +284,14 @@ class CategoryControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Category not found with id: " + idCategory, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Category not found with id: " + idCategory, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 }

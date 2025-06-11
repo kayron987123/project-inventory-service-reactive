@@ -5,6 +5,7 @@ import org.gad.inventory_service.dto.PermissionDTO;
 import org.gad.inventory_service.dto.request.CreatePermissionRequest;
 import org.gad.inventory_service.dto.request.UpdatePermissionRequest;
 import org.gad.inventory_service.dto.response.DataResponse;
+import org.gad.inventory_service.dto.response.ErrorResponse;
 import org.gad.inventory_service.exception.PermissionNotFoundException;
 import org.gad.inventory_service.service.PermissionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,13 +97,14 @@ class PermissionControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Permissions not found", dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Permissions not found", errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -138,13 +140,14 @@ class PermissionControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Permission not found with id: " + idPermission, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Permission not found with id: " + idPermission, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -160,6 +163,7 @@ class PermissionControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
                 .expectBody(DataResponse.class)
                 .value(dataResponse -> {
                     assertNotNull(dataResponse);
@@ -182,6 +186,7 @@ class PermissionControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
                 .expectBody(DataResponse.class)
                 .value(dataResponse -> {
                     assertNotNull(dataResponse);
@@ -204,13 +209,14 @@ class PermissionControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Permission not found with id: " + idPermission, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Permission not found with id: " + idPermission, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -237,13 +243,14 @@ class PermissionControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Permission not found with id: " + idPermission, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Permission not found with id: " + idPermission, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 }

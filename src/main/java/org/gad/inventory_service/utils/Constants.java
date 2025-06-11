@@ -29,7 +29,7 @@ public class Constants {
 
     public static final String PRODUCT_NOT_FOUND_FLUX_CRITERIA = "No products found with the given criteria";
     public static final String PRODUCT_NOT_FOUND_FLUX = "No products found";
-    public static final String PRODUCT_NOT_FOUND_NAME = "Product not found with name: ";
+    public static final String PRODUCT_NOT_FOUND_NAME = "Product not found with name : ";
     public static final String PRODUCT_NOT_FOUND_ID = "Product not found with id: ";
     public static final String ERROR_SEARCHING_PRODUCT = "Error when searching for product: {}";
     public static final String ERROR_CREATING_PRODUCTS = "Error when creating product: {}";
@@ -130,7 +130,7 @@ public class Constants {
     public static final String REGEX_RUC = "^\\d{11}$";
     public static final String REGEX_DNI = "^\\d{8}$";
     public static final String REGEX_ONLY_NUMBERS = "^\\d+$";
-    public static final String REGEX_DATE_OR_TIME = "^\\d{4}-\\d{2}-\\d{2}(?:\\s\\d{2}:\\d{2}:\\d{2})?$";
+    public static final String REGEX_DATE_OR_TIME = "^\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{2}:\\d{2}:\\d{2})?$";
     public static final String REGEX_ONLY_TEST_AND_NUMBERS = "^[a-zA-Z0-9]+$";
     public static final String MESSAGE_INVALID_DATE_OR_FORMAT = "Invalid date format. It must be YYYY-MM-DD O YYY-MM-DD HH: mm: SS";
     public static final String MESSAGE_ONLY_NUMBERS = "Only numbers are accepted";
@@ -204,6 +204,7 @@ public class Constants {
     public static final String MESSAGE_INVALID_DATE_FORMAT = "Invalid date format: ";
     public static final String MESSAGE_INVALID_DATE_RANGE = "Start date cannot be after end date";
 
+    public static final String MESSAGE_SALE_OK = "Sale retrieved successfully";
     public static final String MESSAGE_SALES_OK = "Sales retrieved successfully";
     public static final String MESSAGE_SALE_CREATED = "Sale created successfully";
     public static final String MESSAGE_SALE_UPDATED = "Sale updated successfully";

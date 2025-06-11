@@ -42,7 +42,7 @@ public class ProviderController {
                 );
     }
 
-    @GetMapping("/{ruc}")
+    @GetMapping("/ruc/{ruc}")
     public Mono<ResponseEntity<DataResponse>> findProviderByRuc(@PathVariable @NotBlank(message = Constants.MESSAGE_RUC_CANNOT_BE_EMPTY)
                                                                 @Pattern(regexp = REGEX_RUC, message = MESSAGE_RUC_INVALID) String ruc) {
         return providerService.findProviderByRuc(ruc)
@@ -56,7 +56,7 @@ public class ProviderController {
                 );
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     public Mono<ResponseEntity<DataResponse>> findProviderByName(@PathVariable @Pattern(regexp = REGEX_ONLY_TEXT, message = MESSAGE_PARAMETER_NAME)
                                                                  @NotBlank(message = Constants.MESSAGE_NAME_CANNOT_BE_EMPTY) String name) {
         return providerService.findProviderByName(name)
@@ -70,7 +70,7 @@ public class ProviderController {
                 );
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public Mono<ResponseEntity<DataResponse>> findProviderByEmail(@PathVariable @NotBlank(message = Constants.MESSAGE_EMAIL_CANNOT_BE_EMPTY)
                                                                   @Email(message = MESSAGE_EMAIL_INVALID) String email) {
         return providerService.findProviderByEmail(email)
@@ -84,7 +84,7 @@ public class ProviderController {
                 );
     }
 
-    @GetMapping("/{dni}")
+    @GetMapping("/dni/{dni}")
     public Mono<ResponseEntity<DataResponse>> findProviderByDni(@PathVariable @NotBlank(message = Constants.MESSAGE_DNI_CANNOT_BE_EMPTY)
                                                                 @Pattern(regexp = REGEX_DNI, message = MESSAGE_DNI_INVALID) String dni) {
         return providerService.findProviderByDni(dni)
@@ -135,7 +135,7 @@ public class ProviderController {
                 .map(provider -> {
                     URI location = UtilsMethods.createUri(PROVIDER_URI, provider.idProvider());
                     DataResponse dataResponse = DataResponse.builder()
-                            .status(HttpStatus.OK.value())
+                            .status(HttpStatus.CREATED.value())
                             .message(MESSAGE_PROVIDER_UPDATED)
                             .data(provider)
                             .timestamp(UtilsMethods.datetimeNowFormatted())

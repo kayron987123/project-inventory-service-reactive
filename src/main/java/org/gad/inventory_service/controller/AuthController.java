@@ -19,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
+import static org.gad.inventory_service.utils.UtilsMethods.datetimeNowFormatted;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -36,7 +38,7 @@ public class AuthController {
                                 .status(HttpStatus.OK.value())
                                 .message("Login and Token generated successfully")
                                 .data(Map.of("token", token))
-                                .timestamp(UtilsMethods.datetimeNowFormatted())
+                                .timestamp(datetimeNowFormatted())
                                 .build())));
     }
 }

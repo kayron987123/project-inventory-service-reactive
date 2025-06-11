@@ -1,8 +1,7 @@
 package org.gad.inventory_service.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.gad.inventory_service.dto.request.CreateSaleRequest;
 import org.gad.inventory_service.dto.request.UpdateSaleRequest;
@@ -65,9 +64,9 @@ public class SaleController {
 
     @GetMapping("/price-range")
     public Mono<ResponseEntity<DataResponse>> getSalesByPriceRange(@RequestParam(required = false)
-                                                                   @Pattern(regexp = REGEX_ONLY_NUMBERS, message = MESSAGE_ONLY_NUMBERS) BigDecimal minPrice,
+                                                                   @DecimalMin("0.00") BigDecimal minPrice,
                                                                    @RequestParam(required = false)
-                                                                   @Pattern(regexp = REGEX_ONLY_NUMBERS, message = MESSAGE_ONLY_NUMBERS) BigDecimal maxPrice) {
+                                                                   @DecimalMax("100000001.00") BigDecimal maxPrice) {
         return saleService.getSaleByTotalPriceRange(minPrice, maxPrice)
                 .collectList()
                 .map(sales -> ResponseEntity.ok(
@@ -104,7 +103,7 @@ public class SaleController {
                 .map(sale -> ResponseEntity.ok(
                         DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message(MESSAGE_SALES_OK)
+                                .message(MESSAGE_SALE_OK)
                                 .data(sale)
                                 .timestamp(datetimeNowFormatted())
                                 .build()

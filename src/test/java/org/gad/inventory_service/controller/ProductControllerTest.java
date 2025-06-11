@@ -5,6 +5,7 @@ import org.gad.inventory_service.dto.ProductDTO;
 import org.gad.inventory_service.dto.request.CreateProductRequest;
 import org.gad.inventory_service.dto.request.UpdateProductRequest;
 import org.gad.inventory_service.dto.response.DataResponse;
+import org.gad.inventory_service.dto.response.ErrorResponse;
 import org.gad.inventory_service.exception.BrandNotFoundException;
 import org.gad.inventory_service.exception.CategoryNotFoundException;
 import org.gad.inventory_service.exception.ProductNotFoundException;
@@ -115,13 +116,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("No products found", dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("No products found", errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -176,13 +178,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("No products found with the given criteria", dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("No products found with the given criteria", errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -238,13 +241,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Brand not found with name: " + brandName, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Brand not found with name: " + brandName, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -269,13 +273,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Provider not found with name : " + providerName, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Provider not found with name : " + providerName, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -309,13 +314,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idProduct, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idProduct, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -331,6 +337,7 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
                 .expectBody(DataResponse.class)
                 .value(dataResponse -> {
                     assertNotNull(dataResponse);
@@ -353,6 +360,7 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectHeader().exists("Location")
                 .expectBody(DataResponse.class)
                 .value(dataResponse -> {
                     assertNotNull(dataResponse);
@@ -376,13 +384,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idProduct, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idProduct, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -408,13 +417,14 @@ class ProductControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idProduct, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idProduct, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 }

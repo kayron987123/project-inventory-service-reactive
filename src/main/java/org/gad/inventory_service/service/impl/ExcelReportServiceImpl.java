@@ -64,7 +64,6 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     }
 
     private void populateDataRows(Sheet sheet, List<SaleDTO> sales) {
-
         int rowNum = 1;
         for (SaleDTO sale : sales) {
             Row row = sheet.createRow(rowNum++);
