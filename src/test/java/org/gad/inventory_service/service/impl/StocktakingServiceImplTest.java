@@ -1,5 +1,6 @@
 package org.gad.inventory_service.service.impl;
 
+import org.gad.inventory_service.dto.UserAuthenticatedDTO;
 import org.gad.inventory_service.dto.request.CreateStocktakingRequest;
 import org.gad.inventory_service.dto.request.UpdateStocktakingRequest;
 import org.gad.inventory_service.exception.ProductNotFoundException;
@@ -33,6 +34,9 @@ class StocktakingServiceImplTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private UserServiceImpl userService;
+
     @InjectMocks
     private StocktakingServiceImpl stocktakingService;
 
@@ -40,6 +44,7 @@ class StocktakingServiceImplTest {
     private Product product;
     private CreateStocktakingRequest createStocktakingRequest;
     private UpdateStocktakingRequest updateStocktakingRequest;
+    private UserAuthenticatedDTO userAuthenticatedDTO;
 
     @BeforeEach
     void setUp() {
@@ -62,6 +67,10 @@ class StocktakingServiceImplTest {
         updateStocktakingRequest = UpdateStocktakingRequest.builder()
                 .productName("Test Product")
                 .quantity(75)
+                .build();
+
+        userAuthenticatedDTO = UserAuthenticatedDTO.builder()
+                .username("admin")
                 .build();
     }
 
@@ -306,6 +315,9 @@ class StocktakingServiceImplTest {
         when(productRepository.findProductByNameContainingIgnoreCase(anyString()))
                 .thenReturn(Mono.just(product));
 
+        when(userService.getAuthenticatedUser())
+                .thenReturn(Mono.just(userAuthenticatedDTO));
+
         when(stocktakingRepository.save(any(Stocktaking.class)))
                 .thenReturn(Mono.just(stocktaking));
 
@@ -336,6 +348,9 @@ class StocktakingServiceImplTest {
     @Test
     void updateStocktaking_ShouldReturnUpdatedStocktakingDTO_WhenStocktakingExists() {
         String stocktakingId = "1";
+
+        when(userService.getAuthenticatedUser())
+                .thenReturn(Mono.just(userAuthenticatedDTO));
 
         when(stocktakingRepository.findById(anyString()))
                 .thenReturn(Mono.just(stocktaking));

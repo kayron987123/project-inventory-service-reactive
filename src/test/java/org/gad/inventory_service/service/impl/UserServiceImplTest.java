@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -68,6 +71,49 @@ class UserServiceImplTest {
                 .lastName("Smith")
                 .username("johnsmith")
                 .build();
+    }
+
+
+    @Test
+    void getAuthenticatedUser_ShouldReturnUserAuthenticatedDTO_WhenUserExists() {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+
+        when(authentication.getName()).thenReturn("johndoe");
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(userRepository.findUserByUsername("johndoe")).thenReturn(Mono.just(user));
+
+        StepVerifier.create(
+                        userService.getAuthenticatedUser()
+                                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext)))
+                )
+                .expectNextMatches(userDTO -> userDTO.idUser().equals(user.getIdUser()) &&
+                        userDTO.name().equals(user.getName()) &&
+                        userDTO.lastName().equals(user.getLastName()))
+                .verifyComplete();
+
+        verify(userRepository, times(1)).findUserByUsername("johndoe");
+    }
+
+
+    @Test
+    void getAuthenticatedUser_ShouldReturnError_WhenUserDoesNotExist() {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+
+        when(authentication.getName()).thenReturn("johndoe");
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        when(userRepository.findUserByUsername("johndoe")).thenReturn(Mono.empty());
+
+        StepVerifier.create(
+                        userService.getAuthenticatedUser()
+                                .contextWrite(ReactiveSecurityContextHolder.withSecurityContext(Mono.just(securityContext)))
+                )
+                .expectErrorMatches(throwable -> throwable instanceof UserNotFoundException &&
+                        throwable.getMessage().equals(USER_NOT_FOUND_USERNAME + "johndoe"))
+                .verify();
+
+        verify(userRepository, times(1)).findUserByUsername("johndoe");
     }
 
     @Test

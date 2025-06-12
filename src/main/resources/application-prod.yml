@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: inventory-service
+  data:
+    mongodb:
+      uri: mongodb://gad-dev:12345@mongodb-inventory:27017/inventory?authSource=admin
+      database: inventory
+      auto-index-creation: true
+  webflux:
+    multipart:
+      max-in-memory-size: 10MB
+
+auth:
+  token:
+    jwt-secret: dsM8Y+SX84uRfHCHIRabRKiY2HOFmyU0aqqnrxbGeak=
+    expiration-in-millis: 43200000

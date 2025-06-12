@@ -89,6 +89,19 @@ public class Mappers {
                 .build();
     }
 
+    public static UserAuthenticatedDTO userAuthenticatedToDTO(User user) {
+        if (user == null) return null;
+        return UserAuthenticatedDTO.builder()
+                .idUser(user.getIdUser())
+                .name(user.getName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .roles(rolesToSetString(user.getRoles()))
+                .build();
+    }
+
     public static RoleDTO roleToDTO(Role role) {
         if (role == null) return null;
         return RoleDTO.builder()
@@ -104,6 +117,13 @@ public class Mappers {
                 .idPermission(permission.getIdPermission())
                 .name(permission.getName())
                 .build();
+    }
+
+    public static Set<String> rolesToSetString(Set<Role> roles) {
+        if (roles == null || roles.isEmpty()) return Set.of();
+        return roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
     }
 
     private static Set<String> permissionsToSetString(Set<Permission> permissions) {

@@ -13,6 +13,7 @@ import org.gad.inventory_service.model.Stocktaking;
 import org.gad.inventory_service.repository.ProductRepository;
 import org.gad.inventory_service.repository.StocktakingRepository;
 import org.gad.inventory_service.service.StocktakingService;
+import org.gad.inventory_service.service.UserService;
 import org.gad.inventory_service.utils.Constants;
 import org.gad.inventory_service.utils.Mappers;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import static org.gad.inventory_service.utils.UtilsMethods.*;
 public class StocktakingServiceImpl implements StocktakingService {
     private final StocktakingRepository stocktakingRepository;
     private final ProductRepository productRepository;
+    private final UserService userService;
 
     @Override
     public Flux<StocktakingDTO> findAllStocktaking() {
@@ -89,15 +91,20 @@ public class StocktakingServiceImpl implements StocktakingService {
     public Mono<StocktakingDTO> createStocktaking(CreateStocktakingRequest createStocktakingDTO) {
         return productRepository.findProductByNameContainingIgnoreCase(createStocktakingDTO.productName())
                 .switchIfEmpty(Mono.error(new ProductNotFoundException(STOCKTAKING_NOT_FOUND_NAME + createStocktakingDTO.productName())))
-                .flatMap(product -> {
-                    Stocktaking stocktakingToSave = Stocktaking.builder()
-                            .productId(product.getIdProduct())
-                            .quantity(createStocktakingDTO.quantity())
-                            .stocktakingDate(LocalDateTime.now())
-                            .build();
-                    return stocktakingRepository.save(stocktakingToSave)
-                            .map(savedStocktaking -> Mappers.stocktakingToDTO(savedStocktaking, product.getName()));
-                })
+                .flatMap(product ->
+                        userService.getAuthenticatedUser()
+                                .map(userAuthenticated -> Stocktaking.builder()
+                                        .productId(product.getIdProduct())
+                                        .quantity(createStocktakingDTO.quantity())
+                                        .stocktakingDate(LocalDateTime.now())
+                                        .performedBy(userAuthenticated.username())
+                                        .build()
+                                )
+                                .flatMap(stocktakingToSave ->
+                                        stocktakingRepository.save(stocktakingToSave)
+                                                .map(savedStocktaking -> Mappers.stocktakingToDTO(savedStocktaking, product.getName()))
+                                )
+                )
                 .doOnError(error -> log.error(ERROR_CREATING_STOCKTAKING, error.getMessage()));
     }
 
@@ -108,12 +115,19 @@ public class StocktakingServiceImpl implements StocktakingService {
                 .flatMap(stocktaking ->
                         productRepository.findProductByNameContainingIgnoreCase(updateStocktakingRequest.productName())
                                 .switchIfEmpty(Mono.error(new ProductNotFoundException(STOCKTAKING_NOT_FOUND_NAME + updateStocktakingRequest.productName())))
-                                .flatMap(product -> {
-                                    stocktaking.setProductId(product.getIdProduct());
-                                    stocktaking.setQuantity(updateStocktakingRequest.quantity());
-                                    return stocktakingRepository.save(stocktaking)
-                                            .map(savedStocktaking -> Mappers.stocktakingToDTO(savedStocktaking, product.getName()));
-                                })
+                                .flatMap(product ->
+                                        userService.getAuthenticatedUser()
+                                                .map(userAuthenticated -> {
+                                                    stocktaking.setProductId(product.getIdProduct());
+                                                    stocktaking.setQuantity(updateStocktakingRequest.quantity());
+                                                    stocktaking.setPerformedBy(userAuthenticated.username());
+                                                    return stocktaking;
+                                                })
+                                                .flatMap(updatedStocktaking ->
+                                                        stocktakingRepository.save(updatedStocktaking)
+                                                                .map(savedStocktaking -> Mappers.stocktakingToDTO(savedStocktaking, product.getName()))
+                                                )
+                                )
                 )
                 .doOnError(error -> log.error(ERROR_UPDATING_STOCKTAKING, error.getMessage()));
     }

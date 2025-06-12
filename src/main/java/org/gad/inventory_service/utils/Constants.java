@@ -129,11 +129,9 @@ public class Constants {
     public static final String REGEX_ID = "^[a-fA-F0-9]{24}$";
     public static final String REGEX_RUC = "^\\d{11}$";
     public static final String REGEX_DNI = "^\\d{8}$";
-    public static final String REGEX_ONLY_NUMBERS = "^\\d+$";
     public static final String REGEX_DATE_OR_TIME = "^\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{2}:\\d{2}:\\d{2})?$";
     public static final String REGEX_ONLY_TEST_AND_NUMBERS = "^[a-zA-Z0-9]+$";
     public static final String MESSAGE_INVALID_DATE_OR_FORMAT = "Invalid date format. It must be YYYY-MM-DD O YYY-MM-DD HH: mm: SS";
-    public static final String MESSAGE_ONLY_NUMBERS = "Only numbers are accepted";
     public static final String MESSAGE_ONLY_TEST_AND_NUMBERS = "Only letters and numbers are accepted";
     public static final String INVALID_EMAIL_FORMAT = "Invalid email format";
     public static final String MESSAGE_PARAMETER_LAST_NAME = "Parameter Last Name only accepts letters";
@@ -226,4 +224,9 @@ public class Constants {
 
     public static final String TEXT_SALE_DATE = "sale_date";
     public static final String TEXT_SALE_TOTAL_PRICE = "total_price";
+    public static final String ERROR_SEARCHING_AUTHENTICATED_USER = "Error searching authenticated user: {}";
+    public static final String LOGIN_TOKEN_SUCCESS = "Login and Token generated successfully";
+
+    public static final String FAILED_GENERATE_REPORT = "Failed to generate sales report";
+    public static final String ERROR_GENERATING_REPORT = "Error generating sales report: {}";
 }

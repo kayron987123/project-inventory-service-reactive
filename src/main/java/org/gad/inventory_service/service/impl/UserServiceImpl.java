@@ -2,6 +2,7 @@ package org.gad.inventory_service.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gad.inventory_service.dto.UserAuthenticatedDTO;
 import org.gad.inventory_service.dto.UserDTO;
 import org.gad.inventory_service.dto.request.CreateUserRequest;
 import org.gad.inventory_service.dto.request.UpdateUserRequest;
@@ -12,6 +13,8 @@ import org.gad.inventory_service.repository.RoleRepository;
 import org.gad.inventory_service.repository.UserRepository;
 import org.gad.inventory_service.service.UserService;
 import org.gad.inventory_service.utils.Mappers;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -28,6 +31,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Mono<UserAuthenticatedDTO> getAuthenticatedUser() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .flatMap(auth -> {
+                    String username = auth.getName();
+                    return userRepository.findUserByUsername(username)
+                            .switchIfEmpty(Mono.error(new UserNotFoundException(USER_NOT_FOUND_USERNAME + username)))
+                            .map(Mappers::userAuthenticatedToDTO)
+                            .doOnError(error -> log.error(ERROR_SEARCHING_AUTHENTICATED_USER, error.getMessage()));
+                });
+    }
 
     @Override
     public Flux<UserDTO> findAllUsers() {
@@ -90,6 +106,7 @@ public class UserServiceImpl implements UserService {
                     user.setUsername(updateUserRequest.username());
                     user.setEmail(updateUserRequest.email());
                     user.setPhone(updateUserRequest.phone());
+                    user.updateTimeStamp();
                     if (!passwordEncoder.matches(updateUserRequest.password(), user.getPassword())) {
                         user.setPassword(passwordEncoder.encode(updateUserRequest.password()));
                     }

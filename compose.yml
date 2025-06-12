@@ -9,9 +9,28 @@ services:
       MONGO_INITDB_DATABASE: inventory
     ports:
       - "27017:27017"
+    networks:
+      - spring-network
     volumes:
       - mongodb_data_inventory:/data/db
+
+  spring-inventory-service:
+    image: spring-inventory-service
+    container_name: spring-inventory-service-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-network
+    depends_on:
+      - mongodb-inventory
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
 
 volumes:
   mongodb_data_inventory:
     driver: local
+networks:
+  spring-network:

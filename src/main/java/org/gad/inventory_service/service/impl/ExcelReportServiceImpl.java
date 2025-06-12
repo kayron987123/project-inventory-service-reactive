@@ -14,8 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static org.gad.inventory_service.utils.Constants.REPORT_HEADERS;
-import static org.gad.inventory_service.utils.Constants.SHEET_NAME;
+import static org.gad.inventory_service.utils.Constants.*;
 
 @Slf4j
 @Service
@@ -25,9 +24,9 @@ public class ExcelReportServiceImpl implements ExcelReportService {
     @Override
     public Mono<byte[]> generateSalesReport(List<SaleDTO> sales) {
         return Mono.fromCallable(() -> generateExcelBytes(sales))
-                .doOnError(e -> log.error("Failed to generate sales report", e))
+                .doOnError(e -> log.error(FAILED_GENERATE_REPORT, e))
                 .onErrorMap(e -> e instanceof ExcelReportGenerationException ? e :
-                        new ExcelReportGenerationException("Error generating the sales report", e));
+                        new ExcelReportGenerationException(ERROR_GENERATING_REPORT, e));
     }
 
     private byte[] generateExcelBytes(List<SaleDTO> sales) throws IOException {

@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
+import static org.gad.inventory_service.utils.Constants.LOGIN_TOKEN_SUCCESS;
 import static org.gad.inventory_service.utils.UtilsMethods.datetimeNowFormatted;
 
 @RestController
@@ -36,7 +37,7 @@ public class AuthController {
                 .flatMap(auth -> jwtUtils.generateToken(auth)
                         .map(token -> ResponseEntity.ok(DataResponse.builder()
                                 .status(HttpStatus.OK.value())
-                                .message("Login and Token generated successfully")
+                                .message(LOGIN_TOKEN_SUCCESS)
                                 .data(Map.of("token", token))
                                 .timestamp(datetimeNowFormatted())
                                 .build())));

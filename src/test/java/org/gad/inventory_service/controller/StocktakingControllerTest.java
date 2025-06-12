@@ -5,6 +5,7 @@ import org.gad.inventory_service.dto.StocktakingDTO;
 import org.gad.inventory_service.dto.request.CreateStocktakingRequest;
 import org.gad.inventory_service.dto.request.UpdateStocktakingRequest;
 import org.gad.inventory_service.dto.response.DataResponse;
+import org.gad.inventory_service.dto.response.ErrorResponse;
 import org.gad.inventory_service.exception.ProductNotFoundException;
 import org.gad.inventory_service.exception.StockTakingNotFoundException;
 import org.gad.inventory_service.service.StocktakingService;
@@ -98,13 +99,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("No stocktaking found", dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("No stocktaking found", errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -118,13 +120,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -169,13 +172,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("No stocktaking found", dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("No stocktaking found", errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -195,13 +199,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -242,13 +247,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -266,13 +272,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Stocktaking not found with name: " + productName, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Stocktaking not found with name: " + productName, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -308,13 +315,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -329,13 +337,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Stocktaking not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Stocktaking not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -375,13 +384,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -421,13 +431,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Stocktaking not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Stocktaking not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -444,13 +455,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Product not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Product not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 
@@ -476,13 +488,14 @@ class StocktakingControllerTest {
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(DataResponse.class)
-                .value(dataResponse -> {
-                    assertNotNull(dataResponse);
-                    assertEquals(404, dataResponse.status());
-                    assertEquals("Stocktaking not found with id: " + idStocktaking, dataResponse.message());
-                    assertNull(dataResponse.data());
-                    assertNotNull(dataResponse.timestamp());
+                .expectBody(ErrorResponse.class)
+                .value(errorResponse -> {
+                    assertNotNull(errorResponse);
+                    assertEquals(404, errorResponse.status());
+                    assertEquals("Stocktaking not found with id: " + idStocktaking, errorResponse.message());
+                    assertNull(errorResponse.errors());
+                    assertNotNull(errorResponse.timestamp());
+                    assertNotNull(errorResponse.path());
                 });
     }
 }
