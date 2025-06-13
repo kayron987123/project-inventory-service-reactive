@@ -97,7 +97,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                                         .productId(product.getIdProduct())
                                         .quantity(createStocktakingDTO.quantity())
                                         .stocktakingDate(LocalDateTime.now())
-                                        .performedBy(userAuthenticated.username())
+                                        .performedBy(userAuthenticated.idUser())
                                         .build()
                                 )
                                 .flatMap(stocktakingToSave ->
@@ -120,7 +120,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                                                 .map(userAuthenticated -> {
                                                     stocktaking.setProductId(product.getIdProduct());
                                                     stocktaking.setQuantity(updateStocktakingRequest.quantity());
-                                                    stocktaking.setPerformedBy(userAuthenticated.username());
+                                                    stocktaking.setPerformedBy(userAuthenticated.idUser());
                                                     return stocktaking;
                                                 })
                                                 .flatMap(updatedStocktaking ->
