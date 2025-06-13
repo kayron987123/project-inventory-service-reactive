@@ -152,6 +152,10 @@ public class Constants {
     public static final String PROVIDER_URL = "/api/v1/providers/**";
     public static final String SALE_URL = "/api/v1/sales/**";
     public static final String STOCKTAKING_URL = "/api/v1/stocktaking/**";
+    public static final String USER_URL = "/api/v1/users/**";
+    public static final String ROLE_URL = "/api/v1/roles/**";
+    public static final String PERMISSION_URL = "/api/v1/permissions/**";
+    public static final String AUTH_LOGIN_URL = "/api/v1/auth/login";
 
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String ROLE_INVENTORY_MANAGER = "INVENTORY_MANAGER";
